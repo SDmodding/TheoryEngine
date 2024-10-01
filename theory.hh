@@ -36,3 +36,4 @@
 #include "quark/stringplat.hh"
 #include "quark/memorypool.hh"
 #include "quark/string.hh"
+#include "quark/quark.hh"

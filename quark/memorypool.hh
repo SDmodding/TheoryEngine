@@ -9,11 +9,11 @@ namespace UFG
 
 		void* Allocate(size_t size, const char* name, u64 allocationParams, bool checkNull);
 
-		void* Realloc(char* mem, size_t size, const char* name, u64 allocationParams);
+		void* Realloc(void* mem, size_t size, const char* name, u64 allocationParams);
 
-		void Free(char* ptr);
+		void Free(void* ptr);
 
-		size_t Size(char* ptr);
+		size_t Size(void* ptr);
 	};
 
 	inline qMemoryPool* gMainMemoryPool;
@@ -30,7 +30,7 @@ namespace UFG
 		return ::malloc(size);
 	}
 
-	void* qMemoryPool::Realloc(char* mem, size_t size, const char* name, u64 allocationParams)
+	void* qMemoryPool::Realloc(void* mem, size_t size, const char* name, u64 allocationParams)
 	{
 		return realloc(mem, size);
 
@@ -44,18 +44,18 @@ namespace UFG
 			}
 
 			qMemCopy(newAlloc, mem, copySize);
-			Free(reinterpret_cast<char*>(mem));
+			Free(mem);
 		}
 
 		return newAlloc;*/
 	}
 
-	size_t qMemoryPool::Size(char* ptr)
+	size_t qMemoryPool::Size(void* ptr)
 	{
 		return 0; // TODO
 	}
 
-	void qMemoryPool::Free(char* ptr)
+	void qMemoryPool::Free(void* ptr)
 	{
 		::free(ptr);
 	}
