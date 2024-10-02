@@ -38,4 +38,5 @@
 #include "quark/checksum.hh"
 #include "quark/memorypool.hh"
 #include "quark/string.hh"
+#include "quark/resource.hh"
 #include "quark/quark.hh"
