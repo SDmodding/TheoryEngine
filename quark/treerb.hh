@@ -16,7 +16,7 @@ namespace UFG
 
 		/* Helpers */
 
-		void SetParent(qBaseNodeRB* parent) 
+		inline void SetParent(qBaseNodeRB* parent)
 		{
 			mParent = reinterpret_cast<qBaseNodeRB*>(reinterpret_cast<uptr>(parent) | (reinterpret_cast<uptr>(mParent) & 1));
 		}
