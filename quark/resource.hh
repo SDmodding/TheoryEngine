@@ -3,6 +3,7 @@
 namespace UFG
 {
 	class qResourceData;
+	class qResourceInventory;
 
 	class qChunk
 	{
@@ -21,6 +22,19 @@ namespace UFG
 		u32 mTailPad;
 
 		inline qResourceHandle() : mData(0), mNameUID(0), mTailPad(0) {}
+
+		inline ~qResourceHandle()
+		{
+			Close();
+		}
+
+		void Close();
+
+		void Init(u32 type_uid, u32 name_uid);
+		void Init(u32 type_uid, u32 name_uid, qResourceData* resource_data, qResourceInventory* inventory);
+		void Init(u32 type_uid, u32 name_uid, qResourceInventory* inventory);
+
+		bool IsDefault();
 	};
 
 	class qResourceData : public qNodeRB<qResourceData>
@@ -36,7 +50,92 @@ namespace UFG
 		void SetDebugName(const char* name);
 	};
 
+	class qResourceInventory : public qNodeRB<qResourceInventory>, public qNode<qResourceInventory, qResourceInventory>
+	{
+	public:
+		u32 mDefaultResourceNameUID;
+		u32 mChunkUID;
+		const char* mName;
+		qResourceData* mDefaultResourceData;
+		qTreeRB<qResourceData> mResourceDatas;
+		qList<qResourceHandle, qResourceHandle> mNullHandles;
+		qList<qResourceHandle, qResourceHandle> mInternalUnresolvedHandles[4];
+		qList<qResourceHandle, qResourceHandle>* mUnresolvedHandleLists;
+		u32 mNumUnresolvedHandleLists;
+		u32 mNumResourceData;
+		u32 mNumResourceBytes;
+		u32 mTransactionNum;
+		u32 mLastUpdate;
+		float mAddTime;
+		float mRemoveTime;
+		float mUnresolvedTime;
+		float mLoadTime;
+		float mUnloadTime;
+		float mInitHandleTime;
+
+		// TODO: Need finish functions & virtual functions.
+
+		virtual void InitHandle(qResourceHandle* handle, u32 name_uid);
+		virtual void InitHandle(qResourceHandle* handle, u32 name_uid, qResourceData* data);
+	};
+
+	class qResourceWarehouse
+	{
+	public:
+		qTreeRB<qResourceInventory> mInventoryTree;
+		qList<qResourceInventory, qResourceInventory> mInventoryList;
+		qResourceInventory* mLastInventory;
+		unsigned int mLastTypeUID;
+		int mNumInventories;
+		float mAddTime;
+		float mRemoveTime;
+		float mUnresolvedTime;
+		float mLoadTime;
+		float mUnloadTime;
+
+		static qResourceWarehouse* Instance();
+	};
+
+
 #ifdef THEORY_IMPL
+
+	//-------------------------------------------------------------------
+	// [Class] qResourceHandle
+	//-------------------------------------------------------------------
+
+	void qResourceHandle::Close()
+	{
+		RemoveNode();
+
+		if (mData)
+		{
+			// TODO: GetInventory from Warehouse and call OnDetachHandle.
+			mData = nullptr;
+		}
+	}
+
+
+	void qResourceHandle::Init(u32 type_uid, u32 name_uid)
+	{
+		Close();
+		// TODO: GetInventory from Warehouse and call InitHandle.
+	}
+
+	void qResourceHandle::Init(u32 type_uid, u32 name_uid, qResourceData* resource_data, qResourceInventory* inventory)
+	{
+		Close();
+		// TODO: GetInventory from Warehouse and call InitHandle.
+	}
+
+	void qResourceHandle::Init(u32 type_uid, u32 name_uid, qResourceInventory* inventory)
+	{
+		Close();
+		// TODO: GetInventory from Warehouse and call InitHandle.
+	}
+
+	//-------------------------------------------------------------------
+	// [Class] qResourceData
+	//-------------------------------------------------------------------
 
 	qResourceData::qResourceData(u32 type_uid, u32 name_uid, const char* name)
 	{
@@ -68,6 +167,16 @@ namespace UFG
 				qMemCopy(mDebugName, name, static_cast<size_t>(len));
 			}
 		}
+	}
+
+	//-------------------------------------------------------------------
+	// [Class] qResourceWarehouse
+	//-------------------------------------------------------------------
+
+	qResourceWarehouse* qResourceWarehouse::Instance()
+	{
+		static qResourceWarehouse sResourceWarehouse;
+		return &sResourceWarehouse;
 	}
 
 #endif

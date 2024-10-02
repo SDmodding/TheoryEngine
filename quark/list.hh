@@ -12,6 +12,11 @@ namespace UFG
 		inline qNode() : mPrev(reinterpret_cast<qNode<T, U>*>(&mPrev)), mNext(reinterpret_cast<qNode<T, U>*>(&mNext)) {}
 		inline ~qNode()
 		{
+			RemoveNode();
+		}
+
+		inline void RemoveNode()
+		{
 			mPrev->mNext = mNext;
 			mNext->mPrev = mPrev;
 			mPrev = mNext = this;
