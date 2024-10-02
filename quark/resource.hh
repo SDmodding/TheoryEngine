@@ -12,6 +12,11 @@ namespace UFG
 		u32 mChunkSize;
 		u32 mDataSize;
 		u32 mDataOffset;
+
+		inline qResourceData* GetData()
+		{
+			return reinterpret_cast<qResourceData*>(reinterpret_cast<uptr>(this) + mDataOffset + sizeof(qChunk));
+		}
 	};
 
 	class qResourceHandle : public qNode<qResourceHandle, qResourceHandle>

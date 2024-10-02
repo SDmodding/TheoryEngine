@@ -11,4 +11,10 @@ namespace UFG
 	typedef unsigned short		u16;
 	typedef unsigned int		u32;
 	typedef unsigned __int64	u64;
+
+#ifdef _WIN64
+	typedef unsigned long long	uptr;
+#else
+	typedef unsigned long		uptr;
+#endif
 }
