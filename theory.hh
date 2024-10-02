@@ -33,7 +33,9 @@
 
 #include "quark/types.hh"
 #include "quark/list.hh"
+#include "quark/treerb.hh"
 #include "quark/math.hh"
+#include "quark/processplat.hh"
 #include "quark/stringplat.hh"
 #include "quark/checksum.hh"
 #include "quark/memorypool.hh"
