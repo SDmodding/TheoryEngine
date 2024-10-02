@@ -19,6 +19,11 @@ namespace UFG
 
 	inline void qMemCopy(void* dest, const void* source, size_t count)
 	{
+		memcpy(dest, source, count);
+	}
+
+	inline void qMemMove(void* dest, const void* source, size_t count)
+	{
 		memmove(dest, source, count);
 	}
 
