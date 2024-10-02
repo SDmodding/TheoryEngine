@@ -30,7 +30,7 @@ namespace Illusion
 
 		void Init();
 
-		inline void Add(const char* name, u32 size, void** pointer = 0, usize fixup_offset = 0, usize fixup_offsetptr = 0)
+		inline void Add(const char* name, u32 size, void** pointer = 0, void* offset_ptr = 0)
 		{
 			auto memStructure = &mMemStructure[mNumMemStructures++];
 			{
@@ -38,16 +38,21 @@ namespace Illusion
 				memStructure->mBaseOffset = mCurrSize;
 				memStructure->mSize = size;
 				memStructure->mPointer = pointer;
-				memStructure->mFixupOffset = fixup_offset;
-				memStructure->mFixupOffsetPointer = fixup_offsetptr;
+				memStructure->mFixupOffset = 0;
+				memStructure->mFixupOffsetPointer = 0;
+				if (offset_ptr)
+				{
+					memStructure->mFixupOffset = (mCurrSize - reinterpret_cast<usize>(offset_ptr));
+					memStructure->mFixupOffsetPointer = reinterpret_cast<usize>(offset_ptr);
+				}
 			}
 			mCurrSize += static_cast<usize>(size);
 		}
 
 		template <typename T>
-		inline void Add(const char* name, T** pointer = 0, usize fixup_offset = 0, usize fixup_offsetptr = 0)
+		inline void Add(const char* name, T** pointer = 0, void* offset_ptr = 0)
 		{
-			Add(name, sizeof(T), reinterpret_cast<void**>(pointer), fixup_offset, fixup_offsetptr);
+			Add(name, sizeof(T), reinterpret_cast<void**>(pointer), offset_ptr);
 		}
 	};
 
