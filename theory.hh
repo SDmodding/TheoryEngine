@@ -23,22 +23,40 @@
 */
 #pragma once
 
+#define THEORY_PLATFORM_PC
+
 /* Libraries */
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
 
-/* (Important includes) Quark */
+
+//-------------------------------------------------------------------
+// [Quark] Includes
+//-------------------------------------------------------------------
 
 #include "quark/types.hh"
+#include "quark/offset.hh"
 #include "quark/list.hh"
 #include "quark/treerb.hh"
 #include "quark/math.hh"
 #include "quark/processplat.hh"
-#include "quark/stringplat.hh"
+
+#ifdef THEORY_PLATFORM_PC
+	#include "quark/pc/stringplat.hh"
+#endif
+
 #include "quark/checksum.hh"
 #include "quark/memorypool.hh"
 #include "quark/string.hh"
 #include "quark/resource.hh"
 #include "quark/quark.hh"
+
+//-------------------------------------------------------------------
+// [Illusion] Includes
+//-------------------------------------------------------------------
+
+#ifdef THEORY_PLATFORM_PC
+	#include "illusion/pc/modelplat.hh"
+#endif
