@@ -162,14 +162,14 @@ namespace UFG
 				const int split = 20;
 				const int endLen = (sizeof(mDebugName) - split - 2);
 
-				qMemCopy(mDebugName, name, static_cast<size_t>(split));
+				qMemCopy(mDebugName, name, static_cast<usize>(split));
 
 				mDebugName[split] = '~';
 
-				qMemCopy(&mDebugName[split + 1], &name[len - endLen], static_cast<size_t>(endLen));
+				qMemCopy(&mDebugName[split + 1], &name[len - endLen], static_cast<usize>(endLen));
 			}
 			else {
-				qMemCopy(mDebugName, name, static_cast<size_t>(len));
+				qMemCopy(mDebugName, name, static_cast<usize>(len));
 			}
 		}
 	}

@@ -16,7 +16,13 @@ typedef unsigned int		u32;
 typedef unsigned __int64	u64;
 
 #ifdef _WIN64
+
+typedef unsigned __int64	usize;
 typedef unsigned long long	uptr;
+
 #else
+
+typedef unsigned int		usize;
 typedef unsigned long		uptr;
+
 #endif

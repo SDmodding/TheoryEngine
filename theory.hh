@@ -57,6 +57,8 @@
 // [Illusion] Includes
 //-------------------------------------------------------------------
 
+#include "illusion/memimageschema.hh"
+
 #ifdef THEORY_PLATFORM_PC
 	#include "illusion/pc/modelplat.hh"
 #endif

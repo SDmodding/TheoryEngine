@@ -287,14 +287,14 @@ namespace UFG
 
 		if (nLen)
 		{
-			pData = reinterpret_cast<char*>(GetMainMemoryPool()->Allocate(static_cast<size_t>(nLen + 1), "qString.Set", 0, true));
+			pData = reinterpret_cast<char*>(GetMainMemoryPool()->Allocate(static_cast<usize>(nLen + 1), "qString.Set", 0, true));
 			if (pData)
 			{
 				if (length) {
-					qMemCopy(pData, text, static_cast<size_t>(length));
+					qMemCopy(pData, text, static_cast<usize>(length));
 				}
 				if (lengthb) {
-					qMemCopy(&pData[length], textb, static_cast<size_t>(lengthb));
+					qMemCopy(&pData[length], textb, static_cast<usize>(lengthb));
 				}
 
 				pData[nLen] = '\0';

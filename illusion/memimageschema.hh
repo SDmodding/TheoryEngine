@@ -1,0 +1,95 @@
+#pragma once
+
+namespace Illusion
+{
+	class MemImageSchema
+	{
+	public:
+		struct MemStructure
+		{
+			const char* mName;
+			usize mBaseOffset;
+			u32 mSize;
+			void** mPointer;
+			usize mFixupOffset;
+			usize mFixupOffsetPointer;
+		};
+
+		u32 mNumMemStructures;
+		MemStructure mMemStructure[1000];
+		usize mCurrSize;
+		void* mAllocatedMemory;
+		u32 mCurrSerializeIndex;
+		u64 mBaseFilePosition;
+
+		virtual ~MemImageSchema() {}
+
+		inline void Align16() { mCurrSize = ((mCurrSize + 0xF) & ~0xF); }
+
+		void Allocate(UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
+
+		void Init();
+
+		inline void Add(const char* name, u32 size, void** pointer = 0, usize fixup_offset = 0, usize fixup_offsetptr = 0)
+		{
+			auto memStructure = &mMemStructure[mNumMemStructures++];
+			{
+				memStructure->mName = name;
+				memStructure->mBaseOffset = mCurrSize;
+				memStructure->mSize = size;
+				memStructure->mPointer = pointer;
+				memStructure->mFixupOffset = fixup_offset;
+				memStructure->mFixupOffsetPointer = fixup_offsetptr;
+			}
+			mCurrSize += static_cast<usize>(size);
+		}
+
+		template <typename T>
+		inline void Add(const char* name, T** pointer = 0, usize fixup_offset = 0, usize fixup_offsetptr = 0)
+		{
+			Add(name, sizeof(T), reinterpret_cast<void**>(pointer), fixup_offset, fixup_offsetptr);
+		}
+	};
+
+	extern MemImageSchema gMemImageSchema;
+
+#ifdef THEORY_IMPL
+
+	MemImageSchema gMemImageSchema;
+
+	void MemImageSchema::Allocate(UFG::qMemoryPool* memory_pool, u64 allocation_params)
+	{
+		if (!memory_pool) {
+			memory_pool = UFG::GetMainMemoryPool();
+		}
+
+		Align16();
+
+		void* mem = memory_pool->Allocate(mCurrSize, mMemStructure[0].mName, allocation_params, true);
+		UFG::qMemSet(mem, 0, mCurrSize);
+
+		for (u32 i = 0; mNumMemStructures > i; ++i)
+		{
+			auto memStructure = &mMemStructure[i];
+			if (void** pointer = memStructure->mPointer) {
+				*pointer = reinterpret_cast<void*>(reinterpret_cast<uptr>(mem) + memStructure->mBaseOffset);
+			}
+
+			if (usize fixupOffset = memStructure->mFixupOffset) {
+				*reinterpret_cast<usize*>(reinterpret_cast<uptr>(mem) + memStructure->mFixupOffsetPointer) = fixupOffset;
+			}
+		}
+
+		mAllocatedMemory = mem;
+	}
+
+	void MemImageSchema::Init()
+	{
+		mNumMemStructures = 0;
+		mCurrSize = 0;
+		mCurrSerializeIndex = 0;
+		mBaseFilePosition = 0;
+	}
+
+#endif
+}
