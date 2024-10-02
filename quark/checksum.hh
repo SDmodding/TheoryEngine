@@ -78,13 +78,8 @@ namespace UFG
 
 	u32 qStringHashUpper32(const char* str, u32 prevHash)
 	{
-		for (const char* p = str; *p; ++p) 
-		{
-			char c = *p;
-			if (c >= 'a' && c <= 'z') {
-				c -= ('a' - 'A');
-			}
-			prevHash = (prevHash << 8) ^ sCrcTable32[((prevHash >> 24) ^ c) & 0xFF];
+		for (const char* p = str; *p; ++p) {
+			prevHash = (prevHash << 8) ^ sCrcTable32[((prevHash >> 24) ^ qToUpper(*p)) & 0xFF];
 		}
 
 		return prevHash;
@@ -92,13 +87,8 @@ namespace UFG
 
 	u64 qStringHashUpper64(const char* str, u64 prevHash)
 	{
-		for (const char* p = str; *p; ++p)
-		{
-			char c = *p;
-			if (c >= 'a' && c <= 'z') {
-				c -= ('a' - 'A');
-			}
-			prevHash = (prevHash << 8) ^ sCrcTable64[((prevHash >> 24) ^ c) & 0xFF];
+		for (const char* p = str; *p; ++p) {
+			prevHash = (prevHash << 8) ^ sCrcTable64[((prevHash >> 24) ^ qToUpper(*p)) & 0xFF];
 		}
 
 		return prevHash;

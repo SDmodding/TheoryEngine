@@ -21,6 +21,15 @@ namespace UFG
 	void InternalSetupMainMemoryPool();
 	void InitMemorySystem();
 
+	inline qMemoryPool* GetMainMemoryPool()
+	{
+		if (!gMainMemoryPool) {
+			InternalSetupMainMemoryPool();
+		}
+
+		return gMainMemoryPool;
+	}
+
 #ifdef THEORY_IMPL
 
 	inline qMemoryPool gMainMemoryPoolBuffer;

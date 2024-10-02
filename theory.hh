@@ -24,6 +24,8 @@
 #pragma once
 
 /* Libraries */
+#include <cstdarg>
+#include <cstdio>
 #include <cstring>
 #include <cstdlib>
 
@@ -32,8 +34,8 @@
 #include "quark/types.hh"
 #include "quark/list.hh"
 #include "quark/math.hh"
-#include "quark/checksum.hh"
 #include "quark/stringplat.hh"
+#include "quark/checksum.hh"
 #include "quark/memorypool.hh"
 #include "quark/string.hh"
 #include "quark/quark.hh"
