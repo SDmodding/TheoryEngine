@@ -60,3 +60,5 @@
 #ifdef THEORY_PLATFORM_PC
 	#include "illusion/pc/modelplat.hh"
 #endif
+
+#include "illusion/model.hh"
