@@ -19,6 +19,10 @@ namespace UFG
 		}
 	};
 
+	//-------------------------------------------------------------------
+	// Resource Handle
+	//-------------------------------------------------------------------
+
 	class qResourceHandle : public qNode<qResourceHandle, qResourceHandle>
 	{
 	public:
@@ -42,6 +46,17 @@ namespace UFG
 		bool IsDefault();
 	};
 
+	template <u32 type_uid, typename T>
+	class qTypedResourceHandle : public qResourceHandle
+	{
+	public:
+	};
+
+
+	//-------------------------------------------------------------------
+	// Resource Data
+	//-------------------------------------------------------------------
+
 	class qResourceData : public qNodeRB<qResourceData>
 	{
 	public:
@@ -54,6 +69,10 @@ namespace UFG
 
 		void SetDebugName(const char* name);
 	};
+
+	//-------------------------------------------------------------------
+	// Inventory
+	//-------------------------------------------------------------------
 
 	class qResourceInventory : public qNodeRB<qResourceInventory>, public qNode<qResourceInventory, qResourceInventory>
 	{
@@ -84,6 +103,10 @@ namespace UFG
 		virtual void InitHandle(qResourceHandle* handle, u32 name_uid, qResourceData* data);
 	};
 
+	//-------------------------------------------------------------------
+	// Warehouse
+	//-------------------------------------------------------------------
+
 	class qResourceWarehouse
 	{
 	public:
@@ -105,7 +128,7 @@ namespace UFG
 #ifdef THEORY_IMPL
 
 	//-------------------------------------------------------------------
-	// [Class] qResourceHandle
+	// Resource Handle
 	//-------------------------------------------------------------------
 
 	void qResourceHandle::Close()
@@ -139,7 +162,7 @@ namespace UFG
 	}
 
 	//-------------------------------------------------------------------
-	// [Class] qResourceData
+	// Resource Data
 	//-------------------------------------------------------------------
 
 	qResourceData::qResourceData(u32 type_uid, u32 name_uid, const char* name)
@@ -175,7 +198,7 @@ namespace UFG
 	}
 
 	//-------------------------------------------------------------------
-	// [Class] qResourceWarehouse
+	// Warehouse
 	//-------------------------------------------------------------------
 
 	qResourceWarehouse* qResourceWarehouse::Instance()

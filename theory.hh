@@ -31,6 +31,10 @@
 #include <cstring>
 #include <cstdlib>
 
+#ifdef THEORY_PLATFORM_PC
+	#include <d3d11.h>
+#endif
+
 
 //-------------------------------------------------------------------
 // [Quark] Includes
@@ -51,6 +55,7 @@
 #include "quark/memorypool.hh"
 #include "quark/string.hh"
 #include "quark/resource.hh"
+#include "quark/resource_uid.hh"
 #include "quark/quark.hh"
 
 //-------------------------------------------------------------------
