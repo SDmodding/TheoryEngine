@@ -12,6 +12,17 @@ namespace Illusion
 	class Buffer : public IBufferPlat, public UFG::qResourceData
 	{
 	public:
+		enum BufferFlags
+		{
+			FLAG_CPU_READABLE		= (1 << 0),
+			FLAG_CPU_WRITABLE		= (1 << 1),
+			FLAG_FRAME_GENERATED	= (1 << 2),
+			FLAG_SHADER_RESOURCE	= (1 << 3),
+			FLAG_SHADER_UAV			= (1 << 4),
+			FLAG_SHADER_STRUCTURED	= (1 << 5),
+			FLAG_SHADER_ALLOW_RAW	= (1 << 6)
+		};
+
 		enum BufferType
 		{
 			TYPE_VERTEX,
