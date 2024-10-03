@@ -92,6 +92,8 @@ namespace UFG
 
 	int qPrintf(const char* format, ...);
 
+	char* qStringCopy(char* dest, int dest_size, const char* text, int text_count);
+
 	int qStringLength(const char* text);
 
 	void qStringToLower(char* text);
@@ -117,6 +119,37 @@ namespace UFG
 		va_end(va);
 
 		return len;
+	}
+
+	char* qStringCopy(char* dest, int dest_size, const char* text, int text_count)
+	{
+		if (!dest) {
+			return nullptr;
+		}
+
+		if (dest_size <= 0) {
+			return dest;
+		}
+
+		if (!text || text_count <= 0)
+		{
+			*dest = '\0';
+			return dest;
+		}
+
+		/* Removed part where it check if text_count is under 0 and doing some weird crap. - sneakyevil */
+
+		char* p = dest;
+		if (text_count >= dest_size) {
+			text_count = (dest_size - 1);
+		}
+
+		for (; text_count; --text_count) {
+			*p++ = *text++;
+		}
+		*p = '\0';
+
+		return dest;
 	}
 
 	int qStringLength(const char* text)

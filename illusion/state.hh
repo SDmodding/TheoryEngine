@@ -62,6 +62,7 @@ namespace Illusion
 	bool StateSystem::AddParam(u32 uid, const char* name, bool is_resource_data)
 	{
 		// TODO
+		return false;
 	}
 
 	void StateSystem::Init()
