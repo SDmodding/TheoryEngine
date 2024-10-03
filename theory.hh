@@ -64,12 +64,12 @@
 //-------------------------------------------------------------------
 
 #include "illusion/memimageschema.hh"
+#include "illusion/state.hh"
 
 #ifdef THEORY_PLATFORM_PC
 	#include "illusion/pc/modelplat.hh"
 #endif
 
-#include "illusion/state.hh"
 #include "illusion/material.hh"
 #include "illusion/model.hh"
 

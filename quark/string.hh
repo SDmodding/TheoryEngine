@@ -92,7 +92,7 @@ namespace UFG
 
 	int qPrintf(const char* format, ...);
 
-	char* qStringCopy(char* dest, int dest_size, const char* text, int text_count);
+	char* qStringCopy(char* dest, int dest_size, const char* text, int text_count = -1);
 
 	int qStringLength(const char* text);
 
@@ -131,22 +131,35 @@ namespace UFG
 			return dest;
 		}
 
-		if (!text || text_count <= 0)
+		if (!text || !text_count)
 		{
 			*dest = '\0';
 			return dest;
 		}
 
-		/* Removed part where it check if text_count is under 0 and doing some weird crap. - sneakyevil */
-
 		char* p = dest;
-		if (text_count >= dest_size) {
-			text_count = (dest_size - 1);
+		if (text_count >= 0)
+		{
+			if (text_count >= dest_size) {
+				text_count = (dest_size - 1);
+			}
+
+			for (; text_count; --text_count) {
+				*p++ = *text++;
+			}
+		}
+		else
+		{
+			for (; dest_size > 1; --dest_size)
+			{
+				if (!*text) {
+					break;
+				}
+
+				*p++ = *text++;
+			}
 		}
 
-		for (; text_count; --text_count) {
-			*p++ = *text++;
-		}
 		*p = '\0';
 
 		return dest;
