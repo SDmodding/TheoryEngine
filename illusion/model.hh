@@ -12,6 +12,14 @@ namespace Illusion
 	class Buffer : public IBufferPlat, public UFG::qResourceData
 	{
 	public:
+		enum BufferType
+		{
+			TYPE_VERTEX,
+			TYPE_INDEX,
+			TYPE_INSTANCE,
+			NUM_TYPES
+		};
+
 		s8 mBufferType;
 		s8 mRunTimeCreated;
 		u16 mFlags;
