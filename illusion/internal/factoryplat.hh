@@ -43,6 +43,10 @@ namespace Illusion
 			pBuffer->mMemoryPool = memory_pool;
 		}
 
+		if (pBufferPlat) {
+			new (pBufferPlat) BufferPlat();
+		}
+
 		return pBuffer;
 	}
 

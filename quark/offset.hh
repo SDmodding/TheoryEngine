@@ -1,3 +1,8 @@
+/*
+*	NOTE:
+*	- Don't assign constructor or default value for offset due to how engine
+*	  handles allocations especially resources around Illusion.
+*/
 #pragma once
 
 namespace UFG

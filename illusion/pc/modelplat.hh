@@ -57,6 +57,11 @@ namespace Illusion
 		ID3D11Buffer* mMappedResource;
 		BufferD3DResourceHandle mBufferD3DResourceHandle;
 		char mPadding[72];
+
+		inline BufferPlat() : mCpuAccess(CPU_ACCESS_NONE), mUploadAfterUnmap(0), mMappedResource(0)
+		{
+			UFG::qMemSet(mPadding, 0, sizeof(mPadding));
+		}
 	};
 
 }
