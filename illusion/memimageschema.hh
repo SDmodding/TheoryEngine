@@ -57,6 +57,12 @@ namespace Illusion
 		template <typename T>
 		inline void Add(const char* name, T** pointer = 0, void* offset_ptr = 0)
 		{
+			Add(name, sizeof(T), reinterpret_cast<void**>(pointer), offset_ptr);
+		}
+
+		template <typename T>
+		inline void AddAlign(const char* name, T** pointer = 0, void* offset_ptr = 0)
+		{
 			Add(name, ((sizeof(T) + 0xF) & ~0xF), reinterpret_cast<void**>(pointer), offset_ptr);
 		}
 	};
