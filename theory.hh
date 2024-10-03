@@ -69,6 +69,8 @@
 	#include "illusion/pc/modelplat.hh"
 #endif
 
+#include "illusion/state.hh"
+#include "illusion/material.hh"
 #include "illusion/model.hh"
 
 #include "illusion/internal/factoryplat.hh"

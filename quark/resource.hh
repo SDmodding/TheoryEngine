@@ -46,12 +46,17 @@ namespace UFG
 		bool IsDefault();
 	};
 
+	class qGenericResourceHandle : public qResourceHandle
+	{
+	public:
+		u32 mTypeUID;
+	};
+
 	template <u32 type_uid, typename T>
 	class qTypedResourceHandle : public qResourceHandle
 	{
 	public:
 	};
-
 
 	//-------------------------------------------------------------------
 	// Resource Data

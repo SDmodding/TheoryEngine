@@ -90,6 +90,8 @@ namespace UFG
 		inline char operator[](int pos) { return mData[pos]; }
 	};
 
+	int qPrintf(const char* format, ...);
+
 	int qStringLength(const char* text);
 
 	void qStringToLower(char* text);
@@ -104,6 +106,18 @@ namespace UFG
 	qString qTrim(const char* text, int length = 0);
 
 #ifdef THEORY_IMPL
+
+	int qPrintf(const char* format, ...)
+	{
+		va_list va;
+		va_start(va, format);
+
+		int len = vprintf(format, va);
+
+		va_end(va);
+
+		return len;
+	}
 
 	int qStringLength(const char* text)
 	{
