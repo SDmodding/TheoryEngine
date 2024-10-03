@@ -40,6 +40,11 @@ namespace Illusion
 				memStructure->mPointer = pointer;
 				memStructure->mFixupOffset = 0;
 				memStructure->mFixupOffsetPointer = 0;
+
+				if (pointer) {
+					*pointer = reinterpret_cast<void*>(mCurrSize);
+				}
+
 				if (offset_ptr)
 				{
 					memStructure->mFixupOffset = (mCurrSize - reinterpret_cast<usize>(offset_ptr));
@@ -52,11 +57,13 @@ namespace Illusion
 		template <typename T>
 		inline void Add(const char* name, T** pointer = 0, void* offset_ptr = 0)
 		{
-			Add(name, sizeof(T), reinterpret_cast<void**>(pointer), offset_ptr);
+			Add(name, ((sizeof(T) + 0xF) & ~0xF), reinterpret_cast<void**>(pointer), offset_ptr);
 		}
 	};
 
 	extern MemImageSchema gMemImageSchema;
+
+	inline MemImageSchema* GetSchema() { return &gMemImageSchema; }
 
 #ifdef THEORY_IMPL
 

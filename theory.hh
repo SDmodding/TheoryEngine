@@ -30,6 +30,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <new>
 
 #ifdef THEORY_PLATFORM_PC
 	#include <d3d11.h>
@@ -69,3 +70,5 @@
 #endif
 
 #include "illusion/model.hh"
+
+#include "illusion/internal/factoryplat.hh"
