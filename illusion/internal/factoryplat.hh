@@ -5,10 +5,24 @@ namespace Illusion
 	class Factory
 	{
 	public:
+		static void ClearFinalDeleteQueueAll();
+
+		static void ProcessWaitDeleteQueueAll();
+
 		static Buffer* NewBuffer(const char* name, u32 name_uid, u32 byte_size, MemImageSchema* schema, const char* alloc_name, UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
 	};
 
 #ifdef THEORY_IMPL
+
+	void Factory::ClearFinalDeleteQueueAll()
+	{
+		// TODO
+	}
+
+	void Factory::ProcessWaitDeleteQueueAll()
+	{
+		// TODO
+	}
 
 	Buffer* Factory::NewBuffer(const char* name, u32 name_uid, u32 byte_size, MemImageSchema* schema, const char* alloc_name, UFG::qMemoryPool* memory_pool, u64 allocation_params)
 	{

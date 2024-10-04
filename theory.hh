@@ -77,3 +77,4 @@
 #include "illusion/model.hh"
 
 #include "illusion/internal/factoryplat.hh"
+#include "illusion/illusion.hh"
