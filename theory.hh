@@ -43,6 +43,7 @@
 //-------------------------------------------------------------------
 
 #include "quark/types.hh"
+#include "quark/bitflags.hh"
 #include "quark/offset.hh"
 #include "quark/list.hh"
 #include "quark/treerb.hh"

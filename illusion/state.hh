@@ -1,8 +1,5 @@
 #pragma once
 
-/* Default: 128 */
-#define Illusion_NumStateBlocks	(1 << 7)
-
 namespace Illusion
 {
 	class StateParam
@@ -42,8 +39,8 @@ namespace Illusion
 	class StateSystem : public IStateSystem
 	{
 	public:
-		StateParamDesc mStateParamDescs[Illusion_NumStateBlocks];
-		StateParamLookup mStateParamLookup[Illusion_NumStateBlocks];
+		StateParamDesc mStateParamDescs[128];
+		StateParamLookup mStateParamLookup[128];
 		int mCurrentParamIndex;
 
 		StateSystem();
@@ -106,9 +103,9 @@ namespace Illusion
 			}
 		}
 
-		if (mCurrentParamIndex == Illusion_NumStateBlocks)
+		if (mCurrentParamIndex == 128)
 		{
-			UFG::qPrintf("Illusion: Run out of state blocks.  Size=%d\n (tried to add param name '%s')", Illusion_NumStateBlocks, name);
+			UFG::qPrintf("Illusion: Run out of state blocks.  Size=%d\n (tried to add param name '%s')", 128, name);
 			return -1;
 		}
 
