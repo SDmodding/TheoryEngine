@@ -23,6 +23,7 @@
 */
 #pragma once
 
+#define THEORY_WINDOWS
 #define THEORY_PLATFORM_PC
 
 /* Libraries */
@@ -47,6 +48,7 @@
 #include "quark/treerb.hh"
 #include "quark/math.hh"
 #include "quark/processplat.hh"
+#include "quark/string.hh"
 
 #ifdef THEORY_PLATFORM_PC
 	#include "quark/pc/stringplat.hh"
@@ -54,7 +56,7 @@
 
 #include "quark/checksum.hh"
 #include "quark/memorypool.hh"
-#include "quark/string.hh"
+#include "quark/stringimpl.hh"
 #include "quark/resource.hh"
 #include "quark/resource_uid.hh"
 #include "quark/quark.hh"
