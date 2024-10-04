@@ -65,7 +65,7 @@ namespace UFG
 		u32 freeBytes = (mCurrentPos & 0x7FFFFFFF);
 		if ((mCurrentPos & 0x80000000) == 0) {
 			/* Might be incorrect (didn't test - sneakyevil) */
-			freeBytes = reinterpret_cast<u32>(&mBuffer1End[(mCurrentPos & 0x7FFFFFFF) - reinterpret_cast<usize>(mBuffer1Start)]);
+			freeBytes = static_cast<u32>(reinterpret_cast<usize>(&mBuffer1End[(mCurrentPos & 0x7FFFFFFF) - reinterpret_cast<usize>(mBuffer1Start)]));
 		}
 
 		const usize buffer0Bytes = (reinterpret_cast<usize>(mBuffer0End) - reinterpret_cast<usize>(mBuffer0Start));
