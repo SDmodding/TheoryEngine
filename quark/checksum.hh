@@ -60,37 +60,45 @@ namespace UFG
 
 	u32 qStringHash32(const char* str, u32 prevHash)
 	{
-		for (const char* p = str; *p; ++p) {
-			prevHash = (prevHash << 8) ^ sCrcTable32[((prevHash >> 24) ^ *p) & 0xFF];
+		if (str)
+		{
+			for (const char* p = str; *p; ++p) {
+				prevHash = (prevHash << 8) ^ sCrcTable32[((prevHash >> 24) ^ *p) & 0xFF];
+			}
 		}
-
 		return prevHash;
 	}
 
 	u64 qStringHash64(const char* str, u64 prevHash)
 	{
-		for (const char* p = str; *p; ++p) {
-			prevHash = (prevHash << 8) ^ sCrcTable64[((prevHash >> 24) ^ *p) & 0xFF];
+		if (str)
+		{
+			for (const char* p = str; *p; ++p) {
+				prevHash = (prevHash << 8) ^ sCrcTable64[((prevHash >> 24) ^ *p) & 0xFF];
+			}
 		}
-
 		return prevHash;
 	}
 
 	u32 qStringHashUpper32(const char* str, u32 prevHash)
 	{
-		for (const char* p = str; *p; ++p) {
-			prevHash = (prevHash << 8) ^ sCrcTable32[((prevHash >> 24) ^ qToUpper(*p)) & 0xFF];
+		if (str)
+		{
+			for (const char* p = str; *p; ++p) {
+				prevHash = (prevHash << 8) ^ sCrcTable32[((prevHash >> 24) ^ qToUpper(*p)) & 0xFF];
+			}
 		}
-
 		return prevHash;
 	}
 
 	u64 qStringHashUpper64(const char* str, u64 prevHash)
 	{
-		for (const char* p = str; *p; ++p) {
-			prevHash = (prevHash << 8) ^ sCrcTable64[((prevHash >> 24) ^ qToUpper(*p)) & 0xFF];
+		if (str)
+		{
+			for (const char* p = str; *p; ++p) {
+				prevHash = (prevHash << 8) ^ sCrcTable64[((prevHash >> 24) ^ qToUpper(*p)) & 0xFF];
+			}
 		}
-
 		return prevHash;
 	}
 
