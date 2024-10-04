@@ -23,8 +23,14 @@
 */
 #pragma once
 
+/* Platform Defines */
+
 #define THEORY_WINDOWS
 #define THEORY_PLATFORM_PC
+
+/* Keyword Defines */
+
+#define THEORY_INLINE __forceinline
 
 /* Libraries */
 #include <cstdarg>
