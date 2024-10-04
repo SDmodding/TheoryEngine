@@ -56,6 +56,7 @@
 
 #include "quark/checksum.hh"
 #include "quark/memorypool.hh"
+#include "quark/memorypoollinearallocator.hh"
 #include "quark/stringimpl.hh"
 #include "quark/resource.hh"
 #include "quark/resource_uid.hh"
