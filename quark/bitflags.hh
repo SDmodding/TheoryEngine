@@ -7,32 +7,32 @@ namespace UFG
 	public:
 		u64 mFlags[2];
 
-		THEORY_INLINE bool IsSet(int index)
+		THEORY_INLINE bool IsSet(u64 index)
 		{
 			if (index >= 64) {
-				return (mFlags[1] & (1ull << static_cast<u64>(index - 64ull)));
+				return mFlags[1] & (1ull << (index - 64ull));
 			}
 
-			return (mFlags[0] & (1ull << static_cast<u64>(index)));
+			return mFlags[0] & (1ull << index);
 		}
 
-		THEORY_INLINE void Set(int index)
+		THEORY_INLINE void Set(u64 index)
 		{
 			if (index >= 64) {
-				mFlags[1] |= (1ull << static_cast<u64>(index - 64ull));
+				mFlags[1] |= (1ull << (index - 64ull));
 			}
 			else {
-				mFlags[0] |= (1ull << static_cast<u64>(index));
+				mFlags[0] |= (1ull << index);
 			}
 		}
 
-		THEORY_INLINE void Remove(int index)
+		THEORY_INLINE void Remove(u64 index)
 		{
 			if (index >= 64) {
-				mFlags[1] &= ~(1ull << static_cast<u64>(index - 64ull));
+				mFlags[1] &= ~(1ull << (index - 64ull));
 			}
 			else {
-				mFlags[0] &= ~(1ull << static_cast<u64>(index));
+				mFlags[0] &= ~(1ull << index);
 			}
 		}
 	};
