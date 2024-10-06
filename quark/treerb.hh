@@ -16,27 +16,32 @@ namespace UFG
 
 		/* Helpers */
 
-		inline void SetParent(qBaseNodeRB* parent)
+		THEORY_INLINE void SetParent(qBaseNodeRB* p)
 		{
-			mParent = reinterpret_cast<qBaseNodeRB*>(reinterpret_cast<uptr>(parent) | (reinterpret_cast<uptr>(mParent) & 1));
+			mParent = reinterpret_cast<qBaseNodeRB*>(reinterpret_cast<uptr>(p) | (reinterpret_cast<uptr>(mParent) & 1));
 		}
 
-		inline qBaseNodeRB* GetParent()
+		THEORY_INLINE qBaseNodeRB* GetParent()
 		{
 			return reinterpret_cast<qBaseNodeRB*>(reinterpret_cast<uptr>(mParent) & ~1);
 		}
 
-		inline bool IsRed() 
+		THEORY_INLINE bool IsRed()
 		{ 
 			return (reinterpret_cast<uptr>(mParent) & 1);
 		}
 
-		inline void SetRed() 
+		THEORY_INLINE bool IsBlack()
+		{
+			return !(reinterpret_cast<uptr>(mParent) & 1);
+		}
+
+		THEORY_INLINE void SetRed()
 		{ 
 			mParent = reinterpret_cast<qBaseNodeRB*>(reinterpret_cast<uptr>(mParent) | 1);
 		}
 
-		inline void SetBlack() 
+		THEORY_INLINE void SetBlack()
 		{ 
 			mParent = reinterpret_cast<qBaseNodeRB*>(reinterpret_cast<uptr>(mParent) & ~1); 
 		}
@@ -58,9 +63,17 @@ namespace UFG
 
 		qBaseTreeRB();
 
+		inline bool IsEmpty() { return mCount == 0; }
+
 		void AddHelper(qBaseNodeRB* z);
 
-		void Add(qBaseNodeRB* x);
+		void Add(qBaseNodeRB* z);
+
+		void RemoveHelper(qBaseNodeRB* z);
+
+		void Remove(qBaseNodeRB* z);
+
+		qBaseNodeRB* Get(u32 uid);
 	};
 
 	template <typename T>
@@ -100,6 +113,63 @@ namespace UFG
 		else {
 			pParent->mChild[1] = z;
 		}
+	}
+
+	void qBaseTreeRB::Add(qBaseNodeRB* z)
+	{
+		if (!z || z->GetParent()) {
+			return;
+		}
+
+		AddHelper(z);
+		z->SetRed();
+
+		// TODO: Fix order...
+
+		mRoot.mChild[0]->mParent->SetBlack();
+		++mCount;
+	}
+
+
+	void qBaseTreeRB::RemoveHelper(qBaseNodeRB* z)
+	{
+		// TODO: Implement this...
+	}
+
+	void qBaseTreeRB::Remove(qBaseNodeRB* z)
+	{
+		if (!z || !z->GetParent()) {
+			return;
+		}
+
+		// TODO: Implement this...
+		// --mCount;
+	}
+
+
+	qBaseNodeRB* qBaseTreeRB::Get(u32 uid)
+	{
+		auto node = &mRoot;
+
+		while (node != &mNULL)
+		{
+			if (node->mUID == uid && reinterpret_cast<qBaseTreeRB*>(node) != this) {
+				break;
+			}
+
+			node = node->mChild[uid > node->mUID];
+		}
+
+		for (auto i = node->mChild[0]; i; i = i->mChild[0])
+		{
+			if (i->mUID != uid) {
+				break;
+			}
+
+			node = i;
+		}
+
+		return node;
 	}
 
 #endif
