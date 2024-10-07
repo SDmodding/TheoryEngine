@@ -7,6 +7,8 @@ namespace UFG
 	public:
 		u64 mFlags[2];
 
+		THEORY_INLINE void Reset() { mFlags[0] = mFlags[1] = 0ull; }
+
 		THEORY_INLINE bool IsSet(u64 index)
 		{
 			if (index >= 64) {

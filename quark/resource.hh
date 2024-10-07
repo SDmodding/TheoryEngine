@@ -50,6 +50,14 @@ namespace UFG
 	{
 	public:
 		u32 mTypeUID;
+
+		THEORY_INLINE void Init() { qResourceHandle::Init(mTypeUID, mNameUID); }
+
+		THEORY_INLINE void SetTypeNameUID(u32 type_uid, u32 name_uid)
+		{
+			mNameUID = name_uid;
+			mTypeUID = type_uid;
+		}
 	};
 
 	template <u32 type_uid, typename T>

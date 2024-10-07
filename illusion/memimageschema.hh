@@ -69,7 +69,7 @@ namespace Illusion
 
 	extern MemImageSchema gMemImageSchema;
 
-	inline MemImageSchema* GetSchema() { return &gMemImageSchema; }
+	THEORY_INLINE MemImageSchema* GetSchema() { return &gMemImageSchema; }
 
 #ifdef THEORY_IMPL
 

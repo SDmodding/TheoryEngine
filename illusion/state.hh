@@ -70,6 +70,8 @@ namespace Illusion
 
 	extern StateSystem gStateSystem;
 
+	THEORY_INLINE StateSystem* GetStateSystem() { return &gStateSystem; }
+
 #ifdef THEORY_IMPL
 
 	//-------------------------------------------------------------------
