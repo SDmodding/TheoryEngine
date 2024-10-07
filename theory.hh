@@ -54,6 +54,7 @@
 #include "quark/list.hh"
 #include "quark/treerb.hh"
 #include "quark/math.hh"
+#include "quark/halfmath.hh"
 #include "quark/processplat.hh"
 #include "quark/string.hh"
 
