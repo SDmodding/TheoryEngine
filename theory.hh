@@ -76,6 +76,9 @@
 #include "illusion/memimageschema.hh"
 #include "illusion/state.hh"
 
+#include "illusion/vertexdescriptor.hh"
+#include "illusion/vertexdecl.hh"
+
 #ifdef THEORY_PLATFORM_PC
 	#include "illusion/pc/modelplat.hh"
 #endif
