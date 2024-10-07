@@ -13,7 +13,7 @@
     This is a <b>work in progress</b> reverse-engineered reimplementation of the <u>Sleeping Dogs: Definitive Edition (Engine)</u> with a help of the debug symbols (PDB file) that was shipped with the release of Steam version with the game. We use only headers so it can be easily embedded and included to any side project. The goal is to provide a functional codebase that resemble original engine.
 <p>
 
-## <center>License</center>
+## <p align="center">License</p>
 <p align="center">
 This project won't include a license as it involves working with debug symbols and pseudocode which means parts of the code may be identical or very similar to the original code.<br>
 This code is intended solely for educational, documentation, and modding purposes.<br>
