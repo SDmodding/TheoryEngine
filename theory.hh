@@ -63,6 +63,7 @@
 #endif
 
 #include "quark/checksum.hh"
+#include "quark/qsymbol.hh"
 #include "quark/memorypool.hh"
 #include "quark/memorypoollinearallocator.hh"
 #include "quark/stringimpl.hh"
