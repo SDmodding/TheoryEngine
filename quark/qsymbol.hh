@@ -30,7 +30,19 @@ namespace UFG
 		u32 mUID;
 	};
 
+	class qSymbolRegistry
+	{
+	public:
+		static const char* Get(u32 uid);
+	};
+
+	const char* qSymbolLookupStringFromSymbolTableResources(u32 uid);
+
 #ifdef THEORY_IMPL
+
+	//-------------------------------------------------------------------
+	// Symbol
+	//-------------------------------------------------------------------
 
 	qSymbol qSymbol::create_from_string(const char* pszSymbolString)
 	{
@@ -45,6 +57,39 @@ namespace UFG
 	qSymbol qSymbol::create_suffix(const char* suffix)
 	{
 		return qSymbol(qStringHash32(suffix, mUID));
+	}
+
+	//-------------------------------------------------------------------
+	// Symbol Registry
+	//-------------------------------------------------------------------
+
+	const char* qSymbolRegistry::Get(u32 uid)
+	{
+		if (uid == -1) {
+			return "";
+		}
+
+		const char* str = qSymbolLookupStringFromSymbolTableResources(uid);
+		if (!str)
+		{
+			static int sIndex;
+			static char sBuffer[16 * 8];
+
+			char* pBuffer = &sBuffer[16 * (sIndex++ % 8)];
+			qSPrintf(pBuffer, "·%08x·", uid);
+
+			str = pBuffer;
+		}
+
+		return str;
+	}
+
+	//-------------------------------------------------------------------
+
+	const char* qSymbolLookupStringFromSymbolTableResources(u32 uid)
+	{
+		// TODO: Implement this.
+		return 0;
 	}
 
 #endif

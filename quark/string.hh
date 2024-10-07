@@ -92,6 +92,8 @@ namespace UFG
 
 	int qPrintf(const char* format, ...);
 
+	int qSPrintf(char* dest, const char* format, ...);
+
 	char* qStringCopy(char* dest, int dest_size, const char* text, int text_count = -1);
 
 	int qStringLength(const char* text);

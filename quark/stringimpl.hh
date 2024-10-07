@@ -16,6 +16,20 @@ namespace UFG
 		return len;
 	}
 
+
+	int qSPrintf(char* dest, const char* format, ...)
+	{
+		va_list va;
+		va_start(va, format);
+
+		int len = vsnprintf(dest, 0x7FFFFFFF, format, va);
+
+		va_end(va);
+
+		return len;
+	}
+
+
 	char* qStringCopy(char* dest, int dest_size, const char* text, int text_count)
 	{
 		if (!dest) {
