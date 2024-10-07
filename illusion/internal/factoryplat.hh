@@ -10,6 +10,8 @@ namespace Illusion
 		static void ProcessWaitDeleteQueueAll();
 
 		static Buffer* NewBuffer(const char* name, u32 name_uid, u32 byte_size, MemImageSchema* schema, const char* alloc_name, UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
+
+		static Material* NewMaterial(const char* name, u32 name_uid, u32 num_params, MemImageSchema* schema = 0, UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
 	};
 
 #ifdef THEORY_IMPL
@@ -62,6 +64,38 @@ namespace Illusion
 		}
 
 		return pBuffer;
+	}
+
+
+	Material* Factory::NewMaterial(const char* name, u32 name_uid, u32 num_params, MemImageSchema* schema, UFG::qMemoryPool* memory_pool, u64 allocation_params)
+	{
+		if (!schema) {
+			schema = GetSchema();
+		}
+
+		Material* pMaterial = nullptr;
+		MaterialUser* pMaterialUser = nullptr;
+
+		schema->Init();
+		schema->Add("Illusion.Material", &pMaterial);
+
+		for (u32 i = 0; num_params > i; ++i) {
+			schema->Add<MaterialParam>("Illusion.MaterialParam");
+		}
+
+		schema->Align16();
+		schema->Add("Illusion:MaterialUser", &pMaterialUser, &pMaterial->mMaterialUser);
+		schema->Allocate(memory_pool, allocation_params);
+
+		if (pMaterial) {
+			new (pMaterial) Material(name, name_uid, num_params);
+		}
+
+		if (pMaterialUser) {
+			new (pMaterialUser) MaterialUser();
+		}
+
+		return pMaterial;
 	}
 
 #endif
