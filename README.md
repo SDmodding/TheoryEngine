@@ -37,7 +37,7 @@ But please keep your pull request small and understandable and make sure to foll
 </dl>
 <hr>
 <p align="center">
-These rules are not strongly enforced, but you should still follow them to some degree to avoid wasting the time of the person who will review the pull request. This person is also not responsible for teaching you C/C++ or the basics of decompilation.
+These rules are not strongly enforced, but you should still follow them to some degree to avoid wasting the time of the person who will review the pull request. This person is also not responsible for teaching you C/C++ or the basics of decompilation. Furthermore, as the author of the pull request, you should ensure that the code you write works as intended and does not introduce issues in the future. Taking the time to test and validate your code before submission helps maintain code quality and eases the review process.
 </p>
 
 ## <p align="center">License</p>
