@@ -18,4 +18,7 @@
 #define RTYPE_iTexture						0x8B43FABF
 #define RTYPE_iTexture_Chunk				0xCDBFA090
 
+#define RTYPE_VertexDecl					0x3E5FDA3E
+#define RTYPE_VertexDecl_Chunk				0xF7FC6B2D
+
 #endif
