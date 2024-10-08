@@ -21,6 +21,9 @@
 #define RTYPE_MaterialTable					0x80D1F139
 #define RTYPE_MaterialTable_Chunk			0xEB9FE716
 
+#define RTYPE_MorphTargets					0xC62C2822
+#define RTYPE_MorphTargets_Chunk			0x02CD0C47
+
 #define RTYPE_iTexture						0x8B43FABF
 #define RTYPE_iTexture_Chunk				0xCDBFA090
 

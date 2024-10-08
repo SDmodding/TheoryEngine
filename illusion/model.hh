@@ -54,4 +54,21 @@ namespace Illusion
 	public:
 	};
 
+	//-------------------------------------------------------------------
+
+	class MorphTargets : public UFG::qResourceData
+	{
+	public:
+		BufferHandle mMorphVertexBufferHandle;
+		u32 mNumTargets;
+		u32 mPad0;
+		UFG::qOffset64<u32*> mTargetUIDTable;
+		UFG::qOffset64<char*> mTargetNameTable;
+	};
+
+	class MorphTargetsHandle : public UFG::qTypedResourceHandle<RTYPE_MorphTargets, Illusion::MorphTargets>
+	{
+	public:
+	};
+
 }
