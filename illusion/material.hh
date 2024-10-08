@@ -46,4 +46,10 @@ namespace Illusion
 		u32 mNumMaterials;
 		UFG::qOffset64<MaterialTableUser*> mMaterialTableUser;
 	};
+
+	class MaterialTableHandle : public UFG::qTypedResourceHandle<RTYPE_MaterialTable, MaterialTable>
+	{
+	public:
+	};
+
 }

@@ -15,6 +15,9 @@
 #define RTYPE_Material						0xB4C26312
 #define RTYPE_Material_Chunk				0xF5F8516F
 
+#define RTYPE_MaterialTable					0x80D1F139
+#define RTYPE_MaterialTable_Chunk			0xEB9FE716
+
 #define RTYPE_iTexture						0x8B43FABF
 #define RTYPE_iTexture_Chunk				0xCDBFA090
 
