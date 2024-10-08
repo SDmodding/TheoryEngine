@@ -2,6 +2,8 @@
 
 namespace Illusion
 {
+	class SoftbodyData;
+
 	class BufferUser
 	{
 	public:
@@ -86,4 +88,62 @@ namespace Illusion
 	public:
 	};
 
+	//-------------------------------------------------------------------
+	// Mesh
+	//-------------------------------------------------------------------
+
+	class IMeshPlat
+	{
+	public:
+	};
+
+	class Mesh : public IMeshPlat
+	{
+	public:
+		MaterialHandle mMaterialHandle;
+		VertexDeclHandle mVertexDeclHandle;
+		BufferHandle mIndexBufferHandle;
+		BufferHandle mVertexBufferHandles[4];
+		int mPrimType;
+		int mIndexStart;
+		u32 mNumPrims;
+		u32 pad;
+		const char* mDescription;
+	};
+
+	//-------------------------------------------------------------------
+	// Model
+	//-------------------------------------------------------------------
+
+	class ModelUser
+	{
+	public:
+		UFG::qOffset64<SoftbodyData*> mSoftbodyData;
+		u32 mHasSoftbodyInfo;
+	};
+
+	class IModelPlat
+	{
+	public:
+	};
+
+	class Model : public IModelPlat, public UFG::qResourceData
+	{
+	public:
+		float mAABBMin[3];
+		u32 mNumPrims;
+		float mAABBMax[3];
+		u32 pad0;
+		MaterialTableHandle mMaterialTableHandle;
+		BonePaletteHandle mBonePaletteHandle;
+		UFG::qOffset64<UFG::qOffset64<Mesh*>*> mMeshOffsetTable;
+		u32 mNumMeshes;
+		UFG::qOffset64<ModelUser*> mModelUser;
+		u32 pad1;
+		u32 mLastUsedFrameNum;
+		u32 pad2;
+		UFG::qMemoryPool* mMemoryPool;
+		MorphTargetsHandle mMorphTargetsHandle;
+		LocatorsHandle mLocatorsHandle;
+	};
 }
