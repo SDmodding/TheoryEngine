@@ -6,7 +6,7 @@ namespace Illusion
 	{
 	public:
 		int mExampleOfVertexDeclUserData1;
-		float mExampleOfVertexDeclUserData2;
+		f32 mExampleOfVertexDeclUserData2;
 	};
 
 
@@ -20,8 +20,8 @@ namespace Illusion
 	public:
 		UFG::qOffset64<VertexStreamElement*> mElements;
 		int mNumElements;
-		unsigned int mStreamStrides[4];
-		unsigned int mStreamRuntimeFlags;
+		u32 mStreamStrides[4];
+		u32 mStreamRuntimeFlags;
 		UFG::qOffset64<VertexDeclUser*> mVertexDeclUser;
 	};
 

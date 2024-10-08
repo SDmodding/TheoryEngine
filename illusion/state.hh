@@ -14,8 +14,8 @@ namespace Illusion
 	class StateParamDesc : public StateParam
 	{
 	public:
-		char mName[63];
-		char mIsResourceData;
+		s8 mName[63];
+		s8 mIsResourceData;
 	};
 
 	class StateParamLookup

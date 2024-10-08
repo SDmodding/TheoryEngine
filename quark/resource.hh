@@ -103,12 +103,12 @@ namespace UFG
 		u32 mNumResourceBytes;
 		u32 mTransactionNum;
 		u32 mLastUpdate;
-		float mAddTime;
-		float mRemoveTime;
-		float mUnresolvedTime;
-		float mLoadTime;
-		float mUnloadTime;
-		float mInitHandleTime;
+		f32 mAddTime;
+		f32 mRemoveTime;
+		f32 mUnresolvedTime;
+		f32 mLoadTime;
+		f32 mUnloadTime;
+		f32 mInitHandleTime;
 
 		// TODO: Need finish functions & virtual functions.
 
@@ -126,13 +126,13 @@ namespace UFG
 		qTreeRB<qResourceInventory> mInventoryTree;
 		qList<qResourceInventory, qResourceInventory> mInventoryList;
 		qResourceInventory* mLastInventory;
-		unsigned int mLastTypeUID;
+		u32 mLastTypeUID;
 		int mNumInventories;
-		float mAddTime;
-		float mRemoveTime;
-		float mUnresolvedTime;
-		float mLoadTime;
-		float mUnloadTime;
+		f32 mAddTime;
+		f32 mRemoveTime;
+		f32 mUnresolvedTime;
+		f32 mLoadTime;
+		f32 mUnloadTime;
 
 		static qResourceWarehouse* Instance();
 	};
