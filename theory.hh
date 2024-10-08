@@ -78,6 +78,8 @@
 #include "illusion/memimageschema.hh"
 #include "illusion/state.hh"
 
+#include "illusion/bonepalette.h"
+
 #include "illusion/vertexdescriptor.hh"
 #include "illusion/vertexdecl.hh"
 

@@ -6,6 +6,9 @@
 
 #ifdef THEORY_PLATFORM_PC /* PC UIDs */
 
+#define RTYPE_BonePalette					0x50A819E3
+#define RTYPE_BonePalette_Chunk				0x982456DB
+
 #define RTYPE_Buffer						0x92CDEC8F
 #define RTYPE_Buffer_Chunk					0x7A971479
 
