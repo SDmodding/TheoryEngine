@@ -24,7 +24,7 @@ namespace Illusion
 		Material();
 		Material(const char* name, u32 name_uid, u32 num_params);
 
-		THEORY_INLINE MaterialParam* GetParams() { return reinterpret_cast<MaterialParam*>(reinterpret_cast<uptr>(this) + sizeof(Material)); }
+		THEORY_INLINE MaterialParam* GetParams() { return reinterpret_cast<MaterialParam*>(&this[1]); }
 		THEORY_INLINE MaterialParam* GetParam(u32 index) { return &GetParams()[index]; }
 	};
 

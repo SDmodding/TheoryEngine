@@ -84,7 +84,7 @@ namespace Illusion
 		}
 
 		schema->Align16();
-		schema->Add("Illusion:MaterialUser", &pMaterialUser, &pMaterial->mMaterialUser);
+		schema->Add("Illusion.MaterialUser", &pMaterialUser, &pMaterial->mMaterialUser);
 		schema->Allocate(memory_pool, allocation_params);
 
 		if (pMaterial) {

@@ -24,13 +24,13 @@ namespace Illusion
 
 		virtual ~MemImageSchema() {}
 
-		inline void Align16() { mCurrSize = ((mCurrSize + 0xF) & ~0xF); }
+		THEORY_INLINE void Align16() { mCurrSize = ((mCurrSize + 0xF) & ~0xF); }
 
 		void Allocate(UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
 
 		void Init();
 
-		inline void Add(const char* name, u32 size, void** pointer = 0, void* offset_ptr = 0)
+		THEORY_INLINE void Add(const char* name, u32 size, void** pointer = 0, void* offset_ptr = 0)
 		{
 			auto memStructure = &mMemStructure[mNumMemStructures++];
 			{
@@ -55,13 +55,13 @@ namespace Illusion
 		}
 
 		template <typename T>
-		inline void Add(const char* name, T** pointer = 0, void* offset_ptr = 0)
+		THEORY_INLINE void Add(const char* name, T** pointer = 0, void* offset_ptr = 0)
 		{
 			Add(name, sizeof(T), reinterpret_cast<void**>(pointer), offset_ptr);
 		}
 
 		template <typename T>
-		inline void AddAlign(const char* name, T** pointer = 0, void* offset_ptr = 0)
+		THEORY_INLINE void AddAlign(const char* name, T** pointer = 0, void* offset_ptr = 0)
 		{
 			Add(name, ((sizeof(T) + 0xF) & ~0xF), reinterpret_cast<void**>(pointer), offset_ptr);
 		}
