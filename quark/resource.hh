@@ -44,6 +44,9 @@ namespace UFG
 		void Init(u32 type_uid, u32 name_uid, qResourceInventory* inventory);
 
 		bool IsDefault();
+
+		template <typename T>
+		THEORY_INLINE T GetData() { return reinterpret_cast<T>(mData); }
 	};
 
 	class qGenericResourceHandle : public qResourceHandle

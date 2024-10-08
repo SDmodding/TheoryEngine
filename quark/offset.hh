@@ -53,5 +53,7 @@ namespace UFG
 		}
 
 		inline void operator=(const T* target) { Set(target); }
+
+		THEORY_INLINE T operator->() { return Get(); }
 	};
 }

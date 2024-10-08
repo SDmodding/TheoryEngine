@@ -2,6 +2,9 @@
 
 namespace Illusion
 {
+	class MaterialUser;
+	class MaterialTableUser;
+
 	class MaterialParam : public StateParam
 	{
 	public:
@@ -24,6 +27,9 @@ namespace Illusion
 		Material();
 		Material(const char* name, u32 name_uid, u32 num_params);
 
+		void OnLoad();
+		void OnUnload();
+
 		THEORY_INLINE MaterialParam* GetParams() { return reinterpret_cast<MaterialParam*>(&this[1]); }
 		THEORY_INLINE MaterialParam* GetParam(u32 index) { return &GetParams()[index]; }
 	};
@@ -40,29 +46,4 @@ namespace Illusion
 		u32 mNumMaterials;
 		UFG::qOffset64<MaterialTableUser*> mMaterialTableUser;
 	};
-
-#ifdef THEORY_IMPL
-
-	Material::Material() : UFG::qResourceData()
-	{
-		for (u32 i = 0; mNumParams > i; ++i) {
-			new (GetParam(i)) MaterialParam;
-		}
-
-		mStateBlockMask.Reset();
-	}
-
-
-	Material::Material(const char* name, u32 name_uid, u32 num_params) : UFG::qResourceData(RTYPE_Material, name_uid, name)
-	{
-		mNumParams = num_params;
-
-		for (u32 i = 0; mNumParams > i; ++i) {
-			new (GetParam(i)) MaterialParam;
-		}
-
-		mStateBlockMask.Reset();
-	}
-
-#endif
 }

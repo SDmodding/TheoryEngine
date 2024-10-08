@@ -6,7 +6,7 @@ namespace Illusion
 	{
 	public:
 		int mExampleOfBufferUserData1;
-		float mExampleOfBufferUserData2;
+		f32 mExampleOfBufferUserData2;
 	};
 
 	class Buffer : public IBufferPlat, public UFG::qResourceData
