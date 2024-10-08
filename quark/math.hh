@@ -29,6 +29,13 @@ namespace UFG
 		inline qVector4(f32 fX, f32 fY, f32 fZ, f32 fW) : x(fX), y(fY), z(fZ), w(fW) {}
 	};
 
+	class qMatrix44
+	{
+	public:
+		qVector4 v0, v1, v2, v3;
+	};
+
+
 	class qQuaternion
 	{
 	public:

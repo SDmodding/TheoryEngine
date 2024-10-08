@@ -15,6 +15,9 @@
 #define RTYPE_BufferD3DResource				0x171246AD
 #define RTYPE_BufferD3DResource_Chunk		0x45E061F6
 
+#define RTYPE_Locators						0x3EDDEFF0
+#define RTYPE_Locators_Chunk				0x15506061
+
 #define RTYPE_Material						0xB4C26312
 #define RTYPE_Material_Chunk				0xF5F8516F
 

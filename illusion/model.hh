@@ -56,6 +56,21 @@ namespace Illusion
 
 	//-------------------------------------------------------------------
 
+	class Locators : public UFG::qResourceData
+	{
+	public:
+		u32 mNumLocators;
+		UFG::qOffset64<char*> mNameTable;
+		UFG::qOffset64<UFG::qMatrix44*> mTransformTable;
+	};
+
+	class LocatorsHandle : public UFG::qTypedResourceHandle<RTYPE_Locators, Locators>
+	{
+	public:
+	};
+
+	//-------------------------------------------------------------------
+
 	class MorphTargets : public UFG::qResourceData
 	{
 	public:
@@ -66,7 +81,7 @@ namespace Illusion
 		UFG::qOffset64<char*> mTargetNameTable;
 	};
 
-	class MorphTargetsHandle : public UFG::qTypedResourceHandle<RTYPE_MorphTargets, Illusion::MorphTargets>
+	class MorphTargetsHandle : public UFG::qTypedResourceHandle<RTYPE_MorphTargets, MorphTargets>
 	{
 	public:
 	};
