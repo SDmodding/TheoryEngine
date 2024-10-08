@@ -49,7 +49,7 @@ namespace Illusion
 			mDataByteSize(byte_size), mLastUsedFrameNum(0), mMemoryPool(0), pad0(0), pad1(0), pad2(0) {}
 	};
 
-	class BufferHandle : public UFG::qTypedResourceHandle<RTYPE_Buffer, Illusion::Buffer>
+	class BufferHandle : public UFG::qTypedResourceHandle<RTYPE_Buffer, Buffer>
 	{
 	public:
 	};
