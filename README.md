@@ -16,6 +16,30 @@
     <a href="https://mega.nz/file/fK5SWARD#1fAWkxAHaKCIMDaJ5XAQKvjs6gK4RCQo5ZlvvtHWtVw">Game Executable</a> • <a href="https://mega.nz/file/aThlWBSB#7hG3yh6G5hUjX2Dy-1Kqjqwq9gSAREJJeWqyeS1K_m8">Debug Symbols (PDB)</a>
 <p>
 
+## <p align="center">Contributing</p>
+<p align="center">
+If you feel fit to contribute, feel free to create a pull request.
+<br>
+But please keep your pull request small and understandable and make sure to follow a few rules listed below:
+</p>
+<dl align="center">
+    <dt><u>Keep your code simple and readable</u></dt>
+    <dd>- Always use brackets after control structure.
+    <br>- If the scope of a control structure is one line, keep the opening bracket on the same line.
+    <br>- Blatantly copied pseudocode is not allowed; you should rewrite the pseudocode to some degree so it is understandable and readable.
+    </dd>
+    <dt><u>Use correct file for declaration/definition</u></dt>
+    <dd>- If you define a class or function, it should be placed in the appropriate file based on debug symbols.
+    <br>- If multiple classes need access to each other, you should organize them so they can be included as a single header. In some cases, you will need to create your own file, such as <kbd>stringimpl.hh</kbd>, where <kbd>string.hh</kbd> is the original definition.
+    </dd>
+    <dt><u>Use original naming if possible</u></dt>
+    <dd>- If you are reimplementing a class or function, please use the original name from the debug symbols. If there are multiple pieces of code that could be inlined function, it is best to declare it as own function and come up with your own name.</dd>
+</dl>
+<hr>
+<p align="center">
+These rules are not strongly enforced, but you should still follow them to some degree to avoid wasting the time of the person who will review the pull request. This person is also not responsible for teaching you C/C++ or the basics of decompilation.
+</p>
+
 ## <p align="center">License</p>
 <p align="center">
 This project won't include a license as it involves working with debug symbols and pseudocode which means parts of the code may be identical or very similar to the original code.<br>
