@@ -57,7 +57,7 @@ namespace UFG
 	void InternalSetupMainMemoryPool();
 	void InitMemorySystem();
 
-	inline qMemoryPool* GetMainMemoryPool()
+	THEORY_INLINE qMemoryPool* GetMainMemoryPool()
 	{
 		if (!gMainMemoryPool) {
 			InternalSetupMainMemoryPool();

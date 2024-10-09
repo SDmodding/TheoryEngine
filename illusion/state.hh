@@ -24,7 +24,7 @@ namespace Illusion
 		u32 mNameUID;
 		u32 mParamIndex;
 
-		inline StateParamLookup() : mNameUID(0), mParamIndex(0) {}
+		StateParamLookup() : mNameUID(0), mParamIndex(0) {}
 	};
 
 	//-------------------------------------------------------------------
@@ -47,20 +47,20 @@ namespace Illusion
 
 		s16 AddParam(u32 uid, const char* name, bool is_resource_data);
 
-		inline s16 AddParam(StateParam* param, const char* name, bool is_resource_data)
+		s16 AddParam(StateParam* param, const char* name, bool is_resource_data)
 		{
 			param->mParamIndex = AddParam(UFG::qStringHash32(name), name, is_resource_data);
 			return param->mParamIndex;
 		}
 
-		inline bool AddParam(const char* name, bool is_resource_data)
+		bool AddParam(const char* name, bool is_resource_data)
 		{
 			return AddParam(UFG::qStringHash32(name), name, is_resource_data);
 		}
 
 		u64 GetParam(u32 uid);
 
-		inline u64 GetParam(const char* name)
+		u64 GetParam(const char* name)
 		{
 			return GetParam(UFG::qStringHash32(name));
 		}

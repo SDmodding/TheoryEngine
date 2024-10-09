@@ -12,7 +12,7 @@ namespace Illusion
 		bool mFrameGenerated;
 		ID3D11ShaderResourceView* mShaderResourceView;
 
-		inline BufferD3DResource(u32 name_uid, const char* name, bool bFrameGenerated) : UFG::qResourceData(RTYPE_BufferD3DResource, name_uid, name),
+		BufferD3DResource(u32 name_uid, const char* name, bool bFrameGenerated) : UFG::qResourceData(RTYPE_BufferD3DResource, name_uid, name),
 			mGpuResource(0), mResourceOffset(0), mStagingResource(0), mRefCount(0), mFrameGenerated(bFrameGenerated), mShaderResourceView(0) {}
 	};
 
@@ -58,7 +58,7 @@ namespace Illusion
 		BufferD3DResourceHandle mBufferD3DResourceHandle;
 		s8 mPadding[72];
 
-		inline BufferPlat() : mCpuAccess(CPU_ACCESS_NONE), mUploadAfterUnmap(0), mMappedResource(0)
+		BufferPlat() : mCpuAccess(CPU_ACCESS_NONE), mUploadAfterUnmap(0), mMappedResource(0)
 		{
 			UFG::qMemSet(mPadding, 0, sizeof(mPadding));
 		}

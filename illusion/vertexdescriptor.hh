@@ -86,13 +86,13 @@ namespace Illusion
 
 		int GetStreamSize(int stream_num);
 
-		inline int GetTotalElements() { return mTotalElements; }
+		int GetTotalElements() { return mTotalElements; }
 
-		inline void SetIndexStreamAsVertexStream() { mIndexStreamAsVertexStream = true; }
+		void SetIndexStreamAsVertexStream() { mIndexStreamAsVertexStream = true; }
 
-		inline void SetIndexStreamMultiplier(int mult) { mIndexStreamMultiplier = mult; }
+		void SetIndexStreamMultiplier(int mult) { mIndexStreamMultiplier = mult; }
 
-		inline void SetStreamRuntimeFlag(u8 stream_num) { mStreamRuntimeFlags |= (1 << stream_num); }
+		void SetStreamRuntimeFlag(u8 stream_num) { mStreamRuntimeFlags |= (1 << stream_num); }
 
 		static UFG::qList<VertexStreamDescriptor>* GetStreamDescriptors();
 	};

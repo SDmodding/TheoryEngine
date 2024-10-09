@@ -13,7 +13,7 @@ namespace UFG
 	public:
 		i32 mOffset;
 
-		inline T Get(i32 offset = 0)
+		THEORY_INLINE T Get(i32 offset = 0)
 		{
 			if (mOffset) {
 				return reinterpret_cast<T>(reinterpret_cast<uptr>(this) + mOffset + offset);
@@ -21,7 +21,7 @@ namespace UFG
 			return 0;
 		}
 
-		inline void Set(void* target)
+		THEORY_INLINE void Set(void* target)
 		{
 			if (target) {
 				mOffset = reinterpret_cast<i32>(reinterpret_cast<uptr>(target) - reinterpret_cast<uptr>(this));
@@ -31,7 +31,7 @@ namespace UFG
 			}
 		}
 
-		inline void operator=(const T* target) { Set(target); }
+		THEORY_INLINE void operator=(const T* target) { Set(target); }
 	};
 
 	template <typename T>
@@ -40,7 +40,7 @@ namespace UFG
 	public:
 		i64 mOffset;
 
-		inline T Get(i64 offset = 0)
+		THEORY_INLINE T Get(i64 offset = 0)
 		{
 			if (mOffset) {
 				return reinterpret_cast<T>(reinterpret_cast<uptr>(this) + mOffset + offset);
@@ -48,7 +48,7 @@ namespace UFG
 			return 0;
 		}
 
-		inline void Set(void* target)
+		THEORY_INLINE void Set(void* target)
 		{
 			if (target) {
 				mOffset = reinterpret_cast<i64>(reinterpret_cast<uptr>(target) - reinterpret_cast<uptr>(this));
@@ -58,7 +58,7 @@ namespace UFG
 			}
 		}
 
-		inline void operator=(const T* target) { Set(target); }
+		THEORY_INLINE void operator=(const T* target) { Set(target); }
 
 		THEORY_INLINE T operator[](u32 index) { return &Get()[index]; }
 

@@ -15,20 +15,20 @@ namespace UFG
 
 		static inline const char* sEmptyString = "";
 
-		inline qString() : mMagic(THEORY_STRING_MAGIC), mLength(0), mData(const_cast<char*>(sEmptyString)), mStringHash32(-1), mStringHashUpper32(-1) {}
+		qString() : mMagic(THEORY_STRING_MAGIC), mLength(0), mData(const_cast<char*>(sEmptyString)), mStringHash32(-1), mStringHashUpper32(-1) {}
 
 		qString(const qString& text);
 
 		qString(const char* format, ...);
 
-		inline ~qString()
+		~qString()
 		{
 			Free();
 		}
 
-		inline void SetMagic() { mMagic = THEORY_STRING_MAGIC; }
+		void SetMagic() { mMagic = THEORY_STRING_MAGIC; }
 
-		inline void ResetHash() { mStringHash32 = mStringHashUpper32 = -1; }
+		void ResetHash() { mStringHash32 = mStringHashUpper32 = -1; }
 
 		void Format(const char* format, ...);
 
@@ -44,7 +44,7 @@ namespace UFG
 
 		u32 GetStringHashUpper32();
 
-		inline bool IsEmpty() { return mLength == 0; }
+		bool IsEmpty() { return mLength == 0; }
 
 		void MakeLower();
 
@@ -87,7 +87,7 @@ namespace UFG
 		bool operator==(const qString& text);
 		bool operator==(const char* text);
 
-		inline char operator[](int pos) { return mData[pos]; }
+		char operator[](int pos) { return mData[pos]; }
 	};
 
 	int qPrintf(const char* format, ...);
@@ -102,7 +102,7 @@ namespace UFG
 
 	void qStringToUpper(char* text);
 
-	_inline bool qIsWhitespace(int c)
+	THEORY_INLINE bool qIsWhitespace(int c)
 	{
 		return (c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r' || c == ' ' ? true : false);
 	}

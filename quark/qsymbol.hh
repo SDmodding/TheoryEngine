@@ -7,9 +7,9 @@ namespace UFG
 	public:
 		u32 mUID;
 
-		inline qSymbol() : mUID(-1) {}
-		inline qSymbol(u32 uid) : mUID(uid) {}
-		inline qSymbol(const qSymbol& source) : mUID(source.mUID) {}
+		qSymbol() : mUID(-1) {}
+		qSymbol(u32 uid) : mUID(uid) {}
+		qSymbol(const qSymbol& source) : mUID(source.mUID) {}
 
 		THEORY_INLINE bool is_null() { return mUID == -1; }
 		THEORY_INLINE void set_null() { mUID = -1; }
@@ -20,8 +20,8 @@ namespace UFG
 
 		qSymbol create_suffix(const char* suffix);
 
-		inline bool operator!=(const qSymbol& sym) { return mUID != sym.mUID; }
-		inline bool operator==(const qSymbol& sym) { return mUID == sym.mUID; }
+		bool operator!=(const qSymbol& sym) { return mUID != sym.mUID; }
+		bool operator==(const qSymbol& sym) { return mUID == sym.mUID; }
 	};
 
 	class qSymbolUC

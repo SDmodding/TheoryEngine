@@ -8,7 +8,7 @@ namespace Illusion
 		s16 mVisibilityFlags;
 		s16 mShadowFlags;
 
-		inline MaterialUser() : mVisibilityFlags(0x1F), mShadowFlags(0) {}
+		MaterialUser() : mVisibilityFlags(0x1F), mShadowFlags(0) {}
 
 		void OnLoad(Material* material);
 	};

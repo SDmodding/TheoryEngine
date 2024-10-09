@@ -10,7 +10,7 @@ namespace Illusion
 	public:
 		UFG::qGenericResourceHandle mResourceHandle;
 
-		inline MaterialParam() 
+		MaterialParam() 
 		{
 			mParamIndex = 0;
 			pad0 = 0;

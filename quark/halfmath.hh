@@ -7,7 +7,7 @@ namespace UFG
 	public:
 		u16 mRep;
 
-		inline qHalfFloat() : mRep(0) {}
+		qHalfFloat() : mRep(0) {}
 
 		void Set(f32 value);
 

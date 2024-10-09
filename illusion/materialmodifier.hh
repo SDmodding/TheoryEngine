@@ -20,8 +20,8 @@ namespace Illusion
 		void* mConstantBlock;
 		u32 mConstantBlockSize;
 
-		inline ParamOverride() {}
-		inline ~ParamOverride() {}
+		ParamOverride() {}
+		~ParamOverride() {}
 
 		void SetOverride(u32 param_uid, u32 resource_type_name_uid, u32 override_name_uid, Condition condition, u32 original_name_uid);
 		void SetTextureOverride(u32 param_uid, u32 override_name_uid, Condition condition, u32 original_name_uid);

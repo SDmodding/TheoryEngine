@@ -9,14 +9,14 @@ namespace UFG
 		qNode<T, U>* mPrev;
 		qNode<T, U>* mNext;
 
-		inline qNode() : mPrev(reinterpret_cast<qNode<T, U>*>(&mPrev)), mNext(reinterpret_cast<qNode<T, U>*>(&mNext)) {}
-		inline ~qNode()
+		qNode() : mPrev(reinterpret_cast<qNode<T, U>*>(&mPrev)), mNext(reinterpret_cast<qNode<T, U>*>(&mNext)) {}
+		~qNode()
 		{
 			RemoveNode();
 		}
 
 		template <typename T, typename U>
-		inline void InsertNode(qNode<T, U>* node)
+		THEORY_INLINE void InsertNode(qNode<T, U>* node)
 		{
 			node->mPrev = mPrev;
 			node->mNext = this;
@@ -24,7 +24,7 @@ namespace UFG
 			mPrev = node;
 		}
 
-		inline void RemoveNode()
+		THEORY_INLINE void RemoveNode()
 		{
 			mPrev->mNext = mNext;
 			mNext->mPrev = mPrev;
@@ -45,13 +45,13 @@ namespace UFG
 		void DeleteNodes();
 
 		template <typename T, typename U>
-		inline void Insert(qNode<T, U>* node)
+		THEORY_INLINE void Insert(qNode<T, U>* node)
 		{
 			mNode.InsertNode(node);
 		}
 
 		template <typename T, typename U>
-		inline void Remove(qNode<T, U>* node)
+		THEORY_INLINE void Remove(qNode<T, U>* node)
 		{
 			node->RemoveNode();
 		}

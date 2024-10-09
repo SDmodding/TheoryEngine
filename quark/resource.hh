@@ -13,7 +13,7 @@ namespace UFG
 		u32 mDataSize;
 		u32 mDataOffset;
 
-		inline qResourceData* GetData()
+		THEORY_INLINE qResourceData* GetData()
 		{
 			return reinterpret_cast<qResourceData*>(reinterpret_cast<uptr>(&this[1]) + mDataOffset);
 		}
@@ -30,9 +30,9 @@ namespace UFG
 		u32 mNameUID;
 		u32 mTailPad;
 
-		inline qResourceHandle() : mData(0), mNameUID(0), mTailPad(0) {}
+		qResourceHandle() : mData(0), mNameUID(0), mTailPad(0) {}
 
-		inline ~qResourceHandle()
+		~qResourceHandle()
 		{
 			Close();
 		}
@@ -80,7 +80,7 @@ namespace UFG
 		u32 mTypeUID;
 		char mDebugName[36];
 
-		inline qResourceData() {}
+		qResourceData() {}
 		qResourceData(u32 type_uid, u32 name_uid, const char* name);
 
 		void SetDebugName(const char* name);

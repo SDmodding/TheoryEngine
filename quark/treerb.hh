@@ -9,10 +9,10 @@ namespace UFG
 		qBaseNodeRB* mChild[2]; /* 0: left, 1: right */
 		u32 mUID;
 
-		inline qBaseNodeRB() : mParent(0), mChild{0, 0}, mUID(0) {}
-		inline qBaseNodeRB(u32 uid) : mParent(0), mChild{ 0, 0 }, mUID(uid) {}
+		qBaseNodeRB() : mParent(0), mChild{0, 0}, mUID(0) {}
+		qBaseNodeRB(u32 uid) : mParent(0), mChild{ 0, 0 }, mUID(uid) {}
 
-		inline void SetUID(u32 uid) { mUID = uid; }
+		void SetUID(u32 uid) { mUID = uid; }
 
 		/* Helpers */
 
@@ -66,7 +66,7 @@ namespace UFG
 
 		qBaseTreeRB();
 
-		inline bool IsEmpty() { return mCount == 0; }
+		bool IsEmpty() { return mCount == 0; }
 
 		void AddHelper(qBaseNodeRB* z);
 
