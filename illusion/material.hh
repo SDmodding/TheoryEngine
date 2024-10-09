@@ -22,7 +22,7 @@ namespace Illusion
 	public:
 		__declspec(align(16)) UFG::BitFlags128 mStateBlockMask;
 		u32 mNumParams;
-		UFG::qOffset64<MaterialUser*> mMaterialUser;
+		UFG::qOffset<MaterialUser*> mMaterialUser;
 
 		Material();
 		Material(const char* name, u32 name_uid, u32 num_params);
@@ -44,7 +44,7 @@ namespace Illusion
 	{
 	public:
 		u32 mNumMaterials;
-		UFG::qOffset64<MaterialTableUser*> mMaterialTableUser;
+		UFG::qOffset<MaterialTableUser*> mMaterialTableUser;
 	};
 
 	class MaterialTableHandle : public UFG::qTypedResourceHandle<RTYPE_MaterialTable, MaterialTable>

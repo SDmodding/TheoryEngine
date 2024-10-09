@@ -51,7 +51,7 @@ namespace Illusion
 			CPU_ACCESS_READ_WRITE
 		};
 
-		UFG::qOffset64<BufferUserPlat*> mBufferUserPlat;
+		UFG::qOffset<BufferUserPlat*> mBufferUserPlat;
 		u32 mCpuAccess;
 		u32 mUploadAfterUnmap;
 		ID3D11Buffer* mMappedResource;

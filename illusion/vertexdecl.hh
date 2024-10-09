@@ -18,11 +18,11 @@ namespace Illusion
 	class VertexDecl : public IVertexDeclPlat, public UFG::qResourceData
 	{
 	public:
-		UFG::qOffset64<VertexStreamElement*> mElements;
+		UFG::qOffset<VertexStreamElement*> mElements;
 		int mNumElements;
 		u32 mStreamStrides[4];
 		u32 mStreamRuntimeFlags;
-		UFG::qOffset64<VertexDeclUser*> mVertexDeclUser;
+		UFG::qOffset<VertexDeclUser*> mVertexDeclUser;
 	};
 
 	class VertexDeclHandle : public UFG::qTypedResourceHandle<RTYPE_VertexDecl, VertexDecl>

@@ -7,9 +7,9 @@ namespace Illusion
 	public:
 		u32 mNumPalettes;
 		u32 mNumBones;
-		UFG::qOffset64<char*> mBoneNameTable;
-		UFG::qOffset64<u32*> mBoneUIDTable;
-		UFG::qOffset64<u32*> mBoneFullUIDTable;
+		UFG::qOffset<char*> mBoneNameTable;
+		UFG::qOffset<u32*> mBoneUIDTable;
+		UFG::qOffset<u32*> mBoneFullUIDTable;
 	};
 
 	class BonePaletteHandle : public UFG::qTypedResourceHandle<RTYPE_BonePalette, BonePalette>
