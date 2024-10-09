@@ -145,6 +145,7 @@ namespace UFG
 		{
 			mInventoryTree.mTree.Add(&inv->mNode);
 			mInventoryList.Insert(inv);
+			++mNumInventories;
 		}
 	};
 
