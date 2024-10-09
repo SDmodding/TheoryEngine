@@ -115,6 +115,8 @@ namespace UFG
 
 		// TODO: Need finish functions & virtual functions.
 
+		qResourceInventory(const char* name, u32 type_uid, u32 chunk_uid, u32 default_name_uid, u32 num_unsolved_hash_lists);
+
 		virtual void InitHandle(qResourceHandle* handle, u32 name_uid);
 		virtual void InitHandle(qResourceHandle* handle, u32 name_uid, qResourceData* data);
 	};
@@ -138,6 +140,12 @@ namespace UFG
 		f32 mUnloadTime;
 
 		static qResourceWarehouse* Instance();
+
+		THEORY_INLINE void AddInventory(qResourceInventory* inv)
+		{
+			mInventoryTree.mTree.Add(&inv->mNode);
+			mInventoryList.Insert(inv);
+		}
 	};
 
 
@@ -211,6 +219,53 @@ namespace UFG
 				qMemCopy(mDebugName, name, static_cast<usize>(len));
 			}
 		}
+	}
+
+	//-------------------------------------------------------------------
+	// Inventory
+	//-------------------------------------------------------------------
+
+	qResourceInventory::qResourceInventory(const char* name, u32 type_uid, u32 chunk_uid, u32 default_name_uid, u32 num_unsolved_hash_lists)
+	{
+		mNode.SetUID(type_uid);
+
+		mName = name;
+		mChunkUID = chunk_uid;
+
+		mDefaultResourceData = nullptr;
+		mDefaultResourceNameUID = default_name_uid;
+
+		mUnresolvedHandleLists = mInternalUnresolvedHandles;
+		mNumUnresolvedHandleLists = 4;
+
+		if (num_unsolved_hash_lists > 4)
+		{
+			mUnresolvedHandleLists = new (GetMainMemoryPool()->Allocate(sizeof(UFG::qList<qResourceHandle>) * num_unsolved_hash_lists, "qResourceInventory.Hash", 0, true)) UFG::qList<qResourceHandle>();
+			mNumUnresolvedHandleLists = num_unsolved_hash_lists;
+		}
+
+		mNumResourceData = 0;
+		mNumResourceBytes = 0;
+		mTransactionNum = 0;
+		mLastUpdate = 0;
+		mAddTime = 0.f;
+		mRemoveTime = 0.f;
+		mUnresolvedTime = 0.f;
+		mLoadTime = 0.f;
+		mUnloadTime = 0.f;
+		mInitHandleTime = 0.f;
+
+		qResourceWarehouse::Instance()->AddInventory(this);
+	}
+
+	void qResourceInventory::InitHandle(qResourceHandle* handle, u32 name_uid)
+	{
+		// TODO: Implement this.
+	}
+
+	void qResourceInventory::InitHandle(qResourceHandle* handle, u32 name_uid, qResourceData* data)
+	{
+		// TODO: Implement this.
 	}
 
 	//-------------------------------------------------------------------
