@@ -12,6 +12,8 @@ namespace Illusion
 		static Buffer* NewBuffer(const char* name, u32 name_uid, u32 byte_size, MemImageSchema* schema, const char* alloc_name, UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
 
 		static Material* NewMaterial(const char* name, u32 name_uid, u32 num_params, MemImageSchema* schema = 0, UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
+
+		static Model* NewModel(const char* name, u32 name_uid, u32 num_meshes, MemImageSchema* schema = 0, UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
 	};
 
 #ifdef THEORY_IMPL
@@ -45,8 +47,8 @@ namespace Illusion
 		schema->Init();
 		schema->Add(alloc_name, &pBuffer);
 		schema->Add("Illusion.BufferPlat", &pBufferPlat);
-		schema->Add("Illusion.BufferUser", &pBufferUser, &pBuffer->mBufferUser);
-		schema->Add("Illusion.BufferUserPlat", &pBufferUserPlat, &pBufferPlat->mBufferUserPlat);
+		schema->AddAlign("Illusion.BufferUser", &pBufferUser, &pBuffer->mBufferUser);
+		schema->AddAlign("Illusion.BufferUserPlat", &pBufferUserPlat, &pBufferPlat->mBufferUserPlat);
 
 		schema->Align16();
 		schema->Add("Illusion.BufferData", byte_size, &pBufferData, &pBuffer->mData);
@@ -84,7 +86,7 @@ namespace Illusion
 		}
 
 		schema->Align16();
-		schema->Add("Illusion.MaterialUser", &pMaterialUser, &pMaterial->mMaterialUser);
+		schema->AddAlign("Illusion.MaterialUser", &pMaterialUser, &pMaterial->mMaterialUser);
 		schema->Allocate(memory_pool, allocation_params);
 
 		if (pMaterial) {
@@ -96,6 +98,66 @@ namespace Illusion
 		}
 
 		return pMaterial;
+	}
+
+	Model* Factory::NewModel(const char* name, u32 name_uid, u32 num_meshes, MemImageSchema* schema, UFG::qMemoryPool* memory_pool, u64 allocation_params)
+	{
+		if (!schema) {
+			schema = GetSchema();
+		}
+
+		Model* pModel = nullptr;
+		ModelPlat* pModelPlat = nullptr;
+		ModelUserPlat* pModelUserPlat = nullptr;
+		ModelUser* pModelUser = nullptr;
+
+		UFG::qOffset<Mesh*>* pMeshOffset = nullptr;
+
+		schema->Init();
+		schema->AddAlign("Illusion.Model", &pModel);
+		schema->AddAlign("Illusion.ModelPlat", &pModelPlat);
+		schema->AddAlign("Illusion.ModelUserPlat", &pModelUserPlat, &pModelPlat->mModelUserPlat);
+		schema->AddAlign("Illusion.ModelUser", &pModelUser, &pModel->mModelUser);
+
+		for (u32 i = 0; num_meshes > i; ++i)
+		{
+			if (i) 
+			{
+				schema->Add<UFG::qOffset<Mesh*>>("UFG::qOffset<Mesh*>");
+				continue;
+			}
+
+			schema->Add<UFG::qOffset<Mesh*>>("UFG::qOffset<Mesh*>", &pMeshOffset, &pModel->mMeshOffsetTable);
+		}
+
+		schema->Align16();
+
+		for (u32 i = 0; num_meshes > i; ++i)
+		{
+			schema->AddAlign<Mesh>("Illusion.Mesh", 0, pMeshOffset++);
+			schema->AddAlign<MeshPlat>("Illusion.MeshPlat");
+		}
+
+		schema->Allocate(memory_pool, allocation_params);
+
+		if (pModel)
+		{
+			new (pModel) Model(name_uid, name);  
+			
+			pModel->mMemoryPool = memory_pool;
+			pModel->mNumMeshes = num_meshes;
+			pModel->mNumPrims = 0;
+		}
+
+		for (u32 i = 0; num_meshes > i; ++i)
+		{
+			auto pMesh = pModel->GetMesh(i);
+			if (pMesh) {
+				new (pMesh) Mesh();
+			}
+		}
+
+		return pModel;
 	}
 
 #endif

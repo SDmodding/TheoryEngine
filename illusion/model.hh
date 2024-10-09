@@ -37,10 +37,10 @@ namespace Illusion
 		s8 mRunTimeCreated;
 		u16 mFlags;
 		u32 mDataByteSize;
-		UFG::qOffset64<void*> mData;
+		UFG::qOffset<void*> mData;
 		u32 mElementByteSize;
 		u32 mNumElements;
-		UFG::qOffset64<BufferUser*> mBufferUser;
+		UFG::qOffset<BufferUser*> mBufferUser;
 		u32 mLastUsedFrameNum;
 		u32 pad0;
 		UFG::qMemoryPool* mMemoryPool;
@@ -62,8 +62,8 @@ namespace Illusion
 	{
 	public:
 		u32 mNumLocators;
-		UFG::qOffset64<char*> mNameTable;
-		UFG::qOffset64<UFG::qMatrix44*> mTransformTable;
+		UFG::qOffset<char*> mNameTable;
+		UFG::qOffset<UFG::qMatrix44*> mTransformTable;
 	};
 
 	class LocatorsHandle : public UFG::qTypedResourceHandle<RTYPE_Locators, Locators>
@@ -79,8 +79,8 @@ namespace Illusion
 		BufferHandle mMorphVertexBufferHandle;
 		u32 mNumTargets;
 		u32 mPad0;
-		UFG::qOffset64<u32*> mTargetUIDTable;
-		UFG::qOffset64<char*> mTargetNameTable;
+		UFG::qOffset<u32*> mTargetUIDTable;
+		UFG::qOffset<char*> mTargetNameTable;
 	};
 
 	class MorphTargetsHandle : public UFG::qTypedResourceHandle<RTYPE_MorphTargets, MorphTargets>
@@ -91,6 +91,12 @@ namespace Illusion
 	//-------------------------------------------------------------------
 	// Mesh
 	//-------------------------------------------------------------------
+	
+	class MeshPlat
+	{
+	public:
+		int mPad0;
+	};
 
 	class IMeshPlat
 	{
@@ -109,6 +115,8 @@ namespace Illusion
 		u32 mNumPrims;
 		u32 pad;
 		const char* mDescription;
+
+		inline Mesh() {}
 	};
 
 	//-------------------------------------------------------------------
@@ -118,8 +126,21 @@ namespace Illusion
 	class ModelUser
 	{
 	public:
-		UFG::qOffset64<SoftbodyData*> mSoftbodyData;
+		UFG::qOffset<SoftbodyData*> mSoftbodyData;
 		u32 mHasSoftbodyInfo;
+	};
+
+	class ModelUserPlat
+	{
+	public:
+		int mExampleOfModelUserPlatData1;
+		float mExampleOfModelUserPlatData2;
+	};
+
+	class ModelPlat
+	{
+	public:
+		UFG::qOffset<ModelUserPlat*> mModelUserPlat;
 	};
 
 	class IModelPlat
@@ -136,14 +157,19 @@ namespace Illusion
 		u32 pad0;
 		MaterialTableHandle mMaterialTableHandle;
 		BonePaletteHandle mBonePaletteHandle;
-		UFG::qOffset64<UFG::qOffset64<Mesh*>*> mMeshOffsetTable;
+		UFG::qOffset<UFG::qOffset<Mesh*>*> mMeshOffsetTable;
 		u32 mNumMeshes;
-		UFG::qOffset64<ModelUser*> mModelUser;
+		UFG::qOffset<ModelUser*> mModelUser;
 		u32 pad1;
 		u32 mLastUsedFrameNum;
 		u32 pad2;
 		UFG::qMemoryPool* mMemoryPool;
 		MorphTargetsHandle mMorphTargetsHandle;
 		LocatorsHandle mLocatorsHandle;
+
+		inline Model(u32 name_uid, const char* name) : UFG::qResourceData(RTYPE_ModelData, name_uid, name),
+			mMemoryPool(0), pad0(0), pad1(0), pad2(0) {}
+
+		THEORY_INLINE Mesh* GetMesh(u32 index) { return mMeshOffsetTable[index]->Get(); }
 	};
 }

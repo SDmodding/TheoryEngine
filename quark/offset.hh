@@ -15,7 +15,10 @@ namespace UFG
 
 		inline T Get(i32 offset = 0)
 		{
-			return reinterpret_cast<T>(reinterpret_cast<uptr>(this) + mOffset + offset);
+			if (mOffset) {
+				return reinterpret_cast<T>(reinterpret_cast<uptr>(this) + mOffset + offset);
+			}
+			return 0;
 		}
 
 		inline void Set(void* target)
@@ -39,7 +42,10 @@ namespace UFG
 
 		inline T Get(i64 offset = 0)
 		{
-			return reinterpret_cast<T>(reinterpret_cast<uptr>(this) + mOffset + offset);
+			if (mOffset) {
+				return reinterpret_cast<T>(reinterpret_cast<uptr>(this) + mOffset + offset);
+			}
+			return 0;
 		}
 
 		inline void Set(void* target)
@@ -54,6 +60,11 @@ namespace UFG
 
 		inline void operator=(const T* target) { Set(target); }
 
+		THEORY_INLINE T operator[](u32 index) { return &Get()[index]; }
+
 		THEORY_INLINE T operator->() { return Get(); }
 	};
+
+	template <typename T>
+	using qOffset = qOffset64<T>;
 }
