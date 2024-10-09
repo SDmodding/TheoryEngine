@@ -15,7 +15,7 @@ namespace UFG
 
 		inline qResourceData* GetData()
 		{
-			return reinterpret_cast<qResourceData*>(reinterpret_cast<uptr>(this) + mDataOffset + sizeof(qChunk));
+			return reinterpret_cast<qResourceData*>(reinterpret_cast<uptr>(&this[1]) + mDataOffset);
 		}
 	};
 
@@ -23,7 +23,7 @@ namespace UFG
 	// Resource Handle
 	//-------------------------------------------------------------------
 
-	class qResourceHandle : public qNode<qResourceHandle, qResourceHandle>
+	class qResourceHandle : public qNode<qResourceHandle>
 	{
 	public:
 		qResourceData* mData;
@@ -76,7 +76,7 @@ namespace UFG
 	class qResourceData : public qNodeRB<qResourceData>
 	{
 	public:
-		qList<qResourceHandle, qResourceHandle> mResourceHandles;
+		qList<qResourceHandle> mResourceHandles;
 		u32 mTypeUID;
 		char mDebugName[36];
 
@@ -90,7 +90,7 @@ namespace UFG
 	// Inventory
 	//-------------------------------------------------------------------
 
-	class qResourceInventory : public qNodeRB<qResourceInventory>, public qNode<qResourceInventory, qResourceInventory>
+	class qResourceInventory : public qNodeRB<qResourceInventory>, public qNode<qResourceInventory>
 	{
 	public:
 		u32 mDefaultResourceNameUID;
@@ -98,9 +98,9 @@ namespace UFG
 		const char* mName;
 		qResourceData* mDefaultResourceData;
 		qTreeRB<qResourceData> mResourceDatas;
-		qList<qResourceHandle, qResourceHandle> mNullHandles;
-		qList<qResourceHandle, qResourceHandle> mInternalUnresolvedHandles[4];
-		qList<qResourceHandle, qResourceHandle>* mUnresolvedHandleLists;
+		qList<qResourceHandle> mNullHandles;
+		qList<qResourceHandle> mInternalUnresolvedHandles[4];
+		qList<qResourceHandle>* mUnresolvedHandleLists;
 		u32 mNumUnresolvedHandleLists;
 		u32 mNumResourceData;
 		u32 mNumResourceBytes;
@@ -129,7 +129,7 @@ namespace UFG
 	{
 	public:
 		qTreeRB<qResourceInventory> mInventoryTree;
-		qList<qResourceInventory, qResourceInventory> mInventoryList;
+		qList<qResourceInventory> mInventoryList;
 		qResourceInventory* mLastInventory;
 		u32 mLastTypeUID;
 		int mNumInventories;
@@ -140,6 +140,8 @@ namespace UFG
 		f32 mUnloadTime;
 
 		static qResourceWarehouse* Instance();
+
+		qResourceInventory* GetInventory(u32 type_uid);
 
 		THEORY_INLINE void AddInventory(qResourceInventory* inv)
 		{
@@ -184,6 +186,20 @@ namespace UFG
 	{
 		Close();
 		// TODO: GetInventory from Warehouse and call InitHandle.
+	}
+
+	bool qResourceHandle::IsDefault()
+	{
+		if (!mData) {
+			return false;
+		}
+
+		auto defaultResourceData = qResourceWarehouse::Instance()->GetInventory(mData->mTypeUID)->mDefaultResourceData;
+		if (!defaultResourceData || defaultResourceData != mData) {
+			return false;
+		}
+
+		return true;
 	}
 
 	//-------------------------------------------------------------------
@@ -277,6 +293,25 @@ namespace UFG
 	{
 		static qResourceWarehouse sResourceWarehouse;
 		return &sResourceWarehouse;
+	}
+
+
+	qResourceInventory* qResourceWarehouse::GetInventory(u32 type_uid)
+	{
+		if (mLastInventory && mLastTypeUID == type_uid) {
+			return mLastInventory;
+		}
+
+		qResourceInventory* pInv = nullptr;
+
+		if (auto pInvNode = mInventoryTree.Get<qResourceInventory>(type_uid)) {
+			pInv = pInvNode->GetBase();
+		}
+
+		mLastTypeUID = type_uid;
+		mLastInventory = pInv;
+
+		return pInv;
 	}
 
 #endif

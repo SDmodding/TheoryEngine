@@ -52,6 +52,9 @@ namespace UFG
 	{
 	public:
 		qBaseNodeRB mNode;
+
+		/* Change this, if there is a better way to do this... */
+		THEORY_INLINE T* GetBase() { return reinterpret_cast<T*>(reinterpret_cast<uptr>(this) - offsetof(T, mNode)); }
 	};
 
 	class qBaseTreeRB
@@ -81,8 +84,12 @@ namespace UFG
 	{
 	public:
 		qBaseTreeRB mTree;
-	};
 
+		THEORY_INLINE qBaseNodeRB* Get(u32 uid) { return mTree.Get(uid); }
+
+		template <typename T>
+		THEORY_INLINE qNodeRB<T>* Get(u32 uid) { return reinterpret_cast<qNodeRB<T>*>(Get(uid)); }
+	};
 
 #ifdef THEORY_IMPL
 
