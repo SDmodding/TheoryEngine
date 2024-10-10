@@ -24,7 +24,7 @@ namespace Illusion
 
 		virtual ~MemImageSchema() {}
 
-		THEORY_INLINE void Align16() { mCurrSize = ((mCurrSize + 0xF) & ~0xF); }
+		THEORY_INLINE void Align16() { mCurrSize = UFG::qAlingUp<usize>(mCurrSize, 16); }
 
 		void Allocate(UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
 
@@ -63,8 +63,12 @@ namespace Illusion
 		template <typename T>
 		THEORY_INLINE void AddAlign(const char* name, T** pointer = 0, void* offset_ptr = 0)
 		{
-			Add(name, ((sizeof(T) + 0xF) & ~0xF), reinterpret_cast<void**>(pointer), offset_ptr);
+			Add(name, UFG::qAlingUp<u32>(sizeof(T), 16), reinterpret_cast<void**>(pointer), offset_ptr);
 		}
+
+		void BeginValidation(/*UFG::qChunkFileBuilder* chunk_builder, */const char* name);
+
+		void EndValidation(/*UFG::qChunkFileBuilder* chunk_builder, */usize size);
 	};
 
 	extern MemImageSchema gMemImageSchema;

@@ -56,6 +56,7 @@
 #include "quark/math.hh"
 #include "quark/halfmath.hh"
 #include "quark/processplat.hh"
+#include "quark/memory.hh"
 #include "quark/string.hh"
 
 #ifdef THEORY_PLATFORM_PC
