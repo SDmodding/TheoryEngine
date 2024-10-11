@@ -112,7 +112,7 @@ namespace UFG
 	{
 	public:
 		qFileSystem* mFileSystem;
-		//qEvent mEvent;
+		qEvent mEvent;
 		qMutex mMutex;
 		qList<qFileOp> mQueuedOps[3];
 		qList<qFileOp> mExecutingOps;
