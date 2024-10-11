@@ -26,9 +26,9 @@ namespace UFG
 			Free();
 		}
 
-		void SetMagic() { mMagic = THEORY_STRING_MAGIC; }
+		THEORY_INLINE void SetMagic() { mMagic = THEORY_STRING_MAGIC; }
 
-		void ResetHash() { mStringHash32 = mStringHashUpper32 = -1; }
+		THEORY_INLINE void ResetHash() { mStringHash32 = mStringHashUpper32 = -1; }
 
 		void Format(const char* format, ...);
 
