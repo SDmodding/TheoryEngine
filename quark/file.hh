@@ -39,9 +39,9 @@ namespace UFG
 	public:
 		qFileDevice* mDevice;
 		qFileAccessType mAccessType;
-		//qMutex mFileHandleMutex;
+		qMutex mFileHandleMutex;
 		void* mFileHandle;
-		//qMutex mStateMutex;
+		qMutex mStateMutex;
 		s32 mOpenState;
 		s32 mCloseState;
 		int mNumAsyncOps;
@@ -112,11 +112,11 @@ namespace UFG
 	{
 	public:
 		qFileSystem* mFileSystem;
-		/*qEvent mEvent;
+		//qEvent mEvent;
 		qMutex mMutex;
 		qList<qFileOp> mQueuedOps[3];
 		qList<qFileOp> mExecutingOps;
-		qList<qFileOp> mDoneOps;*/
+		qList<qFileOp> mDoneOps;
 
 		qFileOpList(const char* name) : mFileSystem(0) {}
 
@@ -158,7 +158,7 @@ namespace UFG
 		int mMaxOpenFiles;
 		Casing mCaseSensitive;
 		qList<qFileOpList> mFileOpLists;
-		//qMutex mMutex;
+		qMutex mMutex;
 		qList<qFile> mOpenFiles;
 		qList<qFile> mClosedFiles;
 

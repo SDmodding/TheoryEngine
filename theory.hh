@@ -55,11 +55,12 @@
 #include "quark/treerb.hh"
 #include "quark/math.hh"
 #include "quark/halfmath.hh"
-#include "quark/processplat.hh"
+#include "quark/process.hh"
 #include "quark/memory.hh"
 #include "quark/string.hh"
 
 #ifdef THEORY_PLATFORM_PC
+	#include "quark/pc/processplat.hh"
 	#include "quark/pc/stringplat.hh"
 #endif
 
