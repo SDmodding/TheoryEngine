@@ -67,7 +67,6 @@
 #include "quark/qsymbol.hh"
 #include "quark/memorypool.hh"
 #include "quark/memorypoollinearallocator.hh"
-#include "quark/stringimpl.hh"
 #include "quark/resource.hh"
 #include "quark/resource_uid.hh"
 #include "quark/quark.hh"
@@ -91,8 +90,25 @@
 #include "illusion/material.hh"
 #include "illusion/materialuser.hh"
 #include "illusion/materialmodifier.hh"
-#include "illusion/materialimpl.hh"
 #include "illusion/model.hh"
 
 #include "illusion/internal/factoryplat.hh"
 #include "illusion/illusion.hh"
+
+//==================================================================
+
+#ifdef THEORY_IMPL
+
+//-------------------------------------------------------------------
+// [Quark] Implementations
+//-------------------------------------------------------------------
+
+#include "quark/string_impl.hh"
+
+//-------------------------------------------------------------------
+// [Illusion] Implementations
+//-------------------------------------------------------------------
+
+#include "illusion/material_impl.hh"
+
+#endif

@@ -30,7 +30,7 @@ But please keep your pull request small and understandable and make sure to foll
     </dd>
     <dt><u>Use correct file for declaration/definition</u></dt>
     <dd>- If you define a class or function, it should be placed in the appropriate file based on debug symbols.
-    <br>- If multiple classes need access to each other, you should organize them so they can be included as a single header. In some cases, you will need to create your own file, such as <kbd>stringimpl.hh</kbd>, where <kbd>string.hh</kbd> is the original definition.
+    <br>- If multiple classes need access to each other, you should organize them so they can be included as a single header. In some cases, you will need to create your own file, such as <kbd>string_impl.hh</kbd>, where <kbd>string.hh</kbd> is the original definition.
     </dd>
     <dt><u>Use original naming if possible</u></dt>
     <dd>- If you are reimplementing a class or function, please use the original name from the debug symbols. If there are multiple pieces of code that could be inlined function, it is best to declare it as own function and come up with your own name.</dd>
