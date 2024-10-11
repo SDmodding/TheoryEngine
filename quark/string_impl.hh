@@ -555,6 +555,60 @@ namespace UFG
 		ResetHash();
 	}
 
+	bool qString::StartsWith(const char* text, int length)
+	{
+		if (!mData || !text) {
+			return false;
+		}
+
+		if (length < 0) {
+			length = qStringLength(text);
+		}
+
+		if (!length) {
+			return true;
+		}
+
+		char* data = mData;
+		while (*data && *data == *text)
+		{
+			++data;
+			++text;
+			if (!--length) {
+				return true;
+			}
+		}
+
+		return (*data == *text);
+	}
+
+	bool qString::EndsWith(const char* text, int length)
+	{
+		if (!mData || !text) {
+			return false;
+		}
+
+		if (length < 0) {
+			length = qStringLength(text);
+		}
+
+		if (!length) {
+			return true;
+		}
+
+		char* data = &mData[mLength - length];
+		while (*data && *data == *text)
+		{
+			++data;
+			++text;
+			if (!--length) {
+				return true;
+			}
+		}
+
+		return (*data == *text);
+	}
+
 	qString qString::Substring(int start, int length)
 	{
 		qString res;
@@ -590,7 +644,68 @@ namespace UFG
 		return qTrim(mData, mLength);
 	}
 
+	qString* qString::append(const char* str, int len)
+	{
+		if (str) {
+			Set(mData, mLength, str, len);
+		}
+
+		return this;
+	}
+
 	/* Operators */
+
+	bool qString::operator!=(const qString& text)
+	{
+		if (!mLength && !text.mLength) {
+			return false;
+		}
+
+		if (mLength != text.mLength || !mData || !text.mData) {
+			return true;
+		}
+
+		return qStringCompare(mData, text.mData);
+	}
+
+	bool qString::operator!=(const char* text)
+	{
+		if (!text) {
+			return mLength != 0;
+		}
+
+		if (!mData) {
+			return true;
+		}
+
+		return qStringCompare(mData, text);
+	}
+
+	bool qString::operator==(const qString& text)
+	{
+		if (!mLength && !text.mLength) {
+			return true;
+		}
+
+		if (mLength != text.mLength || !mData || !text.mData) {
+			return false;
+		}
+
+		return !qStringCompare(mData, text.mData);
+	}
+
+	bool qString::operator==(const char* text)
+	{
+		if (!text) {
+			return mLength == 0;
+		}
+
+		if (!mData) {
+			return false;
+		}
+
+		return !qStringCompare(mData, text);
+	}
 
 	const qString& qString::operator=(const qString& text)
 	{

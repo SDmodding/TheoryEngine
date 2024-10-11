@@ -60,8 +60,8 @@ namespace UFG
 
 		void Set(const char* text, int length, const char* textb = 0, int lengthb = 0);
 
-		bool StartsWith(const char* text, int length);
-		bool EndsWith(const char* text, int length);
+		bool StartsWith(const char* text, int length = -1);
+		bool EndsWith(const char* text, int length = -1);
 
 		qString Substring(int start, int length);
 
@@ -71,21 +71,21 @@ namespace UFG
 
 		qString Trim();
 
-		const qString& append(const char* str, int len);
+		qString* append(const char* str, int len);
 
 		/* Operators */
 
 		bool operator!=(const qString& text);
 		bool operator!=(const char* text);
 
+		bool operator==(const qString& text);
+		bool operator==(const char* text);
+
 		const qString& operator=(const qString& text);
 		const qString& operator=(const char* text);
 
 		const qString& operator+=(const qString& text);
 		const qString& operator+=(const char* text);
-
-		bool operator==(const qString& text);
-		bool operator==(const char* text);
 
 		char operator[](int pos) { return mData[pos]; }
 	};
@@ -96,9 +96,9 @@ namespace UFG
 
 	THEORY_INLINE bool qStringEmpty(const char* p) { return (!p || !*p); }
 
-	int qStringCompare(const char* text_a, const char* text_b, int count);
+	int qStringCompare(const char* text_a, const char* text_b, int count = -1);
 
-	int qStringCompareInsensitive(const char* text_a, const char* text_b, int count);
+	int qStringCompareInsensitive(const char* text_a, const char* text_b, int count = -1);
 	
 	char* qStringFind(const char* text, const char* find);
 
