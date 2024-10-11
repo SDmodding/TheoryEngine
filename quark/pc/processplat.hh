@@ -69,5 +69,101 @@ namespace UFG
 		LeaveCriticalSection(reinterpret_cast<LPCRITICAL_SECTION>(this));
 	}
 
+	//-------------------------------------------------------------------
+	// Thread
+	//-------------------------------------------------------------------
+
+	qThread::qThread()
+	{
+		mName = nullptr;
+		mThreadFunction = nullptr;
+		mThreadParam = nullptr;
+		mStacksize = 0;
+		mPriority = -1;
+		mLogicalCoreID = -1;
+		mHandlePlat = INVALID_HANDLE_VALUE;
+		mHandlePlat64 = 0;
+		mThreadIDPlat = 0;
+	}
+
+	qThread::qThread(const char* name) : qThread()
+	{
+		mName = name;
+	}
+
+	bool qThread::SetLogicalCoreID(int logical_core_id)
+	{
+		mLogicalCoreID = logical_core_id;
+		return (mHandlePlat == INVALID_HANDLE_VALUE 
+			|| logical_core_id == -1 
+			|| SetThreadIdealProcessor(mHandlePlat, static_cast<DWORD>(logical_core_id)));
+	}
+
+	void qThread::SetName(const char* name)
+	{
+		mName = name;
+	}
+
+	bool qThread::SetThreadPriority(int priority)
+	{
+		mPriority = priority;
+
+		if (priority == -1) {
+			priority = mDefaultThreadPriority;
+		}
+
+		return (mHandlePlat == INVALID_HANDLE_VALUE || ::SetThreadPriority(mHandlePlat, priority));
+	}
+
+	void qThread::Start(void(*thread_function)(void*), void* thread_param)
+	{
+		mThreadFunction = thread_function;
+		mThreadParam = thread_param;
+
+		int stackSize = mStacksize;
+		if (stackSize <= 0) {
+			stackSize = mDefaultThreadStackSize;
+		}
+
+		mHandlePlat = CreateThread(0, static_cast<SIZE_T>(stackSize), reinterpret_cast<LPTHREAD_START_ROUTINE>(mThreadFunction), mThreadParam, 0, reinterpret_cast<LPDWORD>(&mThreadIDPlat));
+
+		int priority = mPriority;
+		if (priority == -1) {
+			priority = mDefaultThreadPriority;
+		}
+
+		if (mHandlePlat != INVALID_HANDLE_VALUE) {
+			::SetThreadPriority(mHandlePlat, priority);
+		}
+
+		if (mHandlePlat != INVALID_HANDLE_VALUE && mLogicalCoreID != -1) {
+			SetThreadIdealProcessor(mHandlePlat, static_cast<DWORD>(mLogicalCoreID));
+		}
+	}
+
+	void qThread::Stop()
+	{
+		if (mHandlePlat == INVALID_HANDLE_VALUE) {
+			return;
+		}
+
+		DWORD dwExitCode;
+		GetExitCodeThread(mHandlePlat, &dwExitCode);
+
+		if (dwExitCode == STILL_ACTIVE)
+		{
+			qPrintf("ERROR: Thread is still active at shutdown!!  Forcefully stopping a thread like this will almost certainly screw the OS!  thread=0x%08x - %s\n", mHandlePlat, mName);
+			TerminateThread(mHandlePlat, 0);
+		}
+
+		CloseHandle(mHandlePlat);
+		mHandlePlat = INVALID_HANDLE_VALUE;
+	}
+
+	bool qThread::WaitForCompletion()
+	{
+		return (mHandlePlat == INVALID_HANDLE_VALUE || WaitForSingleObject(mHandlePlat, INFINITE) == 0);
+	}
+
 #endif
 }

@@ -45,4 +45,42 @@ namespace UFG
 
 		void Unlock();
 	};
+
+
+	//-------------------------------------------------------------------
+	// Thread
+	//-------------------------------------------------------------------
+
+	class qThread
+	{
+	public:
+		const char* mName;
+		void(*mThreadFunction)(void*);
+		void* mThreadParam;
+		int mStacksize;
+		int mPriority;
+		int mLogicalCoreID;
+		void* mHandlePlat;
+		u64 mHandlePlat64;
+		u32 mThreadIDPlat;
+
+		static inline int mDefaultThreadStackSize;
+		static inline int mDefaultThreadPriority;
+
+		qThread();
+
+		qThread(const char* name);
+
+		bool SetLogicalCoreID(int logical_core_id);
+
+		void SetName(const char* name);
+
+		bool SetThreadPriority(int priority);
+
+		void Start(void(*thread_function)(void*), void* thread_param);
+
+		void Stop();
+
+		bool WaitForCompletion();
+	};
 }
