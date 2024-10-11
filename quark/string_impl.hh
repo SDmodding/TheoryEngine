@@ -377,6 +377,78 @@ namespace UFG
 		va_end(va);
 	}
 
+	qString qString::GetFilePath()
+	{
+		int len = mLength - 1;
+		if (len >= 0 && mData[len] == ':') {
+			--len;
+		}
+
+		while (len >= 0 && mData[len] != '\\' && mData[len] != '/') {
+			--len;
+		}
+
+		qString res;
+
+		if (len) {
+			res.Set(mData, len);
+		}
+
+		return res;
+	}
+
+	qString qString::GetFilePathWithoutExtension()
+	{
+		int len = mLength - 1;
+		if (len >= 0 && mData[len] == ':') {
+			--len;
+		}
+
+		while (len >= 0 && mData[len] != '\\' && mData[len] != '/' && mData[len] != '.') {
+			--len;
+		}
+
+		qString res;
+
+		if (len) {
+			res.Set(mData, len);
+		}
+
+		return res;
+	}
+
+	qString qString::GetFilename()
+	{
+		int len = mLength;
+		while (len >= 0 && mData[len] != '\\' && mData[len] != '/') {
+			--len;
+		}
+
+		qString res;
+		res.Set(&mData[len + 1], mLength - len - 1);
+
+		return res;
+	}
+
+	qString qString::GetFilenameWithoutExtension()
+	{
+		int len = mLength;
+		int total_len = mLength;
+
+		while (len >= 0 && mData[len] != '\\' && mData[len] != '/') 
+		{
+			if (mData[len] == '.') {
+				total_len = len;
+			}
+			--len;
+		}
+
+		qString res;
+		res.Set(&mData[len + 1], total_len - len - 1);
+
+		return res;
+	}
+
 	u32 qString::GetStringHash32()
 	{
 		if (!mStringHash32) {
