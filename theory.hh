@@ -69,7 +69,12 @@
 #include "quark/memorypoollinearallocator.hh"
 #include "quark/resource.hh"
 #include "quark/resource_uid.hh"
+#include "quark/file.hh"
 #include "quark/quark.hh"
+
+#ifdef THEORY_PLATFORM_PC
+	#include "quark/pc/fileplat.hh"
+#endif
 
 //-------------------------------------------------------------------
 // [Illusion] Includes

@@ -94,6 +94,8 @@ namespace UFG
 
 	int qSPrintf(char* dest, const char* format, ...);
 
+	THEORY_INLINE bool qStringEmpty(const char* p) { return (!p || !*p); }
+
 	char* qStringCopy(char* dest, int dest_size, const char* text, int text_count = -1);
 
 	int qStringLength(const char* text);
@@ -102,7 +104,7 @@ namespace UFG
 
 	void qStringToUpper(char* text);
 
-	THEORY_INLINE bool qIsWhitespace(int c)
+	inline bool qIsWhitespace(int c)
 	{
 		return (c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r' || c == ' ' ? true : false);
 	}
