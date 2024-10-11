@@ -4,6 +4,41 @@ namespace UFG
 {
 #ifdef THEORY_IMPL
 
+	long qAtomicIncrement(volatile long* v)
+	{
+		return _InterlockedIncrement(v);
+	}
+
+	long qAtomicDecrement(volatile long* v)
+	{
+		return _InterlockedDecrement(v);
+	}
+
+	long qAtomicAdd(volatile long* v, long add_amount)
+	{
+		_m_prefetchw(v);
+
+		long comperand, exchange;
+
+		do
+		{
+			comperand = *v;
+			exchange = *v + add_amount;
+		} while (comperand != _InterlockedCompareExchange(v, exchange, *v));
+
+		return comperand;
+	}
+
+	void qSleep(int milliseconds)
+	{
+		Sleep(static_cast<DWORD>(milliseconds));
+	}
+
+	u64 qGetCurrentThreadID()
+	{
+		return static_cast<u64>(GetCurrentThreadId());
+	}
+
 	//-------------------------------------------------------------------
 	// Event
 	//-------------------------------------------------------------------

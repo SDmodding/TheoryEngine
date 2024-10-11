@@ -2,6 +2,16 @@
 
 namespace UFG
 {
+	long qAtomicIncrement(volatile long* v);
+
+	long qAtomicDecrement(volatile long* v);
+
+	long qAtomicAdd(volatile long* v, long add_amount);
+
+	void qSleep(int milliseconds);
+
+	u64 qGetCurrentThreadID();
+
 	//-------------------------------------------------------------------
 	// Event
 	//-------------------------------------------------------------------
