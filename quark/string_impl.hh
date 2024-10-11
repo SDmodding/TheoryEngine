@@ -415,6 +415,21 @@ namespace UFG
 		}
 	}
 
+	qString qString::ReplaceExtension(const char* ext)
+	{
+		if (qStringEmpty(ext)) {
+			return {};
+		}
+
+		if (char* last_dot = qStringFindLast(mData, '.'))
+		{
+			int ext_length = qStringLength(ext);
+			Set(mData, static_cast<int>(last_dot - mData), ext, ext_length);
+		}
+
+		return *this;
+	}
+
 	void qString::Free()
 	{
 		if (mData != sEmptyString && mData) {

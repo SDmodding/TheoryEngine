@@ -9,7 +9,7 @@ namespace UFG
 		qNode<T, U>* mPrev;
 		qNode<T, U>* mNext;
 
-		qNode() : mPrev(reinterpret_cast<qNode<T, U>*>(&mPrev)), mNext(reinterpret_cast<qNode<T, U>*>(&mNext)) {}
+		qNode() : mPrev(this), mNext(this) {}
 		~qNode()
 		{
 			RemoveNode();
