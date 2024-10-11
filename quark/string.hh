@@ -96,6 +96,22 @@ namespace UFG
 
 	THEORY_INLINE bool qStringEmpty(const char* p) { return (!p || !*p); }
 
+	int qStringCompare(const char* text_a, const char* text_b, int count);
+
+	int qStringCompareInsensitive(const char* text_a, const char* text_b, int count);
+	
+	char* qStringFind(const char* text, const char* find);
+
+	char* qStringFind(const char* text, int text_length, const char* find, int find_length, int insensitive);
+
+	char* qStringFindInsensitive(const char* text, const char* find);
+
+	char* qStringFindLast(const char* text, const char* find);
+
+	char* qStringFindLast(const char* text, char c);
+
+	char* qStringFindLastInsensitive(const char* text, const char* find);
+
 	char* qStringCopy(char* dest, int dest_size, const char* text, int text_count = -1);
 
 	int qStringLength(const char* text);

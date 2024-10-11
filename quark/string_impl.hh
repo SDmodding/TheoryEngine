@@ -29,6 +29,198 @@ namespace UFG
 		return len;
 	}
 
+	int qStringCompare(const char* text_a, const char* text_b, int count)
+	{
+		if (!text_a || !text_b) {
+			return -1;
+		}
+
+		if (count < 0) {
+			count = -1;
+		}
+
+		if (!count) {
+			return 0;
+		}
+
+		while (*text_a && *text_a == *text_b)
+		{
+			++text_a;
+			++text_b;
+
+			if (!--count) {
+				return 0;
+			}
+		}
+
+		return static_cast<int>(*text_a - *text_b);
+	}
+
+	int qStringCompareInsensitive(const char* text_a, const char* text_b, int count)
+	{
+		if (!text_a || !text_b) {
+			return -1;
+		}
+
+		if (count < 0) {
+			count = -1;
+		}
+
+		if (!count) {
+			return 0;
+		}
+
+		while (*text_a && qToUpper(*text_a) == qToUpper(*text_b))
+		{
+			++text_a;
+			++text_b;
+
+			if (!--count) {
+				return 0;
+			}
+		}
+
+		return static_cast<int>(*text_a - *text_b);
+	}
+
+	char* qStringFind(const char* text, const char* find)
+	{
+		if (qStringEmpty(text) || qStringEmpty(find)) {
+			return nullptr;
+		}
+
+		int find_len = qStringLength(find);
+		int max_len = (qStringLength(text) - find_len);
+		if (max_len < 0) {
+			return nullptr;
+		}
+
+		int index = 0;
+		while (qStringCompare(&text[index], find, find_len))
+		{
+			if (++index > max_len) {
+				return 0;
+			}
+		}
+
+		return const_cast<char*>(&text[index]);
+	}
+
+	char* qStringFind(const char* text, int text_length, const char* find, int find_length, int insensitive)
+	{
+		if (qStringEmpty(text) || !text_length || qStringEmpty(find) || !find_length) {
+			return nullptr;
+		}
+
+		int max_len = (text_length - find_length);
+		if (max_len < 0) {
+			return nullptr;
+		}
+
+		int index = 0;
+		while ((insensitive ? qStringCompareInsensitive(&text[index], find, find_length) : qStringCompare(&text[index], find, find_length)))
+		{
+			if (++index > max_len) {
+				return 0;
+			}
+		}
+
+		return const_cast<char*>(&text[index]);
+	}
+
+	char* qStringFindInsensitive(const char* text, const char* find)
+	{
+		if (qStringEmpty(text) || qStringEmpty(find)) {
+			return nullptr;
+		}
+
+		int find_len = qStringLength(find);
+		int max_len = (qStringLength(text) - find_len);
+		if (max_len < 0) {
+			return nullptr;
+		}
+
+		int index = 0;
+		while (qStringCompareInsensitive(&text[index], find, find_len))
+		{
+			if (++index > max_len) {
+				return 0;
+			}
+		}
+
+		return const_cast<char*>(&text[index]);
+	}
+
+	char* qStringFindLast(const char* text, const char* find)
+	{
+		if (qStringEmpty(text) || qStringEmpty(find)) {
+			return nullptr;
+		}
+
+		int find_len = qStringLength(find);
+		int max_len = (qStringLength(text) - find_len);
+		if (max_len < 0) {
+			return nullptr;
+		}
+
+		int index = (max_len - 1);
+		while (qStringCompare(&text[index], find, find_len))
+		{
+			if (--index < 0) {
+				return 0;
+			}
+		}
+
+		return const_cast<char*>(&text[index]);
+	}
+
+	char* qStringFindLast(const char* text, char c)
+	{
+		if (qStringEmpty(text) || !c) {
+			return nullptr;
+		}
+
+		int last_index = -1;
+		int index = 0;
+
+		for (const char* p = text; *p; ++p)
+		{
+			if (*p == c) {
+				last_index = index;
+			}
+
+			++index;
+		}
+
+		if (last_index < 0) {
+			return nullptr;
+		}
+
+		return const_cast<char*>(&text[last_index]);
+	}
+
+	char* qStringFindLastInsensitive(const char* text, const char* find)
+	{
+		if (qStringEmpty(text) || qStringEmpty(find)) {
+			return nullptr;
+		}
+
+		int find_len = qStringLength(find);
+		int max_len = (qStringLength(text) - find_len);
+		if (max_len < 0) {
+			return nullptr;
+		}
+
+		int index = (max_len - 1);
+		while (qStringCompareInsensitive(&text[index], find, find_len))
+		{
+			if (--index < 0) {
+				return 0;
+			}
+		}
+
+		return const_cast<char*>(&text[index]);
+	}
 
 	char* qStringCopy(char* dest, int dest_size, const char* text, int text_count)
 	{
