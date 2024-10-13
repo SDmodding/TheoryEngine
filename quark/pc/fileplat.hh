@@ -234,15 +234,15 @@ namespace UFG
 		DWORD dwCreationDisposition = 0;
 		DWORD dwFlagsAndAttributes = 0;
 
-		if (file->mAccessType & QACCESS_READ_WRITE)
-		{
-			dwDesiredAccess = (GENERIC_READ | GENERIC_WRITE);
-			dwCreationDisposition = CREATE_ALWAYS;
-		}
-		else if (file->mAccessType & QACCESS_READ)
+		if (file->mAccessType & QACCESS_READ)
 		{
 			dwDesiredAccess = GENERIC_READ;
 			dwCreationDisposition = OPEN_EXISTING;
+		}
+		else if (file->mAccessType & QACCESS_READ_WRITE)
+		{
+			dwDesiredAccess = (GENERIC_READ | GENERIC_WRITE);
+			dwCreationDisposition = CREATE_ALWAYS;
 		}
 		else if (file->mAccessType & QACCESS_WRITE)
 		{
