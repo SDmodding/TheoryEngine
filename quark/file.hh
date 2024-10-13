@@ -127,7 +127,7 @@ namespace UFG
 	{
 	public:
 		const char* mName;
-		//qThread mThread;
+		qThread mThread;
 		int mThreadStackSize;
 		int mThreadPriority;
 		int mThreadLogicalCoreID;

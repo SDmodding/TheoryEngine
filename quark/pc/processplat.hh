@@ -94,6 +94,11 @@ namespace UFG
 		InitializeCriticalSectionAndSpinCount(reinterpret_cast<LPCRITICAL_SECTION>(this), 4000);
 	}
 
+	qMutex::~qMutex()
+	{
+		DeleteCriticalSection(reinterpret_cast<LPCRITICAL_SECTION>(this));
+	}
+
 	void qMutex::Lock(const char* name, int)
 	{
 		EnterCriticalSection(reinterpret_cast<LPCRITICAL_SECTION>(this));

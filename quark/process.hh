@@ -51,6 +51,8 @@ namespace UFG
 
 		qMutex(const char* name = 0);
 
+		~qMutex();
+
 		void Lock(const char* name = 0, int unk = 0);
 
 		void Unlock();
