@@ -287,6 +287,10 @@ namespace UFG
 
 	qString qGetDirectory();
 
+	//-------------------------------------------------------------------
+	// File Functions
+	//-------------------------------------------------------------------
+
 	qFile* qOpen(const char* filename, qFileAccessType access_type, bool warn_if_fail);
 
 	bool qOpenInternal(qFile* file, bool warn_if_fail);
@@ -296,6 +300,10 @@ namespace UFG
 	bool qCloseInternal(qFile* file);
 
 	bool qWaitForOpenFileHandle(qFile* file);
+
+	s64 qRead(qFile* file, void* buffer, s64 num_bytes, s64 seek_offset = 0, qFileSeekType seek_type = QSEEK_CUR);
+
+	s64 qWrite(qFile* file, const void* buffer, s64 num_bytes, s64 seek_offset = 0, qFileSeekType seek_type = QSEEK_CUR, bool* not_enough_space = nullptr);
 
 #ifdef THEORY_IMPL
 
@@ -409,7 +417,7 @@ namespace UFG
 	}
 
 	//-------------------------------------------------------------------
-	// Functions
+	// File Functions
 	//-------------------------------------------------------------------
 
 	qFile* qOpen(const char* filename, qFileAccessType access_type, bool warn_if_fail)
@@ -556,6 +564,51 @@ namespace UFG
 		}
 
 		return (file->mOpenState == qFile::STATE_OPENED);
+	}
+
+	s64 qRead(qFile* file, void* buffer, s64 num_bytes, s64 seek_offset, qFileSeekType seek_type)
+	{
+		if (!qWaitForOpenFileHandle(file) || !buffer) {
+			return -1;
+		}
+
+		if (!num_bytes) {
+			return 0;
+		}
+
+		s64 num_read_bytes;
+
+		{
+			qMutexScopeLocker sl(file->mFileHandleMutex);
+			num_read_bytes = file->mDevice->FileRead(file, buffer, num_bytes);
+		}
+
+		return num_read_bytes;
+	}
+
+	s64 qWrite(qFile* file, const void* buffer, s64 num_bytes, s64 seek_offset, qFileSeekType seek_type, bool* not_enough_space)
+	{
+		if (!qWaitForOpenFileHandle(file) || !buffer) {
+			return -1;
+		}
+
+		if (!num_bytes) {
+			return 0;
+		}
+
+		bool n_enough_space = false;
+		s64 num_written_bytes;
+
+		{
+			qMutexScopeLocker sl(file->mFileHandleMutex);
+			num_written_bytes = file->mDevice->FileWrite(file, buffer, num_bytes, &n_enough_space);
+		}
+
+		if (not_enough_space) {
+			*not_enough_space = n_enough_space;
+		}
+
+		return num_written_bytes;
 	}
 
 #endif

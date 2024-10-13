@@ -390,8 +390,11 @@ namespace UFG
 
 		qString res;
 
-		if (len) {
+		if (len > 0) {
 			res.Set(mData, len);
+		}
+		else {
+			res.Set(sEmptyString, 0);
 		}
 
 		return res;
