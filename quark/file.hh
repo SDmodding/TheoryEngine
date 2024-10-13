@@ -30,6 +30,31 @@ namespace UFG
 		QSEEK_END
 	};
 
+	enum qFileMapType
+	{
+		FILE_MAP_TYPE_DEFAULT,
+		FILE_MAP_TYPE_HOT_SWAP,
+		NUM_FILE_MAP_TYPE
+	};
+
+	//-------------------------------------------------------------------
+	// Mapping
+	//-------------------------------------------------------------------
+
+	class qFileMapLocation : public qNodeRB<qFileMapLocation>
+	{
+	public:
+		const char* mMappingName;
+		qString mPhysicalLocations[2];
+	};
+
+	class qFileMappingCallback : public qNode<qFileMappingCallback>
+	{
+	public:
+		bool(*mCallback)(qFileMapType, const char*, qString*, const void*);
+		const void* mParam;
+	};
+
 	//-------------------------------------------------------------------
 	// File
 	//-------------------------------------------------------------------
@@ -37,18 +62,32 @@ namespace UFG
 	class qFile : public qNode<qFile>
 	{
 	public:
+		enum State : s32
+		{
+			STATE_NONE,
+			STATE_OPENING,
+			STATE_OPENED,
+			STATE_CLOSING,
+			STATE_CLOSED
+		};
+
 		qFileDevice* mDevice;
 		qFileAccessType mAccessType;
 		qMutex mFileHandleMutex;
 		void* mFileHandle;
 		qMutex mStateMutex;
-		s32 mOpenState;
-		s32 mCloseState;
+		State mOpenState;
+		State mCloseState;
 		int mNumAsyncOps;
 		qFileOp* mAsyncCloseOp;
 		char mFilename[260];
-	};
 
+		qFile(qFileDevice* device, const char* filename, qFileAccessType access_type) : mFileHandleMutex("qFile::mOperationMutex"), mStateMutex("qFile::mStateMutex"),
+			mDevice(device), mAccessType(access_type), mOpenState(STATE_NONE), mCloseState(STATE_NONE), mNumAsyncOps(0), mAsyncCloseOp(0), mFileHandle(nullptr)
+		{
+			qStringCopy(mFilename, sizeof(mFilename), filename);
+		}
+	};
 
 	//-------------------------------------------------------------------
 	// File Operation
@@ -194,11 +233,329 @@ namespace UFG
 		virtual s64 FileWrite(qFile* file, const void* buffer, s64 num_bytes, bool* not_enough_space) = 0;
 	};
 
+	//-------------------------------------------------------------------
+	// System
+	//-------------------------------------------------------------------
+
+	class qFileSystem
+	{
+	public:
+		s64 mStartTicks;
+		bool mReportSyncFileOps;
+		bool mReportAsyncFileOps;
+		qList<qFileDevice> mDevices;
+		qMutex mMappingMutex;
+		qList<qFileMappingCallback> mMappingCallbacks;
+		qTreeRB<qFileMapLocation> mMappingLocations;
+		qFileDevice*(*mMapFilenameToDeviceCallback)(const char*);
+		qMutex mMutex;
+		qEvent mEvent;
+		qList<qFileOp> mDoneFileOps;
+		bool mFatalIOError;
+
+		qFileSystem() : mReportSyncFileOps(false), mReportAsyncFileOps(false), mFatalIOError(false), mMapFilenameToDeviceCallback(nullptr)
+		{
+			mEvent.Create("qFileSystem", false);
+		}
+
+		~qFileSystem();
+
+		void InitDevice(qFileDevice* device);
+
+		void CloseDevice(qFileDevice* device);
+
+		void InitPlat();
+
+		void ClosePlat();
+
+		bool IsBusy();
+
+		qString MapFilename(qFileMapType file_map_type, const char* filename);
+
+		qFileDevice* MapFilenameToDevice(const char* filename);
+
+		qFileDevice* MapFilenameToDevicePlat(const char* filename);
+
+		void Service();
+	};
+
+	extern qFileSystem gQuarkFileSystem;
+
+	//-------------------------------------------------------------------
+	// Functions
+	//-------------------------------------------------------------------
+
+	qString qGetDirectory();
+
+	qFile* qOpen(const char* filename, qFileAccessType access_type, bool warn_if_fail);
+
+	bool qOpenInternal(qFile* file, bool warn_if_fail);
+
+	void qClose(qFile* file);
+
+	bool qCloseInternal(qFile* file);
+
+	bool qWaitForOpenFileHandle(qFile* file);
+
 #ifdef THEORY_IMPL
 
 	void qFileOpList::Queue(qFileOp* file_op, int priority)
 	{
-		// TODO
+		/* TODO: Implement this. */
+	}
+
+	//-------------------------------------------------------------------
+	// System
+	//-------------------------------------------------------------------
+
+	qFileSystem gQuarkFileSystem;
+
+	qFileSystem::~qFileSystem()
+	{
+		do
+		{
+			Service();
+			qSleep(1);
+		} while (IsBusy());
+
+		/* TODO: Implement this. */
+	}
+
+	void qFileSystem::InitDevice(qFileDevice* device)
+	{
+		mDevices.Insert(device);
+
+		device->mFileSystem = this;
+		device->Mount();
+	}
+
+	void qFileSystem::CloseDevice(qFileDevice* device)
+	{
+		if (!device->mFileSystem) {
+			return;
+		}
+
+		device->Unmount();
+		device->mFileSystem = nullptr;
+
+		mDevices.Remove(device);
+	}
+
+	bool qFileSystem::IsBusy()
+	{
+		bool busy = false;
+
+		for (auto device = mDevices.begin(); device != mDevices.end(); device = device->next())
+		{
+			if (busy) {
+				break;
+			}
+
+			qMutexScopeLocker sl(device->mMutex);
+
+			for (auto openFile = device->mOpenFiles.begin(); openFile != device->mOpenFiles.end(); openFile = openFile->next())
+			{
+				if (openFile->mNumAsyncOps != 0) 
+				{
+					busy = true;
+					break;
+				}
+			}
+		}
+
+		return busy;
+	}
+
+	qString qFileSystem::MapFilename(qFileMapType file_map_type, const char* filename)
+	{
+		/* TODO: Complete the implementation... */
+		if (qStringEmpty(filename)) {
+			return {};
+		}
+
+
+		qMutexScopeLocker sl(mMappingMutex);
+
+		qString mappingStr;
+
+		if (filename[0] == '$' && filename[1] == '(')
+		{
+			/* TODO: Implement this. */
+		}
+
+		for (auto i = mMappingCallbacks.begin(); i != mMappingCallbacks.end(); i = i->next()) {
+			i->mCallback(file_map_type, filename, &mappingStr, i->mParam);
+		}
+
+
+		return filename;
+	}
+
+	qFileDevice* qFileSystem::MapFilenameToDevice(const char* filename)
+	{
+		if (mMapFilenameToDeviceCallback)
+		{
+			if (auto device = mMapFilenameToDeviceCallback(filename)) {
+				return device;
+			}
+		}
+
+		return MapFilenameToDevicePlat(filename);
+	}
+
+	void qFileSystem::Service()
+	{
+		/* TODO: Implement this. */
+	}
+
+	//-------------------------------------------------------------------
+	// Functions
+	//-------------------------------------------------------------------
+
+	qFile* qOpen(const char* filename, qFileAccessType access_type, bool warn_if_fail)
+	{
+		auto mapped_filename = gQuarkFileSystem.MapFilename(FILE_MAP_TYPE_DEFAULT, filename);
+		auto device = gQuarkFileSystem.MapFilenameToDevice(filename);
+
+		auto file = new ("qFile") qFile(device, mapped_filename, access_type);
+		file->mOpenState = qFile::STATE_OPENING;
+
+		if (!qOpenInternal(file, warn_if_fail))
+		{
+			qDelete(file);
+			file = nullptr;
+		}
+
+		return file;
+	}
+
+	bool qOpenInternal(qFile* file, bool warn_if_fail)
+	{
+		auto device = file->mDevice;
+		bool can_open = (file->mFilename[0] && device && !gQuarkFileSystem.mFatalIOError);
+		bool directory_valid = true;
+		bool opened = false;
+
+		if (file->mAccessType & QACCESS_WRITE || file->mAccessType & QACCESS_APPEND || file->mAccessType & QACCESS_WRITE_SEQUENTIAL)
+		{
+			qString filename = { file->mFilename };
+			qString filepath = filename.GetFilePath();
+			if (!can_open || !device->CreateDirectoryA(filepath))
+			{
+				qPrintf("WARNING:  Could not create directory '%s' when opening '%s'.  Current Dir = '%s'\n", filename.mData, file->mFilename, qGetDirectory().mData);
+				directory_valid = false;
+			}
+		}
+
+		if (can_open && directory_valid)
+		{
+			qMutexScopeLocker sl(file->mFileHandleMutex);
+			opened = device->FileOpen(file, warn_if_fail);
+		}
+
+		/* Change state */
+		{
+			qMutexScopeLocker sl(file->mStateMutex);
+
+			if (opened) {
+				file->mOpenState = qFile::STATE_OPENED;
+			}
+			else
+			{
+				file->mOpenState = qFile::STATE_NONE;
+				file->mCloseState = qFile::STATE_CLOSED;
+			}
+		}
+
+		if (opened)
+		{
+			qMutexScopeLocker sl(device->mMutex);
+			device->mOpenFiles.Insert(file);
+
+			return true;
+		}
+		
+		if (warn_if_fail) {
+			qPrintf("ERROR: Unable to open file = '%s'\n", file->mFilename);
+		}
+
+		return false;
+	}
+
+	void qClose(qFile* file)
+	{
+		if (!file) {
+			return;
+		}
+
+		/* Set close state */
+		{
+			qMutexScopeLocker sl(file->mStateMutex);
+			file->mCloseState = qFile::STATE_CLOSING;
+		}
+
+		qWaitForOpenFileHandle(file);
+		qCloseInternal(file);
+		qDelete(file);
+	}
+
+	bool qCloseInternal(qFile* file)
+	{
+		if (!file) {
+			return false;
+		}
+
+		auto device = file->mDevice;
+		bool closing = false;
+
+		/* Check close state */
+		{
+			qMutexScopeLocker sl(file->mStateMutex);
+			closing = (file->mCloseState == qFile::STATE_CLOSING);
+		}
+
+		{
+			qMutexScopeLocker sl(file->mStateMutex);
+
+			file->mOpenState = qFile::STATE_NONE;
+			file->mCloseState = qFile::STATE_CLOSED;
+			file->mAsyncCloseOp = 0;
+		}
+
+		if (closing && device)
+		{
+			qMutexScopeLocker sl(file->mFileHandleMutex);
+			device->FileClose(file);
+		}
+
+		if (device)
+		{
+			qMutexScopeLocker sl(device->mMutex);
+			device->mOpenFiles.Remove(file);
+		}
+
+		return true;
+	}
+
+	bool qWaitForOpenFileHandle(qFile* file)
+	{
+		if (gQuarkFileSystem.mFatalIOError || !file || !file->mDevice) {
+			return false;
+		}
+
+		if (file->mOpenState == qFile::STATE_NONE || file->mOpenState == qFile::STATE_OPENED) {
+			return true;
+		}
+
+		if (file->mCloseState) {
+			return false;
+		}
+
+		while (file->mOpenState == qFile::STATE_OPENING) {
+			qSleep(0);
+		}
+
+		return (file->mOpenState == qFile::STATE_OPENED);
 	}
 
 #endif

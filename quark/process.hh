@@ -58,6 +58,14 @@ namespace UFG
 		void Unlock();
 	};
 
+	class qMutexScopeLocker
+	{
+	public:
+		qMutex* mMutex;
+
+		THEORY_INLINE qMutexScopeLocker(qMutex& mutex) : mMutex(&mutex) { mutex.Lock(); }
+		THEORY_INLINE ~qMutexScopeLocker() { mMutex->Unlock(); }
+	};
 
 	//-------------------------------------------------------------------
 	// Thread

@@ -373,5 +373,38 @@ namespace UFG
 		return dwNumOfBytesWritten;
 	}
 
+	//-------------------------------------------------------------------
+	// System (Plat)
+	//-------------------------------------------------------------------
+
+	void qFileSystem::InitPlat()
+	{
+		InitDevice(&gPCFileDevice);
+	}
+
+	void qFileSystem::ClosePlat()
+	{
+		CloseDevice(&gPCFileDevice);
+	}
+
+	qFileDevice* qFileSystem::MapFilenameToDevicePlat(const char* filename)
+	{
+		return &gPCFileDevice;
+	}
+
+	//-------------------------------------------------------------------
+	// Functions (Plat)
+	//-------------------------------------------------------------------
+
+	qString qGetDirectory()
+	{
+		char buffer[1024];
+		if (!GetCurrentDirectoryA(sizeof(buffer), buffer)) {
+			buffer[0] = '\0';
+		}
+
+		return buffer;
+	}
+
 #endif
 }

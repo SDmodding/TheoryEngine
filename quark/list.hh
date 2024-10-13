@@ -30,6 +30,9 @@ namespace UFG
 			mNext->mPrev = mPrev;
 			mPrev = mNext = this;
 		}
+
+		THEORY_INLINE T* next() { return  reinterpret_cast<T*>(mNext); }
+		THEORY_INLINE T* type() { return reinterpret_cast<T*>(this); }
 	};
 
 	template <typename T, typename U = T>
@@ -55,6 +58,9 @@ namespace UFG
 		{
 			node->RemoveNode();
 		}
+
+		THEORY_INLINE T* begin() { return mNode.next(); }
+		THEORY_INLINE T* end() { return reinterpret_cast<T*>(&mNode); }
 	};
 
 #ifdef THEORY_IMPL
@@ -68,7 +74,7 @@ namespace UFG
 	template <typename T, typename U>
 	void qList<T, U>::DeleteNodes()
 	{
-		for (auto i = mNode.mNext; i != &mNode; i = mNode.mNext)
+		for (auto i = begin(); i != end(); i = begin())
 		{
 			Remove(i);
 			/* Need call destructor and delete? */

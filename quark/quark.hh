@@ -11,11 +11,12 @@ namespace UFG
 	void qInit()
 	{
 		InitMemorySystem();
+		gQuarkFileSystem.InitPlat();
 	}
 
 	void qClose()
 	{
-
+		gQuarkFileSystem.ClosePlat();
 	}
 
 #endif

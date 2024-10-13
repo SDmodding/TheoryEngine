@@ -66,6 +66,13 @@ namespace UFG
 		return gMainMemoryPool;
 	}
 
+	THEORY_INLINE void* qMalloc(usize size, const char* name, u64 allocationParams = 0) { return GetMainMemoryPool()->Allocate(size, name, allocationParams, true); }
+
+	THEORY_INLINE void qFree(void* ptr) { gMainMemoryPool->Free(ptr); }
+
+	template <typename T>
+	THEORY_INLINE void qDelete(T* ptr) { ptr->~T(); gMainMemoryPool->Free(ptr); }
+
 #ifdef THEORY_IMPL
 
 	qMemoryPool gMainMemoryPoolBuffer;
@@ -163,4 +170,14 @@ namespace UFG
 	}
 
 #endif
+}
+
+THEORY_INLINE void* operator new(usize size, const char* name) noexcept
+{
+	return UFG::qMalloc(size, name);
+}
+
+THEORY_INLINE void operator delete(void* ptr, const char* name) noexcept
+{
+	UFG::qFree(ptr);
 }

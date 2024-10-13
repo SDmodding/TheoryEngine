@@ -75,6 +75,8 @@ namespace UFG
 
 		/* Operators */
 
+		operator const char*() { return mData; }
+
 		bool operator!=(const qString& text);
 		bool operator!=(const char* text);
 
