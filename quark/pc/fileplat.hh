@@ -21,7 +21,7 @@ namespace UFG
 		virtual bool CreateDirectoryA(const char* directory);
 		virtual bool DeleteDirectory(const char* directory);
 		virtual bool FilenameExists(const char* filename);
-		virtual s64 GetFilenameSize(const char* filenam);
+		virtual s64 GetFilenameSize(const char* filename);
 		virtual u64 GetFilenameTime(const char* filename);
 		virtual bool SetFilenameTime(const char* filename, u64 modification_time);
 		virtual bool GetFilenameReadOnly(const char* filename);

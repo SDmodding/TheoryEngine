@@ -215,7 +215,7 @@ namespace UFG
 		virtual bool CreateDirectoryA(const char* directory) = 0;
 		virtual bool DeleteDirectory(const char* directory) = 0;
 		virtual bool FilenameExists(const char* filename) = 0;
-		virtual s64 GetFilenameSize(const char* filenam) = 0;
+		virtual s64 GetFilenameSize(const char* filename) = 0;
 		virtual u64 GetFilenameTime(const char* filename) = 0;
 		virtual bool SetFilenameTime(const char* filename, u64 modification_time) = 0;
 		virtual bool GetFilenameReadOnly(const char* filename) = 0;
@@ -301,9 +301,19 @@ namespace UFG
 
 	bool qWaitForOpenFileHandle(qFile* file);
 
+	s64 qGetFileSize(const char* filename);
+
 	s64 qRead(qFile* file, void* buffer, s64 num_bytes, s64 seek_offset = 0, qFileSeekType seek_type = QSEEK_CUR);
 
+	s64 qRead(const char* filename, void* buffer, s64 num_bytes, s64 seek_position = 0);
+
+	char* qReadEntireFile(const char* filename, s64* loaded_size = nullptr, qMemoryPool* memory_pool = nullptr, u64 allocation_params = 0, const char* name = nullptr);
+
 	s64 qWrite(qFile* file, const void* buffer, s64 num_bytes, s64 seek_offset = 0, qFileSeekType seek_type = QSEEK_CUR, bool* not_enough_space = nullptr);
+
+	s64 qWrite(const char* filename, const void* buffer, s64 num_bytes, s64 seek_offset = 0, qFileSeekType seek_type = QSEEK_CUR, bool* not_enough_space = nullptr);
+
+	s64 qWriteAppend(const char* filename, const void* buffer, s64 num_bytes, s64 seek_offset = 0, qFileSeekType seek_type = QSEEK_CUR, bool* not_enough_space = nullptr);
 
 #ifdef THEORY_IMPL
 
@@ -566,6 +576,18 @@ namespace UFG
 		return (file->mOpenState == qFile::STATE_OPENED);
 	}
 
+	s64 qGetFileSize(const char* filename)
+	{
+		auto device = gQuarkFileSystem.MapFilenameToDevice(filename);
+		auto mapped_filename = gQuarkFileSystem.MapFilename(FILE_MAP_TYPE_DEFAULT, filename);
+
+		if (gQuarkFileSystem.mFatalIOError || !device) {
+			return 0;
+		}
+
+		return device->GetFilenameSize(mapped_filename);
+	}
+
 	s64 qRead(qFile* file, void* buffer, s64 num_bytes, s64 seek_offset, qFileSeekType seek_type)
 	{
 		if (!qWaitForOpenFileHandle(file) || !buffer) {
@@ -584,6 +606,73 @@ namespace UFG
 		}
 
 		return num_read_bytes;
+	}
+
+	s64 qRead(const char* filename, void* buffer, s64 num_bytes, s64 seek_position)
+	{
+		if (!num_bytes) {
+			return 0;
+		}
+
+		s64 num_read_bytes = -1;
+
+		if (auto file = qOpen(filename, QACCESS_READ, true))
+		{
+			num_read_bytes = qRead(file, buffer, num_bytes, seek_position, QSEEK_SET);
+			qClose(file);
+		}
+
+		return num_read_bytes;
+	}
+
+
+	char* qReadEntireFile(const char* filename, s64* loaded_size, qMemoryPool* memory_pool, u64 allocation_params, const char* name)
+	{
+		if (gQuarkFileSystem.mFatalIOError || qStringEmpty(filename)) {
+			return nullptr;
+		}
+
+		s64 size = qGetFileSize(filename);
+		if (loaded_size) {
+			*loaded_size = size;
+		}
+
+		if (size <= 0) {
+			return nullptr;
+		}
+
+		if (!memory_pool) {
+			memory_pool = GetMainMemoryPool();
+		}
+
+		auto file = qOpen(filename, QACCESS_READ, true);
+		if (!file) {
+			return nullptr;
+		}
+
+		char alloc_namebuf[384];
+		const char* alloc_name = name;
+		if (!alloc_name)
+		{
+			qSPrintf(alloc_namebuf, "qReadEntireFile('%s')", filename);
+			alloc_name = alloc_namebuf;
+		}
+
+		char* filedata = reinterpret_cast<char*>(memory_pool->Allocate(static_cast<usize>(size + 1), alloc_name, allocation_params, true));
+		if (filedata)
+		{
+			if (qRead(file, filedata, size) == size) {
+				filedata[size] = 0;
+			}
+			else
+			{
+				memory_pool->Free(filedata);
+				filedata = nullptr;
+			}
+		}
+
+		qClose(file);
+		return filedata;
 	}
 
 	s64 qWrite(qFile* file, const void* buffer, s64 num_bytes, s64 seek_offset, qFileSeekType seek_type, bool* not_enough_space)
@@ -606,6 +695,48 @@ namespace UFG
 
 		if (not_enough_space) {
 			*not_enough_space = n_enough_space;
+		}
+
+		return num_written_bytes;
+	}
+
+	s64 qWrite(const char* filename, const void* buffer, s64 num_bytes, s64 seek_offset, qFileSeekType seek_type, bool* not_enough_space)
+	{
+		if (not_enough_space) {
+			*not_enough_space = false;
+		}
+
+		if (!num_bytes) {
+			return 0;
+		}
+
+		s64 num_written_bytes = -1;
+
+		if (auto file = qOpen(filename, QACCESS_WRITE, true))
+		{
+			num_written_bytes = qWrite(file, buffer, num_bytes, seek_offset, seek_type, not_enough_space);
+			qClose(file);
+		}
+
+		return num_written_bytes;
+	}
+
+	s64 qWriteAppend(const char* filename, const void* buffer, s64 num_bytes, s64 seek_offset, qFileSeekType seek_type, bool* not_enough_space)
+	{
+		if (not_enough_space) {
+			*not_enough_space = false;
+		}
+
+		if (!num_bytes) {
+			return 0;
+		}
+
+		s64 num_written_bytes = -1;
+
+		if (auto file = qOpen(filename, QACCESS_APPEND, true))
+		{
+			num_written_bytes = qWrite(file, buffer, num_bytes, seek_offset, seek_type, not_enough_space);
+			qClose(file);
 		}
 
 		return num_written_bytes;
