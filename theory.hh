@@ -49,6 +49,7 @@
 //-------------------------------------------------------------------
 
 #include "quark/types.hh"
+#include "quark/assert.hh"
 #include "quark/bitflags.hh"
 #include "quark/offset.hh"
 #include "quark/list.hh"
@@ -59,6 +60,8 @@
 #include "quark/process.hh"
 #include "quark/memory.hh"
 #include "quark/string.hh"
+
+#include "quark/internal/assertplat.hh"
 
 #ifdef THEORY_PLATFORM_PC
 	#include "quark/pc/processplat.hh"

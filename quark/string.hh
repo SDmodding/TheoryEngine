@@ -92,9 +92,11 @@ namespace UFG
 		char operator[](int pos) { return mData[pos]; }
 	};
 
-	int qPrintf(const char* format, ...);
+	int qPrintf(const char* fmt, ...);
 
-	int qSPrintf(char* dest, const char* format, ...);
+	int qSPrintf(char* dest, const char* fmt, ...);
+
+	int qVSPrintf(char* dest, int max_len, const char* fmt, char* arg_list);
 
 	THEORY_INLINE bool qStringEmpty(const char* p) { return (!p || !*p); }
 

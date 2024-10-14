@@ -4,29 +4,63 @@
 #ifdef THEORY_IMPL
 namespace UFG
 {
-	int qPrintf(const char* format, ...)
+	class qBufferedPutChar
+	{
+	public:
+		int NumChars;
+		char Buffer[256];
+
+		qBufferedPutChar() : NumChars(0) {}
+	};
+
+	class qPrintInfo
+	{
+	public:
+		qBufferedPutChar mStdOutBuffer;
+		bool StdOut;
+		char* OutString;
+		int OutStringLen;
+		int PrintChannel;
+		int NumWritten;
+		const char* OriginalFmt;
+
+		qPrintInfo(char* out, int len) : OutString(out), OutStringLen(len), PrintChannel(-1), StdOut(false) {}
+	};
+
+	int qPrintEngine(qPrintInfo* info, const char* fmt, char* arg_list)
+	{
+		return vsnprintf(info->OutString, static_cast<usize>(info->OutStringLen), fmt, arg_list);
+	}
+
+	int qPrintf(const char* fmt, ...)
 	{
 		va_list va;
-		va_start(va, format);
+		va_start(va, fmt);
 
-		int len = vprintf(format, va);
+		int len = vprintf(fmt, va);
 
 		va_end(va);
 
 		return len;
 	}
 
-
-	int qSPrintf(char* dest, const char* format, ...)
+	int qSPrintf(char* dest, const char* fmt, ...)
 	{
 		va_list va;
-		va_start(va, format);
+		va_start(va, fmt);
 
-		int len = vsnprintf(dest, 0x7FFFFFFF, format, va);
+		qPrintInfo info(dest, INT_MAX);
+		int len = qPrintEngine(&info, fmt, va);
 
 		va_end(va);
 
 		return len;
+	}
+
+	int qVSPrintf(char* dest, int max_len, const char* fmt, char* arg_list)
+	{
+		qPrintInfo info(dest, max_len);
+		return qPrintEngine(&info, fmt, arg_list);
 	}
 
 	int qStringCompare(const char* text_a, const char* text_b, int count)
