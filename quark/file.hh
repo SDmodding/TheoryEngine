@@ -315,6 +315,8 @@ namespace UFG
 
 	s64 qWriteAppend(const char* filename, const void* buffer, s64 num_bytes, s64 seek_offset = 0, qFileSeekType seek_type = QSEEK_CUR, bool* not_enough_space = nullptr);
 
+	bool qFlush(qFile* file);
+
 #ifdef THEORY_IMPL
 
 	void qFileOpList::Queue(qFileOp* file_op, int priority)
@@ -625,7 +627,6 @@ namespace UFG
 		return num_read_bytes;
 	}
 
-
 	char* qReadEntireFile(const char* filename, s64* loaded_size, qMemoryPool* memory_pool, u64 allocation_params, const char* name)
 	{
 		if (gQuarkFileSystem.mFatalIOError || qStringEmpty(filename)) {
@@ -740,6 +741,19 @@ namespace UFG
 		}
 
 		return num_written_bytes;
+	}
+
+	bool qFlush(qFile* file)
+	{
+		bool flushed = false;
+
+		if (qWaitForOpenFileHandle(file))
+		{
+			qMutexScopeLocker sl(file->mFileHandleMutex);
+			flushed = file->mDevice->FileFlush(file);
+		}
+
+		return flushed;
 	}
 
 #endif

@@ -178,6 +178,8 @@ namespace UFG
 
 		mEnableValidation = false;
 		mEnableDebugOutputWrites = false;
+
+		qAssert(mWriteBufferPtr != NULL);
 	}
 
 #endif
