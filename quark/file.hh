@@ -303,6 +303,8 @@ namespace UFG
 
 	s64 qGetFileSize(const char* filename);
 
+	s64 qGetPosition(qFile* file);
+
 	s64 qRead(qFile* file, void* buffer, s64 num_bytes, s64 seek_offset = 0, qFileSeekType seek_type = QSEEK_CUR);
 
 	s64 qRead(const char* filename, void* buffer, s64 num_bytes, s64 seek_position = 0);
@@ -588,6 +590,20 @@ namespace UFG
 		}
 
 		return device->GetFilenameSize(mapped_filename);
+	}
+
+	s64 qGetPosition(qFile* file)
+	{
+		s64 position = -1;
+		{
+			qMutexScopeLocker sl(file->mFileHandleMutex);
+
+			if (file->mOpenState == qFile::STATE_OPENED) {
+				position = file->mDevice->GetFilePosition(file);
+			}
+		}
+
+		return position;
 	}
 
 	s64 qRead(qFile* file, void* buffer, s64 num_bytes, s64 seek_offset, qFileSeekType seek_type)
