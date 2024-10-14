@@ -291,6 +291,8 @@ namespace UFG
 	// File Functions
 	//-------------------------------------------------------------------
 
+	void qFPrintf(qFile* file, const char* fmt, ...);
+
 	qFile* qOpen(const char* filename, qFileAccessType access_type, bool warn_if_fail);
 
 	bool qOpenInternal(qFile* file, bool warn_if_fail);
@@ -317,7 +319,13 @@ namespace UFG
 
 	s64 qWriteAppend(const char* filename, const void* buffer, s64 num_bytes, s64 seek_offset = 0, qFileSeekType seek_type = QSEEK_CUR, bool* not_enough_space = nullptr);
 
+	void qDeleteFile(const char* filename);
+
+	bool qCopyFile(const char* src_filename, const char* dest_filename);
+
 	bool qFlush(qFile* file);
+
+	void qSeek(qFile* file, s64 seek_offset, qFileSeekType seek_type);
 
 #ifdef THEORY_IMPL
 
@@ -759,6 +767,23 @@ namespace UFG
 		return num_written_bytes;
 	}
 
+	void qDeleteFile(const char* filename)
+	{
+		auto device = gQuarkFileSystem.MapFilenameToDevice(filename);
+		auto mapped_filename = gQuarkFileSystem.MapFilename(FILE_MAP_TYPE_DEFAULT, filename);
+
+		if (!gQuarkFileSystem.mFatalIOError && device) {
+			device->DeleteFilename(mapped_filename);
+		}
+	}
+
+
+	bool qCopyFile(const char* src_filename, const char* dest_filename)
+	{
+		/* TODO: Implement this... */
+		return false;
+	}
+
 	bool qFlush(qFile* file)
 	{
 		bool flushed = false;
@@ -770,6 +795,16 @@ namespace UFG
 		}
 
 		return flushed;
+	}
+
+
+	void qSeek(qFile* file, s64 seek_offset, qFileSeekType seek_type)
+	{
+		if (qWaitForOpenFileHandle(file))
+		{
+			qMutexScopeLocker sl(file->mFileHandleMutex);
+			file->mDevice->FileSeek(file, seek_type, seek_offset);
+		}
 	}
 
 #endif

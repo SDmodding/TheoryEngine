@@ -129,7 +129,15 @@ namespace UFG
 		bool mEnableDebugOutputWrites;
 
 		qChunkFileBuilder(s64 write_buffer_size = -1);
+
+		void OpenIncremental();
+
+		void Write(const void* buffer, u32 num_bytes);
+
+		void WriteValue(const void* buffer, u32 num_bytes, const char* name = nullptr, const char* type_name = nullptr, const char* value = nullptr);
 	};
+
+	inline qChunkFileBuilder::TargetEndian gPlatformEndian;
 
 	//-------------------------------------------------------------------
 
@@ -152,8 +160,8 @@ namespace UFG
 		if (write_buffer_size == -1) {
 			write_buffer_size = 0x80000;
 		}
-		else if (write_buffer_size < 1024) {
-			write_buffer_size = 1024;
+		else {
+			write_buffer_size = qMax(write_buffer_size, 1024);
 		}
 
 		mTargetEndian = TARGET_ENDIAN_LITTLE;
@@ -180,6 +188,107 @@ namespace UFG
 		mEnableDebugOutputWrites = false;
 
 		qAssert(mWriteBufferPtr != NULL);
+	}
+
+	void qChunkFileBuilder::OpenIncremental()
+	{
+		if (mFile) {
+			return;
+		}
+
+		qAssert(mBuildType != BUILDTYPE_CREATE);
+
+		if (mBuildType != BUILDTYPE_INCREMENTAL) {
+			return;
+		}
+
+		if (mEnableValidation)
+		{
+			qDeleteFile(mBinFilename.ReplaceExtension(".bin.backup"));
+			qCopyFile(mBinFilename, mBinFilename.ReplaceExtension(".bin.backup"));
+
+			qDeleteFile(mBinFilename.ReplaceExtension(".idx.backup"));
+			qCopyFile(mBinFilename.ReplaceExtension(".idx"), mBinFilename.ReplaceExtension(".idx.backup"));
+
+			qDeleteFile(mBinFilename.ReplaceExtension(".pcidx.backup"));
+			qCopyFile(mBinFilename.ReplaceExtension(".pcidx"), mBinFilename.ReplaceExtension(".pcidx.backup"));
+		}
+		else
+		{
+			qDeleteFile(mBinFilename.ReplaceExtension(".idx"));
+			qDeleteFile(mBinFilename.ReplaceExtension(".pcidx"));
+		}
+
+		mFile = qOpen(mBinFilename, QACCESS_APPEND, true);
+		qSeek(mFile, mWriteCommittedPos, QSEEK_SET);
+	}
+
+	void qChunkFileBuilder::Write(const void* buffer, u32 num_bytes)
+	{
+		if (!num_bytes) {
+			return;
+		}
+
+		mFileWasWritten = true;
+
+		/* TODO: Fix this, same related thing as in WriteValue under 'mEnableDebugOutputWrites' if check. */
+		if (false) 
+		{
+			qWrite(mCompressionFile, buffer, num_bytes);
+			return;
+		}
+
+		if (mBufferWrites)
+		{
+			/* TODO: Implement this. */
+			return;
+		}
+
+		qAssert(mWriteBufferEOFPos == 0);
+
+		/* TODO: Implement this. */
+	}
+
+	void qChunkFileBuilder::WriteValue(const void* buffer, u32 num_bytes, const char* name, const char* type_name , const char* value)
+	{
+		if (mLogFile && mLogIsEnabled)
+		{
+			qFPrintf(mLogFile, "%s<Value", mLogIndent.mData);
+
+			if (type_name) {
+				qFPrintf(mLogFile, " type = \"%s\"", type_name);
+			}
+
+			if (name) {
+				qFPrintf(mLogFile, "\tname = \"%s\"", name);
+			}
+
+			if (value) {
+				qFPrintf(mLogFile, ">%s</Value>\n");
+			}
+			else {
+				qFPrintf(mLogFile, "\\>\n");
+			}
+		}
+
+		if (mEnableDebugOutputWrites)
+		{
+			/* TODO:
+			*	- There should be if check here related to mCompressionFile.
+			*	- When if check pass should call 'qGetPosition(mCompressionFile);'
+			*/
+
+			int writePos = static_cast<int>(mWriteCurrentPos);
+			qPrintf("CFB write: %10.10s %20.20s %08d %08d\n", type_name, name, num_bytes, writePos);
+		}
+
+		if (gPlatformEndian == mTargetEndian) {
+			return Write(buffer, num_bytes);
+		}
+
+		for (const char* p = &reinterpret_cast<const char*>(buffer)[num_bytes - 1]; num_bytes; --num_bytes) {
+			Write(p--, 1);
+		}
 	}
 
 #endif

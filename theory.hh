@@ -43,6 +43,10 @@
 	#include <d3d11.h>
 #endif
 
+/* Quark Defines */
+
+#define qMin(a, b)            (a < b ? a : b)
+#define qMax(a, b)            (a > b ? a : b)
 
 //-------------------------------------------------------------------
 // [Quark] Includes

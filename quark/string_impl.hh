@@ -44,6 +44,19 @@ namespace UFG
 		return len;
 	}
 
+	void qFPrintf(qFile* file, const char* fmt, ...)
+	{
+		va_list va;
+		va_start(va, fmt);
+
+		char buf[2048 + 1];
+		qPrintInfo info(buf, 0x4000); /* Don't ask me... */
+
+		qWrite(file, buf, qPrintEngine(&info, fmt, va));
+
+		va_end(va);
+	}
+
 	int qSPrintf(char* dest, const char* fmt, ...)
 	{
 		va_list va;
