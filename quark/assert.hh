@@ -4,6 +4,8 @@ namespace UFG
 {
     typedef bool(*Fn_AssertFail)(const char*, const char*, int, bool*, const char*, ...);
     extern Fn_AssertFail qAssertFail;
+
+    inline void qSetAssertHandler(Fn_AssertFail fn_assert) { qAssertFail = fn_assert; }
 }
 
 #ifdef THEORY_PLATFORM_PC
