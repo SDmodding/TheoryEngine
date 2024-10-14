@@ -53,6 +53,7 @@
 #include "quark/offset.hh"
 #include "quark/list.hh"
 #include "quark/treerb.hh"
+#include "quark/treerb64.hh"
 #include "quark/math.hh"
 #include "quark/halfmath.hh"
 #include "quark/process.hh"
@@ -68,9 +69,10 @@
 #include "quark/qsymbol.hh"
 #include "quark/memorypool.hh"
 #include "quark/memorypoollinearallocator.hh"
-#include "quark/resource.hh"
-#include "quark/resource_uid.hh"
 #include "quark/file.hh"
+#include "quark/resource.hh"
+#include "quark/resourcefile.hh"
+#include "quark/resource_uid.hh"
 #include "quark/quark.hh"
 
 #ifdef THEORY_PLATFORM_PC
