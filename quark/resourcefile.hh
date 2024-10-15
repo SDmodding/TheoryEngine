@@ -1,4 +1,10 @@
 #pragma once
+/*
+*	[NOTE] qChunkFileBuilder:
+*	- These implementations are based on 'TextureScriberPC64.exe' that was shipped with Triad Wars.
+*	- There is no PDB (Debug Symbols) so every function name here is just guessed imagination based on RE.
+*	- qChunkFileBuilder class members are still same from sdhdship.pdb as in the TextureScriber.
+*/
 
 namespace UFG
 {
@@ -132,6 +138,8 @@ namespace UFG
 
 		void OpenIncremental();
 
+		void BufferCommit();
+
 		void Write(const void* buffer, u32 num_bytes);
 
 		void WriteValue(const void* buffer, u32 num_bytes, const char* name = nullptr, const char* type_name = nullptr, const char* value = nullptr);
@@ -223,6 +231,37 @@ namespace UFG
 		qSeek(mFile, mWriteCommittedPos, QSEEK_SET);
 	}
 
+	void qChunkFileBuilder::BufferCommit()
+	{
+		if (mCompressionFile)
+		{
+			qFlush(mCompressionFile);
+			return;
+		}
+
+		if (mWriteBufferEOFPos)
+		{
+			OpenIncremental();
+
+			s64 bytes_written = qWrite(mFile, mWriteBufferPtr, mWriteBufferEOFPos, mWriteCommittedPos, QSEEK_SET);
+
+			qAssertF(bytes_written == mWriteBufferEOFPos, "Failed to write out the required number of bytes. 0x%x64 != 0x%x64", bytes_written, mWriteBufferEOFPos);
+
+			mWriteCommittedPos += mWriteBufferEOFPos;
+			mWriteBufferEOFPos = 0;
+		}
+
+		if (mWriteCurrentPos != mWriteCommittedPos)
+		{
+			mWriteCommittedPos = mWriteCurrentPos;
+			if (mFile) {
+				qSeek(mFile, mWriteCurrentPos, QSEEK_SET);
+			}
+		}
+
+		qAssert((!mFile || (qGetPosition(mFile) == mWriteCommittedPos)) && (mWriteCommittedPos == mWriteCurrentPos));
+	}
+
 	void qChunkFileBuilder::Write(const void* buffer, u32 num_bytes)
 	{
 		if (!num_bytes) {
@@ -240,13 +279,53 @@ namespace UFG
 
 		if (mBufferWrites)
 		{
-			/* TODO: Implement this. */
+			char* writebuffer;
+			while (1)
+			{
+				s64 write_offset = mWriteCurrentPos - mWriteCommittedPos;
+				s64 write_size = mWriteBufferSizeBytes - write_offset;
+				writebuffer = &reinterpret_cast<char*>(mWriteBufferPtr)[write_offset];
+
+				if (num_bytes <= write_size) {
+					break;
+				}
+
+				qMemCopy(writebuffer, buffer, write_size);        
+				
+				mWriteBufferEOFPos += write_size;
+				mWriteCurrentPos += write_size;
+
+				buffer = &reinterpret_cast<const char*>(buffer)[write_size];
+				num_bytes -= static_cast<u32>(write_size);
+
+				BufferCommit();
+
+				if (num_bytes <= 0) {
+					return;
+				}
+			}
+
+			qMemCopy(writebuffer, buffer, num_bytes);
+
+			mWriteCurrentPos += num_bytes;
+			mWriteBufferEOFPos = qMax(mWriteBufferEOFPos, (mWriteCurrentPos - mWriteCommittedPos));
 			return;
 		}
 
 		qAssert(mWriteBufferEOFPos == 0);
 
-		/* TODO: Implement this. */
+		OpenIncremental();
+
+		s64 bytes_written = qWrite(mFile, buffer, num_bytes);
+
+		qAssertF(bytes_written == (s64)num_bytes, "Failed to write out the required number of bytes. 0x%x64 != 0x%x64", bytes_written, static_cast<s64>(num_bytes));
+
+		mWriteCurrentPos += bytes_written;
+		mWriteCommittedPos = qMax(mWriteCommittedPos, mWriteCurrentPos);
+
+		if (mWriteCurrentPos == mWriteCommittedPos) {
+			mBufferWrites = true;
+		}
 	}
 
 	void qChunkFileBuilder::WriteValue(const void* buffer, u32 num_bytes, const char* name, const char* type_name , const char* value)
