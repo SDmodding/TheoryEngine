@@ -319,6 +319,8 @@ namespace UFG
 
 	s64 qWriteAppend(const char* filename, const void* buffer, s64 num_bytes, s64 seek_offset = 0, qFileSeekType seek_type = QSEEK_CUR, bool* not_enough_space = nullptr);
 
+	bool qFileExists(const char* filename);
+
 	void qDeleteFile(const char* filename);
 
 	bool qCopyFile(const char* src_filename, const char* dest_filename);
@@ -767,6 +769,18 @@ namespace UFG
 		return num_written_bytes;
 	}
 
+	bool qFileExists(const char* filename)
+	{
+		auto device = gQuarkFileSystem.MapFilenameToDevice(filename);
+		auto mapped_filename = gQuarkFileSystem.MapFilename(FILE_MAP_TYPE_DEFAULT, filename);
+
+		if (gQuarkFileSystem.mFatalIOError || !device) {
+			return false;
+		}
+
+		return device->FilenameExists(mapped_filename);
+	}
+
 	void qDeleteFile(const char* filename)
 	{
 		auto device = gQuarkFileSystem.MapFilenameToDevice(filename);
@@ -777,11 +791,56 @@ namespace UFG
 		}
 	}
 
-
 	bool qCopyFile(const char* src_filename, const char* dest_filename)
 	{
-		/* TODO: Implement this... */
-		return false;
+		if (qStringEmpty(src_filename) || qStringEmpty(dest_filename) || !qFileExists(src_filename)) {
+			return false;
+		}
+
+		bool copied = false;
+
+		if (qFile* dest_file = qOpen(dest_filename, QACCESS_WRITE, true))
+		{
+			if (qFile* src_file = qOpen(src_filename, QACCESS_READ, true))
+			{
+				s64 size = 0;
+				if (qWaitForOpenFileHandle(src_file))
+				{
+					qMutexScopeLocker sl(src_file->mFileHandleMutex);
+					size = src_file->mDevice->GetFileSize(src_file);
+				}
+
+				s64 buffer_size = qMin(size, 0x10000);
+				if (size > 0)
+				{
+					if (void* buffer = qMalloc(buffer_size, "qCopyFile buffer", 1))
+					{
+						while (size > 0)
+						{
+							s64 rw_size = qMin(size, buffer_size);
+							if (qRead(src_file, buffer, rw_size) != rw_size || qWrite(dest_file, buffer, rw_size) != rw_size) {
+								break;
+							}
+
+							size -= rw_size;
+						}
+
+						copied = (size <= 0);
+
+						qFree(buffer);
+					}
+				}
+				else {
+					copied = true;
+				}
+
+				qClose(src_file);
+			}
+
+			qClose(dest_file);
+		}
+
+		return copied;
 	}
 
 	bool qFlush(qFile* file)
