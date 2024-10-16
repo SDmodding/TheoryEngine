@@ -24,6 +24,9 @@ namespace UFG
 		int mIsParent;
 		u64 mChunkPosition;
 		u64 mDataPosition;
+
+		tChunk(const char* name, u32 uid, int is_parent, u32 data_offset, u64 chunk_position, u64 data_position) : mName(name), 
+			mUID(uid), mDataOffset(data_offset), mIsParent(is_parent), mChunkPosition(chunk_position), mDataPosition(data_position) {}
 	};
 
 	struct tChunkPosition : qNode<tChunkPosition>
@@ -151,6 +154,32 @@ namespace UFG
 		void Write(const void* buffer, u32 num_bytes);
 
 		void WriteValue(const void* buffer, u32 num_bytes, const char* name = nullptr, const char* type_name = nullptr, const char* value = nullptr);
+
+		template <typename T>
+		THEORY_INLINE void WriteValue(T* buffer, const char* name, const char* fmt, const char* type_name)
+		{
+			char value[256] = { 0 };
+			if (mLogFile && mLogIsEnabled) {
+				qSPrintf(value, 256, fmt, *buffer);
+			}
+			WriteValue(buffer, sizeof(T), name, type_name, value);
+		}
+
+		void WriteI32(int* buffer, const char* name = nullptr) { WriteValue(buffer, name, "%d", "int32"); }
+
+		void WriteU32(u32* buffer, const char* name = nullptr) { WriteValue(buffer, name, "%u", "uint32"); }
+
+		void WriteH32(u32* buffer, const char* name = nullptr) { WriteValue(buffer, name, "0x%x", "uint32"); }
+
+		void BeginChunk(u32 uid, const char* name, u32 alignment);
+
+		void EndChunk(u32 uid);
+
+		bool IsUsingCompressionFile();
+
+		void PopLogIndent();
+
+		THEORY_INLINE s64 GetWritePos() { return (IsUsingCompressionFile() ? qGetPosition(mCompressionFile) : mWriteCurrentPos); }
 	};
 
 	inline qChunkFileBuilder::TargetEndian gPlatformEndian;

@@ -45,8 +45,14 @@
 
 /* Quark Defines */
 
-#define qMin(a, b)            (a < b ? a : b)
-#define qMax(a, b)            (a > b ? a : b)
+#ifdef THEORY_PLATFORM_PC
+	#define qDebugBreak()		__debugbreak()
+#else
+	#define qDebugBreak()		(void)(0)
+#endif
+
+#define qMin(a, b)				(a < b ? a : b)
+#define qMax(a, b)				(a > b ? a : b)
 
 //-------------------------------------------------------------------
 // [Quark] Includes

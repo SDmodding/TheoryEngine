@@ -31,6 +31,7 @@ namespace UFG
 			mPrev = mNext = this;
 		}
 
+		THEORY_INLINE T* prev() { return  reinterpret_cast<T*>(mPrev); }
 		THEORY_INLINE T* next() { return  reinterpret_cast<T*>(mNext); }
 		THEORY_INLINE T* type() { return reinterpret_cast<T*>(this); }
 	};
@@ -60,6 +61,7 @@ namespace UFG
 		}
 
 		THEORY_INLINE bool IsEmpty() { return mNode.mNext == &mNode; }
+		THEORY_INLINE T* last() { return mNode.prev(); }
 		THEORY_INLINE T* begin() { return mNode.next(); }
 		THEORY_INLINE T* end() { return reinterpret_cast<T*>(&mNode); }
 	};

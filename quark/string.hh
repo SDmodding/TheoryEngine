@@ -44,7 +44,9 @@ namespace UFG
 
 		u32 GetStringHashUpper32();
 
-		bool IsEmpty() { return mLength == 0; }
+		THEORY_INLINE bool IsEmpty() { return mLength == 0; }
+
+		THEORY_INLINE int Length() { return mLength; }
 
 		void MakeLower();
 
@@ -97,6 +99,8 @@ namespace UFG
 	int qPrintf(const char* fmt, ...);
 
 	int qSPrintf(char* dest, const char* fmt, ...);
+
+	int qSPrintf(char* dest, int max_len, const char* fmt, ...);
 
 	int qVSPrintf(char* dest, int max_len, const char* fmt, char* arg_list);
 

@@ -70,6 +70,19 @@ namespace UFG
 		return len;
 	}
 
+	int qSPrintf(char* dest, int max_len, const char* fmt, ...)
+	{
+		va_list va;
+		va_start(va, fmt);
+
+		qPrintInfo info(dest, max_len);
+		int len = qPrintEngine(&info, fmt, va);
+
+		va_end(va);
+
+		return len;
+	}
+
 	int qVSPrintf(char* dest, int max_len, const char* fmt, char* arg_list)
 	{
 		qPrintInfo info(dest, max_len);

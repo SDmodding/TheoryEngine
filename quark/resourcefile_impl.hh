@@ -402,8 +402,7 @@ namespace UFG
 
 		mFileWasWritten = true;
 
-		/* TODO: Fix this, same related thing as in WriteValue under 'mEnableDebugOutputWrites' if check. */
-		if (false)
+		if (IsUsingCompressionFile())
 		{
 			qWrite(mCompressionFile, buffer, num_bytes);
 			return;
@@ -482,15 +481,8 @@ namespace UFG
 			}
 		}
 
-		if (mEnableDebugOutputWrites)
-		{
-			/* TODO:
-			*	- There should be if check here related to mCompressionFile.
-			*	- When if check pass should call 'qGetPosition(mCompressionFile);'
-			*/
-
-			int writePos = static_cast<int>(mWriteCurrentPos);
-			qPrintf("CFB write: %10.10s %20.20s %08d %08d\n", type_name, name, num_bytes, writePos);
+		if (mEnableDebugOutputWrites) {
+			qPrintf("CFB write: %10.10s %20.20s %08d %08d\n", type_name, name, num_bytes, static_cast<int>(GetWritePos()));
 		}
 
 		if (gPlatformEndian == mTargetEndian) {
@@ -500,6 +492,176 @@ namespace UFG
 		for (const char* p = &reinterpret_cast<const char*>(buffer)[num_bytes - 1]; num_bytes; --num_bytes) {
 			Write(p--, 1);
 		}
+	}
+
+	void qChunkFileBuilder::BeginChunk(u32 uid, const char* name, u32 alignment)
+	{
+		if (!mChunks.IsEmpty() && mChunks.begin()->mIsParent != 1) {
+			qDebugBreak();
+		}
+
+		s64 chunk_position = GetWritePos();
+		u32 chunk_offset = static_cast<u32>(chunk_position + sizeof(qChunk));
+		u32 data_offset = qAlignUp(chunk_offset, alignment) - chunk_offset;
+		if (data_offset == -1) {
+			qDebugBreak();
+		}
+
+		auto chunk = new (gGlobalNewName) tChunk(name, uid, 0, data_offset, chunk_position, chunk_position + sizeof(qChunk));
+		mChunks.Insert(chunk);
+
+		bool log_enabled = mLogIsEnabled;
+		mLogIsEnabled = false;
+
+		/* Write qChunk */
+		{
+			u32 chunk_size = 0;
+
+			WriteU32(&uid);
+			WriteU32(&chunk_size);
+			WriteU32(&chunk_size);
+			WriteU32(&data_offset);
+		}
+
+		mLogIsEnabled = log_enabled;
+
+		if (mLogFile && mLogIsEnabled)
+		{
+			qFPrintf(mLogFile, "%s<Chunk", mLogIndent.mData);
+			if (name) {
+				qFPrintf(mLogFile, " name=\"%s\"", name);
+			}
+
+			qFPrintf(mLogFile, " id=\"0x%x\" alignment=\"%d\" chunkpos=\"0x%x\" dataoffset=\"0x%x\">\n", uid, alignment, chunk_position, data_offset);
+
+			mLogIndent += "\t";
+		}
+	}
+
+	void qChunkFileBuilder::EndChunk(u32 uid)
+	{
+		auto chunk = mChunks.last();
+
+		if (mChunks.IsEmpty()) {
+			qDebugBreak();
+		}
+
+		if (chunk->mIsParent) {
+			qDebugBreak();
+		}
+
+		if (chunk->mUID != uid) {
+			qDebugBreak();
+		}
+
+		s64 write_pos = GetWritePos();
+		s64 align = qAlignUp<s64>(write_pos, 8) - write_pos;
+		if (align >= UINT_MAX) {
+			qDebugBreak();
+		}
+
+		if (align)
+		{
+			u8 pad = 0;
+			do
+			{
+				Write(&pad, 1);
+				--align;
+			} while (align);
+
+			write_pos = GetWritePos();
+		}
+
+		u64 data_size = (write_pos - chunk->mDataPosition);
+		u64 chunk_size = (write_pos - chunk->mChunkPosition - sizeof(qChunk));
+
+		if (data_size >= UINT_MAX) {
+			qDebugBreak();
+		}
+		if (chunk_size >= UINT_MAX) {
+			qDebugBreak();
+		}
+
+		if (IsUsingCompressionFile()) {
+			qSeek(mCompressionFile, chunk->mChunkPosition, QSEEK_SET);
+		}
+		else
+		{
+			s64 chunk_pos = static_cast<s64>(chunk->mChunkPosition);
+			if (chunk_pos < mWriteCommittedPos || chunk_pos > (mWriteBufferEOFPos + mWriteCommittedPos))
+			{
+				BufferCommit();
+
+				if (mFile) {
+					qSeek(mFile, chunk_pos, QSEEK_SET);
+				}
+
+				mWriteCommittedPos = chunk_pos;
+			}
+
+			mWriteCurrentPos = chunk_pos;
+			mBufferWrites = true;
+		}
+
+
+		bool log_enabled = mLogIsEnabled;
+		mLogIsEnabled = false;
+
+		/* Write qChunk */
+		{
+			u32 chunk_size32 = static_cast<u32>(chunk_size);
+			u32 data_size32 = static_cast<u32>(data_size);
+
+			WriteU32(&uid);
+			WriteU32(&chunk_size32);
+			WriteU32(&data_size32);
+			WriteU32(&chunk->mDataOffset);
+		}
+
+		mLogIsEnabled = log_enabled;
+
+		if (mLogFile && mLogIsEnabled)
+		{
+			PopLogIndent();
+			qFPrintf(mLogFile, "%s</Chunk> <!-- chunksize=0x%llx, datasize=0x%llx -->\n\n",
+				// Use this format after qPrintEngine is fully implemented: "%s</Chunk> <!-- chunksize=0x%x64, datasize=0x%x64 -->\n\n",
+				mLogIndent.mData, chunk_size, data_size);
+		}
+	}
+
+	bool qChunkFileBuilder::IsUsingCompressionFile()
+	{
+		if (mCompressionFilename.IsEmpty()) {
+			return false;
+		}
+
+		if (!mCompressionFile)
+		{
+			BufferCommit();
+
+			if (mBaseFile) {
+				qDebugBreak();
+			}
+
+			mBaseFile = mFile;
+			mFile = nullptr;
+			mCompressionFile = qOpen(mCompressionFilename, QACCESS_WRITE_SEQUENTIAL, true);
+
+			if (!mCompressionFile) {
+				qDebugBreak();
+			}
+		}
+
+		return true;
+	}
+
+	void qChunkFileBuilder::PopLogIndent()
+	{
+		qAssert(mLogIndent.Length() > 0);
+
+		qString temp;
+		temp.Set(mLogIndent, mLogIndent.Length() - 1);
+		mLogIndent.Set(temp, temp.Length());
 	}
 }
 #endif

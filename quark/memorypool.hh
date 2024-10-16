@@ -53,6 +53,7 @@ namespace UFG
 
 	inline qMemoryPool* gMainMemoryPool;
 	inline qList<qMemoryPool> sMemoryPoolList;
+	inline const char* gGlobalNewName = "Global New";
 
 	void InternalSetupMainMemoryPool();
 	void InitMemorySystem();
@@ -66,7 +67,7 @@ namespace UFG
 		return gMainMemoryPool;
 	}
 
-	THEORY_INLINE void* qMalloc(usize size, const char* name, u64 allocationParams = 0) { return GetMainMemoryPool()->Allocate(size, name, allocationParams, true); }
+	THEORY_INLINE void* qMalloc(usize size, const char* name = gGlobalNewName, u64 allocationParams = 0) { return GetMainMemoryPool()->Allocate(size, name, allocationParams, true); }
 
 	THEORY_INLINE void qFree(void* ptr) { gMainMemoryPool->Free(ptr); }
 
