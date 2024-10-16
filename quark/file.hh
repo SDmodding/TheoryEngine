@@ -303,6 +303,8 @@ namespace UFG
 
 	bool qWaitForOpenFileHandle(qFile* file);
 
+	s64 qGetFileSize(qFile* file);
+
 	s64 qGetFileSize(const char* filename);
 
 	s64 qGetPosition(qFile* file);
@@ -588,6 +590,21 @@ namespace UFG
 		}
 
 		return (file->mOpenState == qFile::STATE_OPENED);
+	}
+
+	s64 qGetFileSize(qFile* file)
+	{
+		if (!qWaitForOpenFileHandle(file)) {
+			return -1;
+		}
+
+		s64 size = -1;
+		{
+			qMutexScopeLocker sl(file->mFileHandleMutex);
+			size = file->mDevice->GetFileSize(file);
+		}
+
+		return size;
 	}
 
 	s64 qGetFileSize(const char* filename)

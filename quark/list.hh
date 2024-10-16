@@ -59,6 +59,7 @@ namespace UFG
 			node->RemoveNode();
 		}
 
+		THEORY_INLINE bool IsEmpty() { return mNode.mNext == &mNode; }
 		THEORY_INLINE T* begin() { return mNode.next(); }
 		THEORY_INLINE T* end() { return reinterpret_cast<T*>(&mNode); }
 	};

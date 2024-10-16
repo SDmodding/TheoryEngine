@@ -58,6 +58,8 @@ namespace UFG
 
 		void Set(const char* text);
 
+		THEORY_INLINE void SetEmpty() { Set(sEmptyString); }
+
 		void Set(const char* text, int length, const char* textb = 0, int lengthb = 0);
 
 		bool StartsWith(const char* text, int length = -1);

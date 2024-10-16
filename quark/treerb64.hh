@@ -51,5 +51,8 @@ namespace UFG
 	{
 	public:
 		qBaseTreeVariableRB<u64> mTree;
+
+		THEORY_INLINE int Count() { return mTree.mCount; }
+		THEORY_INLINE bool IsEmpty() { return Count() == 0; }
 	};
 }

@@ -16,6 +16,7 @@ namespace UFG
 
 	void qClose()
 	{
+		qValidateChunkFileBuilders();
 		gQuarkFileSystem.ClosePlat();
 	}
 

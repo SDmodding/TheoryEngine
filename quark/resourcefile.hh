@@ -136,6 +136,14 @@ namespace UFG
 
 		qChunkFileBuilder(s64 write_buffer_size = -1);
 
+		~qChunkFileBuilder();
+
+		bool CreateBuilder(const char* platform, const char* filename, const char* index_filename = nullptr, bool create_logs = false, BuildType build_type = BUILDTYPE_CREATE);
+
+		void CloseBuilder(bool* builded, bool verbose);
+
+		bool Validate(const char* name, bool assertOnError);
+
 		void OpenIncremental();
 
 		void BufferCommit();
@@ -146,6 +154,8 @@ namespace UFG
 	};
 
 	inline qChunkFileBuilder::TargetEndian gPlatformEndian;
+
+	void qValidateChunkFileBuilders();
 
 	//-------------------------------------------------------------------
 
