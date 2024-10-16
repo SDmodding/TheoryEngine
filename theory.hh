@@ -118,6 +118,7 @@
 // [Quark] Implementations
 //-------------------------------------------------------------------
 
+#include "quark/resourcefile_impl.hh"
 #include "quark/string_impl.hh"
 
 //-------------------------------------------------------------------
