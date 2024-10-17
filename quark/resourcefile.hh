@@ -14,6 +14,8 @@ namespace UFG
 	{
 		u64 mPosition;
 		u32 mSize;
+
+		tCheckSize(u64 position, u32 size) : mPosition(position), mSize(size) {}
 	};
 
 	struct tChunk : qNode<tChunk>
@@ -198,6 +200,10 @@ namespace UFG
 		void BeginChunk(u32 uid, const char* name, u32 alignment = 16);
 
 		void EndChunk(u32 uid);
+
+		void BeginCheckSize(u32 size, const char* name = 0);
+
+		bool EndCheckSize();
 
 		bool IsUsingCompressionFile();
 

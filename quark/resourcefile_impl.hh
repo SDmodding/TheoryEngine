@@ -699,6 +699,57 @@ namespace UFG
 		qDelete(chunk);
 	}
 
+	void qChunkFileBuilder::BeginCheckSize(u32 size, const char* name)
+	{
+		LogComment(name);
+
+		mCheckSizes.Insert((new (gGlobalNewName) tCheckSize(GetFilePos(), size)));
+	}
+
+	bool qChunkFileBuilder::EndCheckSize()
+	{
+		if (mCheckSizes.IsEmpty()) {
+			qDebugBreak();
+		}
+
+		auto checkSize = mCheckSizes.back();
+
+		u64 output_size = (GetFilePos() - checkSize->mPosition);
+		u64 expected_size = static_cast<u64>(checkSize->mSize);
+
+		qDelete(checkSize);
+
+		if (output_size != expected_size)
+		{
+			auto chunk = mChunks.back();
+			u32 chunk_uid;
+			const char* chunk_name;
+
+			if (mChunks.IsEmpty()) 
+			{
+				chunk_uid = 0;
+				chunk_name = "<unknown>";
+			}
+			else
+			{
+				chunk_uid = chunk->mUID;
+				chunk_name = chunk->mName;
+			}
+
+			qAssertF(output_size == expected_size,
+				"ERROR: The incorrect number of bytes were written into the chunk!\n"
+				"            Chunk         = 0x%08x %s\n"
+				"            Expected Size = %llu\n"
+				"            Written  Size = %llu\n",
+				chunk_uid, chunk_name,
+				expected_size, output_size);
+
+			return false;
+		}
+
+		return true;
+	}
+
 	bool qChunkFileBuilder::IsUsingCompressionFile()
 	{
 		if (mCompressionFilename.IsEmpty()) {
