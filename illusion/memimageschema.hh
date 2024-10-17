@@ -66,6 +66,8 @@ namespace Illusion
 			Add(name, UFG::qAlignUp<u32>(sizeof(T), 16), reinterpret_cast<void**>(pointer), offset_ptr);
 		}
 
+		void InitValidation(UFG::qChunkFileBuilder* chunk_builder);
+
 		void BeginValidation(UFG::qChunkFileBuilder* chunk_builder, const char* name);
 
 		void EndValidation(UFG::qChunkFileBuilder* chunk_builder, usize size);
@@ -111,6 +113,12 @@ namespace Illusion
 		mCurrSize = 0;
 		mCurrSerializeIndex = 0;
 		mBaseFilePosition = 0;
+	}
+
+	void MemImageSchema::InitValidation(UFG::qChunkFileBuilder* chunk_builder)
+	{
+		mCurrSerializeIndex = 0;
+		mBaseFilePosition = chunk_builder->GetFilePos();
 	}
 
 	void MemImageSchema::BeginValidation(UFG::qChunkFileBuilder* chunk_builder, const char* name)
