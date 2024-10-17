@@ -165,11 +165,27 @@ namespace UFG
 			WriteValue(buffer, sizeof(T), name, type_name, value);
 		}
 
-		void WriteI32(int* buffer, const char* name = nullptr) { WriteValue(buffer, name, "%d", "int32"); }
+		void WriteI8(u8* buffer, const char* name = nullptr) { WriteValue(buffer, name, "%d", "int8"); }
+
+		void WriteU8(u8* buffer, const char* name = nullptr) { WriteValue(buffer, name, "%u", "uint8"); }
+
+		void WriteI16(i16* buffer, const char* name = nullptr) { WriteValue(buffer, name, "%d", "int16"); }
+
+		void WriteU16(i16* buffer, const char* name = nullptr) { WriteValue(buffer, name, "%u", "uint16"); }
+
+		void WriteI32(i32* buffer, const char* name = nullptr) { WriteValue(buffer, name, "%d", "int32"); }
 
 		void WriteU32(u32* buffer, const char* name = nullptr) { WriteValue(buffer, name, "%u", "uint32"); }
 
 		void WriteH32(u32* buffer, const char* name = nullptr) { WriteValue(buffer, name, "0x%x", "uint32"); }
+
+		void WriteI64(i64* buffer, const char* name = nullptr) { WriteValue(buffer, name, "%lld", "int64"); }
+
+		void WriteU64(u64* buffer, const char* name = nullptr) { WriteValue(buffer, name, "%llu", "uint64"); }
+
+		void WriteF32(f32* buffer, const char* name = nullptr) { WriteValue(buffer, name, "%.6f", "float"); }
+
+		void WriteF64(f64* buffer, const char* name = nullptr) { WriteValue(buffer, name, "%.6f", "double"); }
 
 		void BeginChunk(u32 uid, const char* name, u32 alignment);
 
