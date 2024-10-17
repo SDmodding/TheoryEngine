@@ -252,10 +252,10 @@ namespace UFG
 			s64 left_space = (qGetFileSize(mFile) - qGetPosition(mFile));
 			if (left_space > 0)
 			{
-				/* TODO:
-				*	- There is another chunk inserted 'Chunk.Cruft.Buffer' with uid '0xB1DD1EED'.
-				*	- Aligned by 16 bytes and writes just padding.
-				*/
+				BeginChunk(0xB1DD1EED, "Chunk.Cruft.Buffer", 1);
+				Padding(33, static_cast<u32>(left_space - sizeof(qChunk)));
+				EndChunk(0xB1DD1EED);
+				BufferCommit();
 			}
 
 			qClose(mFile);
