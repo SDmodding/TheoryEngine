@@ -203,6 +203,8 @@ namespace UFG
 
 		void PopLogIndent();
 
+		void LogComment(const char* text, bool new_line = true);
+
 		THEORY_INLINE s64 GetWritePos() { return (IsUsingCompressionFile() ? qGetPosition(mCompressionFile) : mWriteCurrentPos); }
 	};
 

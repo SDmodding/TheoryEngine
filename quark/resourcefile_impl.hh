@@ -713,5 +713,14 @@ namespace UFG
 
 		mLogIndent.Set(mLogIndent, mLogIndent.Length() - 1);
 	}
+
+	void qChunkFileBuilder::LogComment(const char* text, bool new_line)
+	{
+		if (!mLogFile || !mLogIsEnabled || !text) {
+			return;
+		}
+
+		qFPrintf(mLogFile, "%s<!-- %s -->%s", mLogIndent.mData, text, (new_line ? "\n" : ""));
+	}
 }
 #endif
