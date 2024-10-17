@@ -151,6 +151,8 @@ namespace UFG
 
 		void BufferCommit();
 
+		void Seek(s64 seek_offset);
+
 		void Write(const void* buffer, u32 num_bytes);
 
 		void WriteValue(const void* buffer, u32 num_bytes, const char* name = nullptr, const char* type_name = nullptr, const char* value = nullptr);
@@ -191,7 +193,7 @@ namespace UFG
 
 		void Padding(u8 byte, u32 size);
 
-		void BeginChunk(u32 uid, const char* name, u32 alignment);
+		void BeginChunk(u32 uid, const char* name, u32 alignment = 16);
 
 		void EndChunk(u32 uid);
 

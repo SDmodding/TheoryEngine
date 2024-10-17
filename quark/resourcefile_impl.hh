@@ -394,6 +394,30 @@ namespace UFG
 		qAssert((!mFile || (qGetPosition(mFile) == mWriteCommittedPos)) && (mWriteCommittedPos == mWriteCurrentPos));
 	}
 
+	void qChunkFileBuilder::Seek(s64 seek_offset)
+	{
+		if (IsUsingCompressionFile())
+		{
+			qSeek(mCompressionFile, seek_offset, QSEEK_SET);
+			return;
+
+		}
+
+		if (seek_offset < mWriteCommittedPos || seek_offset >(mWriteBufferEOFPos + mWriteCommittedPos))
+		{
+			BufferCommit();
+
+			if (mFile) {
+				qSeek(mFile, seek_offset, QSEEK_SET);
+			}
+
+			mWriteCommittedPos = seek_offset;
+		}
+
+		mWriteCurrentPos = seek_offset;
+		mBufferWrites = true;
+	}
+
 	void qChunkFileBuilder::Write(const void* buffer, u32 num_bytes)
 	{
 		if (!num_bytes) {
@@ -620,27 +644,7 @@ namespace UFG
 			qDebugBreak();
 		}
 
-		if (IsUsingCompressionFile()) {
-			qSeek(mCompressionFile, chunk->mChunkPosition, QSEEK_SET);
-		}
-		else
-		{
-			s64 chunk_pos = static_cast<s64>(chunk->mChunkPosition);
-			if (chunk_pos < mWriteCommittedPos || chunk_pos > (mWriteBufferEOFPos + mWriteCommittedPos))
-			{
-				BufferCommit();
-
-				if (mFile) {
-					qSeek(mFile, chunk_pos, QSEEK_SET);
-				}
-
-				mWriteCommittedPos = chunk_pos;
-			}
-
-			mWriteCurrentPos = chunk_pos;
-			mBufferWrites = true;
-		}
-
+		Seek(chunk->mChunkPosition);
 
 		bool log_enabled = mLogIsEnabled;
 		mLogIsEnabled = false;
@@ -657,6 +661,8 @@ namespace UFG
 		}
 
 		mLogIsEnabled = log_enabled;
+
+		Seek(write_pos);
 
 		if (mLogFile && mLogIsEnabled)
 		{
