@@ -498,7 +498,7 @@ namespace UFG
 			}
 
 			if (value) {
-				qFPrintf(mLogFile, ">%s</Value>\n");
+				qFPrintf(mLogFile, ">%s</Value>\n", value);
 			}
 			else {
 				qFPrintf(mLogFile, "\\>\n");
