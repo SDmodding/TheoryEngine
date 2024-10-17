@@ -137,5 +137,19 @@ namespace Illusion
 		chunk_builder->LogComment(UFG::qString("Class: %s", name));
 	}
 
+	void MemImageSchema::EndValidation(UFG::qChunkFileBuilder* chunk_builder, usize size)
+	{
+		int serializedPos = static_cast<int>(mMemStructure[mCurrSerializeIndex].mBaseOffset + size);
+		int schemaPos = static_cast<int>(chunk_builder->GetFilePos() - mBaseFilePosition);
+
+		if (serializedPos != schemaPos)
+		{
+			UFG::qPrintf("ERROR: MemImageSchema::EndValidation: Size mismatch (%d != %d)\n", schemaPos, serializedPos);
+			qAssert(serializedPos == schemaPos);
+		}
+
+		++mCurrSerializeIndex;
+	}
+
 #endif
 }
