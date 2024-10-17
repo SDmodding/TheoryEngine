@@ -177,6 +177,8 @@ namespace UFG
 
 		bool IsUsingCompressionFile();
 
+		void PushLogIndent();
+
 		void PopLogIndent();
 
 		THEORY_INLINE s64 GetWritePos() { return (IsUsingCompressionFile() ? qGetPosition(mCompressionFile) : mWriteCurrentPos); }

@@ -534,7 +534,7 @@ namespace UFG
 
 			qFPrintf(mLogFile, " id=\"0x%x\" alignment=\"%d\" chunkpos=\"0x%x\" dataoffset=\"0x%x\">\n", uid, alignment, chunk_position, data_offset);
 
-			mLogIndent += "\t";
+			PushLogIndent();
 		}
 	}
 
@@ -658,13 +658,16 @@ namespace UFG
 		return true;
 	}
 
+	void qChunkFileBuilder::PushLogIndent()
+	{
+		mLogIndent += "\t";
+	}
+
 	void qChunkFileBuilder::PopLogIndent()
 	{
 		qAssert(mLogIndent.Length() > 0);
 
-		qString temp;
-		temp.Set(mLogIndent, mLogIndent.Length() - 1);
-		mLogIndent.Set(temp, temp.Length());
+		mLogIndent.Set(mLogIndent, mLogIndent.Length() - 1);
 	}
 }
 #endif

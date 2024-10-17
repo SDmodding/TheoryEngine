@@ -42,23 +42,17 @@ namespace UFG
 	public:
 		qNode<T, U> mNode;
 
-		~qList();
+		~qList() { DeleteNodes(); }
 
 		void Clear();
 
 		void DeleteNodes();
 
 		template <typename T, typename U>
-		THEORY_INLINE void Insert(qNode<T, U>* node)
-		{
-			mNode.InsertNode(node);
-		}
+		THEORY_INLINE void Insert(qNode<T, U>* node) { mNode.InsertNode(node); }
 
 		template <typename T, typename U>
-		THEORY_INLINE void Remove(qNode<T, U>* node)
-		{
-			node->RemoveNode();
-		}
+		THEORY_INLINE void Remove(qNode<T, U>* node) { node->RemoveNode();	}
 
 		THEORY_INLINE bool IsEmpty() { return mNode.mNext == &mNode; }
 		THEORY_INLINE T* back() { return mNode.prev(); }
@@ -67,12 +61,6 @@ namespace UFG
 	};
 
 #ifdef THEORY_IMPL
-
-	template <typename T, typename U>
-	qList<T, U>::~qList()
-	{
-		DeleteNodes();
-	}
 
 	template <typename T, typename U>
 	void qList<T, U>::DeleteNodes()
