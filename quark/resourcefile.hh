@@ -187,6 +187,10 @@ namespace UFG
 
 		void WriteF64(f64* buffer, const char* name = nullptr) { WriteValue(buffer, name, "%.6f", "double"); }
 
+		void Align(u32 align);
+
+		void Padding(u8 byte, u32 size);
+
 		void BeginChunk(u32 uid, const char* name, u32 alignment);
 
 		void EndChunk(u32 uid);

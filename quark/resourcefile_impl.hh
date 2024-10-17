@@ -494,6 +494,44 @@ namespace UFG
 		}
 	}
 
+	void qChunkFileBuilder::Align(u32 align)
+	{
+		if (mChunks.IsEmpty()) {
+			qDebugBreak();
+		}
+
+		s64 write_pos = GetWritePos();
+		s64 size = qAlignUp<s64>(write_pos, align) - write_pos;
+		if (size >= UINT_MAX) {
+			qDebugBreak();
+		}
+
+		for (s64 i = 0; size > i; ++i)
+		{
+			char buffer = 0;
+			Write(&buffer, 1);
+		}
+
+		if (mLogFile && mLogIsEnabled && size) {
+			qFPrintf(mLogFile, "%s<Value type = \"uint8[]\"\tname = \"Align%d\" size=\"%d\">0</Value>\n", mLogIndent.mData, align, static_cast<int>(size));
+		}
+	}
+
+	void qChunkFileBuilder::Padding(u8 byte, u32 size)
+	{
+		if (mChunks.IsEmpty()) {
+			qDebugBreak();
+		}
+
+		for (u32 i = 0; size > i; ++i) {
+			Write(&byte, 1);
+		}
+
+		if (mLogFile && mLogIsEnabled) {
+			qFPrintf(mLogFile, "%s<Value type = \"uint8[]\"\tname = \"Padding\" size=\"%d\">%02x</Value>\n", mLogIndent.mData, size, byte);
+		}
+	}
+
 	void qChunkFileBuilder::BeginChunk(u32 uid, const char* name, u32 alignment)
 	{
 		if (!mChunks.IsEmpty() && mChunks.begin()->mIsParent != 1) {
