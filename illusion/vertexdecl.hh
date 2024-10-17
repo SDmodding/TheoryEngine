@@ -25,7 +25,7 @@ namespace Illusion
 		UFG::qOffset<VertexDeclUser*> mVertexDeclUser;
 	};
 
-	class VertexDeclHandle : public UFG::qTypedResourceHandle<RTYPE_VertexDecl, VertexDecl>
+	class VertexDeclHandle : public UFG::qTypedResourceHandle<RTypeUID_VertexDecl, VertexDecl>
 	{
 	public:
 	};

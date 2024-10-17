@@ -12,7 +12,7 @@ namespace Illusion
 		mStateBlockMask.Reset();
 	}
 
-	Material::Material(const char* name, u32 name_uid, u32 num_params) : UFG::qResourceData(RTYPE_Material, name_uid, name)
+	Material::Material(const char* name, u32 name_uid, u32 num_params) : UFG::qResourceData(RTypeUID_Material, name_uid, name)
 	{
 		mNumParams = num_params;
 

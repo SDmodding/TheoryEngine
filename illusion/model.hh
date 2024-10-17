@@ -47,11 +47,11 @@ namespace Illusion
 		u32 pad1;
 		u32 pad2;
 
-		Buffer(u32 name_uid, const char* name, u32 byte_size) : UFG::qResourceData(RTYPE_Buffer, name_uid, name),
+		Buffer(u32 name_uid, const char* name, u32 byte_size) : UFG::qResourceData(RTypeUID_Buffer, name_uid, name),
 			mDataByteSize(byte_size), mLastUsedFrameNum(0), mMemoryPool(0), pad0(0), pad1(0), pad2(0) {}
 	};
 
-	class BufferHandle : public UFG::qTypedResourceHandle<RTYPE_Buffer, Buffer>
+	class BufferHandle : public UFG::qTypedResourceHandle<RTypeUID_Buffer, Buffer>
 	{
 	public:
 	};
@@ -66,7 +66,7 @@ namespace Illusion
 		UFG::qOffset<UFG::qMatrix44*> mTransformTable;
 	};
 
-	class LocatorsHandle : public UFG::qTypedResourceHandle<RTYPE_Locators, Locators>
+	class LocatorsHandle : public UFG::qTypedResourceHandle<RTypeUID_Locators, Locators>
 	{
 	public:
 	};
@@ -83,7 +83,7 @@ namespace Illusion
 		UFG::qOffset<char*> mTargetNameTable;
 	};
 
-	class MorphTargetsHandle : public UFG::qTypedResourceHandle<RTYPE_MorphTargets, MorphTargets>
+	class MorphTargetsHandle : public UFG::qTypedResourceHandle<RTypeUID_MorphTargets, MorphTargets>
 	{
 	public:
 	};
@@ -167,7 +167,7 @@ namespace Illusion
 		MorphTargetsHandle mMorphTargetsHandle;
 		LocatorsHandle mLocatorsHandle;
 
-		Model(u32 name_uid, const char* name) : UFG::qResourceData(RTYPE_ModelData, name_uid, name),
+		Model(u32 name_uid, const char* name) : UFG::qResourceData(RTypeUID_Model, name_uid, name),
 			mMemoryPool(0), pad0(0), pad1(0), pad2(0) {}
 
 		THEORY_INLINE Mesh* GetMesh(u32 index) { return mMeshOffsetTable[index]->Get(); }

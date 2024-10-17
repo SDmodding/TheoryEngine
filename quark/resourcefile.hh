@@ -6,6 +6,12 @@
 *	- qChunkFileBuilder class members are still same from sdhdship.pdb as in the TextureScriber.
 */
 
+namespace Illusion
+{
+	class MemImageSchema;
+	class Model;
+}
+
 namespace UFG
 {
 	struct tFileIndex;
@@ -159,10 +165,12 @@ namespace UFG
 
 		void WriteValue(const void* buffer, u32 num_bytes, const char* name = 0, const char* type_name = 0, const char* value = 0);
 
+		void WriteRaw(const void* buffer, u32 num_bytes, const char* name = 0, const char* type_name = 0, const char* value = 0);
+
 		void WritePointer(const char* name = 0);
 
 		template <typename T>
-		THEORY_INLINE void WriteValue(T* buffer, const char* name, const char* fmt, const char* type_name)
+		THEORY_INLINE void WriteValue(const T* buffer, const char* name, const char* fmt, const char* type_name)
 		{
 			char value[256] = { 0 };
 			if (mLogFile && mLogIsEnabled) {
@@ -171,27 +179,27 @@ namespace UFG
 			WriteValue(buffer, sizeof(T), name, type_name, value);
 		}
 
-		void WriteI8(u8* buffer, const char* name = 0) { WriteValue(buffer, name, "%d", "int8"); }
+		void WriteI8(const u8* buffer, const char* name = 0) { WriteValue(buffer, name, "%d", "int8"); }
 
-		void WriteU8(u8* buffer, const char* name = 0) { WriteValue(buffer, name, "%u", "uint8"); }
+		void WriteU8(const u8* buffer, const char* name = 0) { WriteValue(buffer, name, "%u", "uint8"); }
 
-		void WriteI16(i16* buffer, const char* name = 0) { WriteValue(buffer, name, "%d", "int16"); }
+		void WriteI16(const i16* buffer, const char* name = 0) { WriteValue(buffer, name, "%d", "int16"); }
 
-		void WriteU16(i16* buffer, const char* name = 0) { WriteValue(buffer, name, "%u", "uint16"); }
+		void WriteU16(const i16* buffer, const char* name = 0) { WriteValue(buffer, name, "%u", "uint16"); }
 
-		void WriteI32(i32* buffer, const char* name = 0) { WriteValue(buffer, name, "%d", "int32"); }
+		void WriteI32(const i32* buffer, const char* name = 0) { WriteValue(buffer, name, "%d", "int32"); }
 
-		void WriteU32(u32* buffer, const char* name = 0) { WriteValue(buffer, name, "%u", "uint32"); }
+		void WriteU32(const u32* buffer, const char* name = 0) { WriteValue(buffer, name, "%u", "uint32"); }
 
-		void WriteH32(u32* buffer, const char* name = 0) { WriteValue(buffer, name, "0x%x", "uint32"); }
+		void WriteH32(const u32* buffer, const char* name = 0) { WriteValue(buffer, name, "0x%x", "uint32"); }
 
-		void WriteI64(i64* buffer, const char* name = 0) { WriteValue(buffer, name, "%lld", "int64"); }
+		void WriteI64(const i64* buffer, const char* name = 0) { WriteValue(buffer, name, "%lld", "int64"); }
 
-		void WriteU64(u64* buffer, const char* name = 0) { WriteValue(buffer, name, "%llu", "uint64"); }
+		void WriteU64(const u64* buffer, const char* name = 0) { WriteValue(buffer, name, "%llu", "uint64"); }
 
-		void WriteF32(f32* buffer, const char* name = 0) { WriteValue(buffer, name, "%.6f", "float"); }
+		void WriteF32(const f32* buffer, const char* name = 0) { WriteValue(buffer, name, "%.6f", "float"); }
 
-		void WriteF64(f64* buffer, const char* name = 0) { WriteValue(buffer, name, "%.6f", "double"); }
+		void WriteF64(const f64* buffer, const char* name = 0) { WriteValue(buffer, name, "%.6f", "double"); }
 
 		void Align(u32 align);
 
@@ -214,6 +222,27 @@ namespace UFG
 		void LogComment(const char* text, bool new_line = true);
 
 		THEORY_INLINE s64 GetFilePos() { return (IsUsingCompressionFile() ? qGetPosition(mCompressionFile) : mWriteCurrentPos); }
+
+		/* Class Builders */
+
+		template <typename T>
+		THEORY_INLINE void Write(const qOffset<T>& offset, const char* name) { WriteI64(&offset.mOffset, qString("%s - offset", name)); }
+
+		void Write(const qBaseNodeRB& node);
+
+		template <typename T, typename U>
+		void Write(const qNode<T, U>& node);
+
+		template <typename T, typename U>
+		void Write(const qList<T, U>& list);
+
+		void Write(const qResourceHandle& resource_handle, const char* name);
+
+		void Write(const qResourceData& resource_data, const char* name);
+
+		/* Class Illusion Builders */
+
+		void Write(Illusion::MemImageSchema* schema, const Illusion::Model& model);
 	};
 
 	inline qChunkFileBuilder::TargetEndian gPlatformEndian;

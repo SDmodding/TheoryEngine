@@ -62,7 +62,7 @@ namespace Illusion
 
 	void ParamOverride::SetTextureOverride(u32 param_uid, u32 override_name_uid, Condition condition, u32 original_name_uid)
 	{
-		SetOverride(param_uid, RTYPE_iTexture, override_name_uid, condition, original_name_uid);
+		SetOverride(param_uid, RTypeUID_Texture, override_name_uid, condition, original_name_uid);
 	}
 
 #endif

@@ -518,6 +518,35 @@ namespace UFG
 		}
 	}
 
+	void qChunkFileBuilder::WriteRaw(const void* buffer, u32 num_bytes, const char* name, const char* type_name, const char* value)
+	{
+		if (mLogFile && mLogIsEnabled)
+		{
+			qFPrintf(mLogFile, "%s<Value", mLogIndent.mData);
+
+			if (type_name) {
+				qFPrintf(mLogFile, " type = \"%s\"", type_name);
+			}
+
+			if (name) {
+				qFPrintf(mLogFile, "\tname = \"%s\"", name);
+			}
+
+			if (value) {
+				qFPrintf(mLogFile, ">%s</Value>\n", value);
+			}
+			else {
+				qFPrintf(mLogFile, "\\>\n");
+			}
+		}
+
+		if (mEnableDebugOutputWrites) {
+			qPrintf("CFB write: %10.10s %20.20s %08d %08d\n", "raw", name, num_bytes, static_cast<int>(GetFilePos()));
+		}
+
+		Write(buffer, num_bytes);
+	}
+
 	void qChunkFileBuilder::WritePointer(const char* name)
 	{
 		if (mLogFile && mLogIsEnabled)
@@ -795,6 +824,127 @@ namespace UFG
 		}
 
 		qFPrintf(mLogFile, "%s<!-- %s -->%s", mLogIndent.mData, text, (new_line ? "\n" : ""));
+	}
+
+	/* Class Builders */
+
+	void qChunkFileBuilder::Write(const qBaseNodeRB& node)
+	{
+		BeginCheckSize(sizeof(qBaseNodeRB));
+		{
+			WritePointer("qBaseNodeRB::mParent");
+			WritePointer("qBaseNodeRB::mChild[0]");
+			WritePointer("qBaseNodeRB::mChild[1]");
+			WriteH32(&node.mUID, "qBaseNodeRB::mUID");
+		}
+		Align(alignof(qBaseNodeRB));
+		EndCheckSize();
+	}
+
+	template <typename T, typename U>
+	void qChunkFileBuilder::Write(const qNode<T, U>& list)
+	{
+		BeginCheckSize(sizeof(qNode<T, U>));
+		{
+			WritePointer("qNode::mNext");
+			WritePointer("qNode::mPrev");
+		}
+		EndCheckSize();
+	}
+
+	template <typename T, typename U>
+	void qChunkFileBuilder::Write(const qList<T, U>& list)
+	{
+		BeginCheckSize(sizeof(qList<T, U>));
+		{
+			WritePointer("qList::mNext");
+			WritePointer("qList::mPrev");
+		}
+		EndCheckSize();
+	}
+
+	void qChunkFileBuilder::Write(const qResourceHandle& resource_handle, const char* name)
+	{
+		BeginCheckSize(sizeof(qResourceHandle));
+		{
+			Write(resource_handle);
+			WritePointer("qResourceHandle::mData");
+			WriteH32(&resource_handle.mNameUID, qString("%s::qResourceHandle::mNameUID", name));
+		}
+		Align(alignof(qResourceHandle));
+		EndCheckSize();
+	}
+
+	void qChunkFileBuilder::Write(const qResourceData& resource_data, const char* name)
+	{
+		BeginCheckSize(sizeof(qResourceData));
+		{
+			Write(resource_data.mNode);
+			Write(resource_data.mResourceHandles);
+
+			WriteH32(&resource_data.mTypeUID, "qResourceData::mTypeUID");
+			WriteRaw(resource_data.mDebugName, sizeof(qResourceData::mDebugName), "qResourcedata::mName", "char[]", resource_data.mDebugName);
+		}
+		Align(alignof(qResourceData));
+		EndCheckSize();
+	}
+
+	void qChunkFileBuilder::Write(Illusion::MemImageSchema* schema, const Illusion::Model& model)
+	{
+		schema->InitValidation(this);
+		schema->BeginValidation(this, "Illusion.Model");
+		{
+			Write(model, "qResourceData");
+
+			WriteF32(&model.mAABBMin[0], "mAABBMin[0]");
+			WriteF32(&model.mAABBMin[1], "mAABBMin[1]");
+			WriteF32(&model.mAABBMin[2], "mAABBMin[2]");
+
+			WriteU32(&model.mNumPrims, "mNumPrims");
+
+			WriteF32(&model.mAABBMax[0], "mAABBMax[0]");
+			WriteF32(&model.mAABBMax[1], "mAABBMax[1]");
+			WriteF32(&model.mAABBMax[2], "mAABBMax[2]");
+
+			WriteU32(&model.pad0, "pad0");
+
+			Write(model.mMaterialTableHandle, "mMaterialTableHandle");
+			Write(model.mBonePaletteHandle, "mBonePaletteHandle");
+			Write(model.mMeshOffsetTable, "mMeshOffsetTable");
+
+			WriteU32(&model.mNumMeshes, "mNumMeshes");
+			Align(8);
+
+			Write(model.mModelUser, "mModelUser");
+
+			WriteU32(&model.pad1, "pad1");
+
+			WriteU32(&model.mLastUsedFrameNum, "mLastUsedFrameNum");
+
+			WriteU32(&model.pad2, "pad2");
+			Align(8);
+
+			WritePointer("mMemoryPool");
+			Write(model.mMorphTargetsHandle, "mMorphTargetsHandle");
+			Write(model.mLocatorsHandle, "mLocatorsHandle");
+
+		}
+		schema->EndValidation(this, sizeof(Illusion::Model));
+		Align(16);
+
+		/* TODO:
+		*	- Complete implementation if needed.
+		*	- This is just small test, but it's missing all these stuff:
+		*		- ModelPlat
+		*		- ModelUserPlat
+		*		- ModelUser
+		*		- MeshOffsetTable
+		*		- Meshes (Mesh, MeshPlat)
+		*	- If you need to write model to chunk just:
+		*		- Get size from Illusion::SchemaSystem
+		*		- Modify some members to be zero like qNode related stuff.
+		*		- Call Write with pointer to model and size from Schema System.
+		*/
 	}
 }
 #endif

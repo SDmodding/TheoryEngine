@@ -12,11 +12,11 @@ namespace Illusion
 		bool mFrameGenerated;
 		ID3D11ShaderResourceView* mShaderResourceView;
 
-		BufferD3DResource(u32 name_uid, const char* name, bool bFrameGenerated) : UFG::qResourceData(RTYPE_BufferD3DResource, name_uid, name),
+		BufferD3DResource(u32 name_uid, const char* name, bool bFrameGenerated) : UFG::qResourceData(RTypeUID_BufferD3DResource, name_uid, name),
 			mGpuResource(0), mResourceOffset(0), mStagingResource(0), mRefCount(0), mFrameGenerated(bFrameGenerated), mShaderResourceView(0) {}
 	};
 
-	class BufferD3DResourceHandle : UFG::qTypedResourceHandle<RTYPE_BufferD3DResource, BufferD3DResource>
+	class BufferD3DResourceHandle : UFG::qTypedResourceHandle<RTypeUID_BufferD3DResource, BufferD3DResource>
 	{
 	public:
 	};

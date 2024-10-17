@@ -12,7 +12,7 @@ namespace Illusion
 		UFG::qOffset<u32*> mBoneFullUIDTable;
 	};
 
-	class BonePaletteHandle : public UFG::qTypedResourceHandle<RTYPE_BonePalette, BonePalette>
+	class BonePaletteHandle : public UFG::qTypedResourceHandle<RTypeUID_BonePalette, BonePalette>
 	{
 	public:
 	};
