@@ -518,6 +518,29 @@ namespace UFG
 		}
 	}
 
+	void qChunkFileBuilder::WritePointer(const char* name)
+	{
+		if (mLogFile && mLogIsEnabled)
+		{
+			qFPrintf(mLogFile, "%s<Value type = \"pointer\"", mLogIndent.mData);
+
+			if (name) {
+				qFPrintf(mLogFile, "\tname = \"%s\"", name);
+			}
+
+			qFPrintf(mLogFile, ">0</Value>\n");
+		}
+
+		if (mEnableDebugOutputWrites) {
+			qPrintf("CFB write: %10.10s %20.20s %08d %08d\n", "ptr", name, sizeof(void*), static_cast<int>(GetFilePos()));
+		}
+
+		u8 ptr = 0;
+		for (int i = 0; sizeof(void*) > i; ++i) {
+			Write(&ptr, 1);
+		}
+	}
+
 	void qChunkFileBuilder::Align(u32 align)
 	{
 		if (mChunks.IsEmpty()) {
