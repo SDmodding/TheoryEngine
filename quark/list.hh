@@ -61,7 +61,7 @@ namespace UFG
 		}
 
 		THEORY_INLINE bool IsEmpty() { return mNode.mNext == &mNode; }
-		THEORY_INLINE T* last() { return mNode.prev(); }
+		THEORY_INLINE T* back() { return mNode.prev(); }
 		THEORY_INLINE T* begin() { return mNode.next(); }
 		THEORY_INLINE T* end() { return reinterpret_cast<T*>(&mNode); }
 	};

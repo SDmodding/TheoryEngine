@@ -540,7 +540,7 @@ namespace UFG
 
 	void qChunkFileBuilder::EndChunk(u32 uid)
 	{
-		auto chunk = mChunks.last();
+		auto chunk = mChunks.back();
 
 		if (mChunks.IsEmpty()) {
 			qDebugBreak();
@@ -627,6 +627,9 @@ namespace UFG
 				// Use this format after qPrintEngine is fully implemented: "%s</Chunk> <!-- chunksize=0x%x64, datasize=0x%x64 -->\n\n",
 				mLogIndent.mData, chunk_size, data_size);
 		}
+
+		mChunks.Remove(chunk);
+		qDelete(chunk);
 	}
 
 	bool qChunkFileBuilder::IsUsingCompressionFile()
