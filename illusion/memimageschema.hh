@@ -66,9 +66,9 @@ namespace Illusion
 			Add(name, UFG::qAlignUp<u32>(sizeof(T), 16), reinterpret_cast<void**>(pointer), offset_ptr);
 		}
 
-		void BeginValidation(/*UFG::qChunkFileBuilder* chunk_builder, */const char* name);
+		void BeginValidation(UFG::qChunkFileBuilder* chunk_builder, const char* name);
 
-		void EndValidation(/*UFG::qChunkFileBuilder* chunk_builder, */usize size);
+		void EndValidation(UFG::qChunkFileBuilder* chunk_builder, usize size);
 	};
 
 	extern MemImageSchema gMemImageSchema;
@@ -111,6 +111,30 @@ namespace Illusion
 		mCurrSize = 0;
 		mCurrSerializeIndex = 0;
 		mBaseFilePosition = 0;
+	}
+
+	void MemImageSchema::BeginValidation(UFG::qChunkFileBuilder* chunk_builder, const char* name)
+	{
+		auto& serializeStruct = mMemStructure[mCurrSerializeIndex];
+
+		bool nameMatches = (UFG::qStringCompareInsensitive(name, serializeStruct.mName) == 0);
+		bool baseMatches = ((chunk_builder->GetFilePos() - mBaseFilePosition) == serializeStruct.mBaseOffset);
+
+		if (!nameMatches)
+		{
+			UFG::qPrintf("ERROR: MemImageSchema::BeginValidation: Expected a structure '%s' but got a '%s'\n", serializeStruct.mName, name);
+			qAssert(nameMatches);
+		}
+
+		if (!baseMatches)
+		{
+			UFG::qPrintf("ERROR: MemImageSchema::BeginValidation: Base Offset mismatch (%d != %d)\n", 
+				static_cast<int>(chunk_builder->GetFilePos() - mBaseFilePosition), serializeStruct.mBaseOffset);
+
+			qAssert(baseMatches);
+		}
+
+		chunk_builder->LogComment(UFG::qString("Class: %s", name));
 	}
 
 #endif

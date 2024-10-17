@@ -9,7 +9,7 @@ namespace UFG
 }
 
 #ifdef THEORY_PLATFORM_PC
-    #define qAssertF(expression, format, ...) (void)((!!(expression)) || !qAssertFail(#expression, __FILE__, (int)(__LINE__), 0, format, ##__VA_ARGS__) || (__debugbreak(), 0))
+    #define qAssertF(expression, format, ...) (void)((!!(expression)) || !UFG::qAssertFail(#expression, __FILE__, (int)(__LINE__), 0, format, ##__VA_ARGS__) || (__debugbreak(), 0))
 #else
     #define qAssertF(expression, format, ...) (void)(0)
 #endif

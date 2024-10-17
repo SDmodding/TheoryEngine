@@ -506,7 +506,7 @@ namespace UFG
 		}
 
 		if (mEnableDebugOutputWrites) {
-			qPrintf("CFB write: %10.10s %20.20s %08d %08d\n", type_name, name, num_bytes, static_cast<int>(GetWritePos()));
+			qPrintf("CFB write: %10.10s %20.20s %08d %08d\n", type_name, name, num_bytes, static_cast<int>(GetFilePos()));
 		}
 
 		if (gPlatformEndian == mTargetEndian) {
@@ -524,8 +524,8 @@ namespace UFG
 			qDebugBreak();
 		}
 
-		s64 write_pos = GetWritePos();
-		s64 size = qAlignUp<s64>(write_pos, align) - write_pos;
+		s64 file_pos = GetFilePos();
+		s64 size = qAlignUp<s64>(file_pos, align) - file_pos;
 		if (size >= UINT_MAX) {
 			qDebugBreak();
 		}
@@ -562,7 +562,7 @@ namespace UFG
 			qDebugBreak();
 		}
 
-		s64 chunk_position = GetWritePos();
+		s64 chunk_position = GetFilePos();
 		u32 chunk_offset = static_cast<u32>(chunk_position + sizeof(qChunk));
 		u32 data_offset = qAlignUp(chunk_offset, alignment) - chunk_offset;
 		if (data_offset == -1) {
@@ -616,8 +616,8 @@ namespace UFG
 			qDebugBreak();
 		}
 
-		s64 write_pos = GetWritePos();
-		s64 align = qAlignUp<s64>(write_pos, 8) - write_pos;
+		s64 file_pos = GetFilePos();
+		s64 align = qAlignUp<s64>(file_pos, 8) - file_pos;
 		if (align >= UINT_MAX) {
 			qDebugBreak();
 		}
@@ -631,11 +631,11 @@ namespace UFG
 				--align;
 			} while (align);
 
-			write_pos = GetWritePos();
+			file_pos = GetFilePos();
 		}
 
-		u64 data_size = (write_pos - chunk->mDataPosition);
-		u64 chunk_size = (write_pos - chunk->mChunkPosition - sizeof(qChunk));
+		u64 data_size = (file_pos - chunk->mDataPosition);
+		u64 chunk_size = (file_pos - chunk->mChunkPosition - sizeof(qChunk));
 
 		if (data_size >= UINT_MAX) {
 			qDebugBreak();
@@ -662,7 +662,7 @@ namespace UFG
 
 		mLogIsEnabled = log_enabled;
 
-		Seek(write_pos);
+		Seek(file_pos);
 
 		if (mLogFile && mLogIsEnabled)
 		{
