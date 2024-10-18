@@ -9,6 +9,8 @@ namespace UFG
 
 		qHalfFloat() : mRep(0) {}
 
+		qHalfFloat(f32 value) { Set(value); }
+
 		void Set(f32 value);
 
 		f32 Get();
