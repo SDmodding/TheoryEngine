@@ -31,9 +31,9 @@ namespace UFG
 			mPrev = mNext = this;
 		}
 
-		THEORY_INLINE T* prev() { return  reinterpret_cast<T*>(mPrev); }
-		THEORY_INLINE T* next() { return  reinterpret_cast<T*>(mNext); }
-		THEORY_INLINE T* type() { return reinterpret_cast<T*>(this); }
+		THEORY_INLINE T* prev() { return static_cast<T*>(mPrev); }
+		THEORY_INLINE T* next() { return static_cast<T*>(mNext); }
+		THEORY_INLINE T* type() { return static_cast<T*>(this); }
 	};
 
 	template <typename T, typename U = T>
@@ -57,7 +57,7 @@ namespace UFG
 		THEORY_INLINE bool IsEmpty() { return mNode.mNext == &mNode; }
 		THEORY_INLINE T* back() { return mNode.prev(); }
 		THEORY_INLINE T* begin() { return mNode.next(); }
-		THEORY_INLINE T* end() { return reinterpret_cast<T*>(&mNode); }
+		THEORY_INLINE T* end() { return static_cast<T*>(&mNode); }
 	};
 
 #ifdef THEORY_IMPL
