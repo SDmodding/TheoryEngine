@@ -49,6 +49,8 @@ namespace Illusion
 
 		Buffer(u32 name_uid, const char* name, u32 byte_size) : UFG::qResourceData(RTypeUID_Buffer, name_uid, name),
 			mDataByteSize(byte_size), mLastUsedFrameNum(0), mMemoryPool(0), pad0(0), pad1(0), pad2(0) {}
+
+		THEORY_INLINE BufferPlat* GetPlat() { return reinterpret_cast<BufferPlat*>(&this[1]); }
 	};
 
 	class BufferHandle : public UFG::qTypedResourceHandle<RTypeUID_Buffer, Buffer>
