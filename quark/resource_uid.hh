@@ -14,7 +14,7 @@
 #define ChunkUID_BonePalette				0x982456DB
 
 #define RTypeUID_Buffer						0x92CDEC8F	// Illusion.Buffer
-#define ChunkUID_Buffer_Chunk				0x7A971479	// Illusion.Buffer.ChunkV1
+#define ChunkUID_Buffer						0x7A971479	// Illusion.Buffer.ChunkV1
 
 #define RTypeUID_BufferD3DResource			0x171246AD
 #define ChunkUID_BufferD3DResource			0x45E061F6
