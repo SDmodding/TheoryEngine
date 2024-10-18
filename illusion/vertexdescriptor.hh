@@ -156,7 +156,9 @@ namespace Illusion
 		mStreamNumElements[stream_num] = numElements + 1;
 
 		VertexStreamElement streamElement(usage, type, stream_num, mStreamSizes[stream_num], default_value);
-		mElements[numElements] = streamElement;
+		mElements[mTotalElements] = streamElement;
+
+		mStreamSizes[stream_num] += streamElement.mSize;
 
 		mTotalSize += streamElement.mSize;
 		++mTotalElements;
