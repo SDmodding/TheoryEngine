@@ -514,7 +514,7 @@ namespace UFG
 
 	u32 qString::GetStringHash32()
 	{
-		if (!mStringHash32) {
+		if (mStringHash32 == -1) {
 			mStringHash32 = qStringHash32(mData);
 		}
 		return mStringHash32;
@@ -522,7 +522,7 @@ namespace UFG
 
 	u32 qString::GetStringHashUpper32()
 	{
-		if (!mStringHashUpper32) {
+		if (mStringHashUpper32 == -1) {
 			mStringHashUpper32 = qStringHashUpper32(mData);
 		}
 		return mStringHashUpper32;
