@@ -34,7 +34,7 @@ namespace Illusion
 		THEORY_INLINE MaterialParam* GetParam(u32 index) { return &GetParams()[index]; }
 	};
 
-	class MaterialHandle : UFG::qTypedResourceHandle<RTypeUID_Material, Material>
+	class MaterialHandle : public UFG::qTypedResourceHandle<RTypeUID_Material, Material>
 	{
 	public:
 
