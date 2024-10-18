@@ -24,6 +24,9 @@ namespace UFG
 		{
 			buf[0] = '\0';
 			qVSPrintf(buf, 2048, msg, va);
+			qPrintf("MESSAGE   = ");
+			qPrintf(buf);
+			qPrintf("\n\n");
 		}
 
 		va_end(va);
