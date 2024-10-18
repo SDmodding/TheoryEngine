@@ -82,7 +82,7 @@ namespace Illusion
 
 		void AddElement(VertexStreamElementUsage usage, VertexSteamElementType type, int stream_num, UFG::qVector4* default_value = 0);
 
-		VertexStreamElement* GetElement(int index, int stream_num);
+		VertexStreamElement* GetElement(int index, int stream_num = -1);
 
 		int GetStreamSize(int stream_num);
 
