@@ -153,15 +153,14 @@ namespace Illusion
 	void VertexStreamDescriptor::AddElement(VertexStreamElementUsage usage, VertexSteamElementType type, int stream_num, UFG::qVector4* default_value)
 	{
 		int numElements = mStreamNumElements[stream_num];
-		mStreamNumElements[stream_num] = numElements + 1;
 
 		VertexStreamElement streamElement(usage, type, stream_num, mStreamSizes[stream_num], default_value);
-		mElements[mTotalElements] = streamElement;
 
+		mElements[mTotalElements++] = streamElement;
+		mStreamNumElements[stream_num] = numElements + 1;
 		mStreamSizes[stream_num] += streamElement.mSize;
 
 		mTotalSize += streamElement.mSize;
-		++mTotalElements;
 	}
 
 	VertexStreamElement* VertexStreamDescriptor::GetElement(int index, int stream_num)
