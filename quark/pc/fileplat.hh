@@ -336,7 +336,7 @@ namespace UFG
 			return false;
 		}
 
-		if (type != FILE_CURRENT || offset)
+		if (type != QSEEK_CUR || offset)
 		{
 			LONG moveHigh = static_cast<LONG>(offset >> 32ll);
 			SetFilePointer(file->mFileHandle, static_cast<LONG>(offset), &moveHigh, type);
