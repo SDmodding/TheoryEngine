@@ -333,6 +333,8 @@ namespace UFG
 
 	void qSeek(qFile* file, s64 seek_offset, qFileSeekType seek_type);
 
+	void qTouch(const char* filename);
+
 #ifdef THEORY_IMPL
 
 	void qFileOpList::Queue(qFileOp* file_op, int priority)
@@ -896,6 +898,11 @@ namespace UFG
 			qMutexScopeLocker sl(file->mFileHandleMutex);
 			file->mDevice->FileSeek(file, seek_type, seek_offset);
 		}
+	}
+
+	void qTouch(const char* filename)
+	{
+		qSetFileTime(filename, qGetSystemTime());
 	}
 
 #endif
