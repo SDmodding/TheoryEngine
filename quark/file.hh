@@ -309,6 +309,8 @@ namespace UFG
 
 	s64 qGetPosition(qFile* file);
 
+	bool qSetFileTime(const char* filename, u64 file_time);
+
 	s64 qRead(qFile* file, void* buffer, s64 num_bytes, s64 seek_offset = 0, qFileSeekType seek_type = QSEEK_CUR);
 
 	s64 qRead(const char* filename, void* buffer, s64 num_bytes, s64 seek_position = 0);
@@ -631,6 +633,19 @@ namespace UFG
 		}
 
 		return position;
+	}
+
+
+	bool qSetFileTime(const char* filename, u64 file_time)
+	{
+		auto device = gQuarkFileSystem.MapFilenameToDevice(filename);
+		auto mapped_filename = gQuarkFileSystem.MapFilename(FILE_MAP_TYPE_DEFAULT, filename);
+
+		if (gQuarkFileSystem.mFatalIOError || !device) {
+			return false;
+		}
+
+		return device->SetFilenameTime(mapped_filename, file_time);
 	}
 
 	s64 qRead(qFile* file, void* buffer, s64 num_bytes, s64 seek_offset, qFileSeekType seek_type)

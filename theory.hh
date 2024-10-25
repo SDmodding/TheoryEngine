@@ -82,6 +82,7 @@
 #include "quark/qsymbol.hh"
 #include "quark/memorypool.hh"
 #include "quark/memorypoollinearallocator.hh"
+#include "quark/timer.hh"
 #include "quark/file.hh"
 #include "quark/resource.hh"
 #include "quark/resourcefile.hh"
@@ -90,6 +91,7 @@
 
 #ifdef THEORY_PLATFORM_PC
 	#include "quark/pc/fileplat.hh"
+	#include "quark/pc/timerplat.hh"
 #endif
 
 //-------------------------------------------------------------------
