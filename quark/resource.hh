@@ -70,6 +70,7 @@ namespace UFG
 	class qTypedResourceHandle : public qResourceHandle
 	{
 	public:
+		THEORY_INLINE T* GetData() { return reinterpret_cast<T*>(mData); }
 	};
 
 	//-------------------------------------------------------------------
