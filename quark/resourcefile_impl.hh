@@ -637,6 +637,12 @@ namespace UFG
 			WriteU32(&data_offset);
 		}
 
+		for (u32 i = 0; data_offset > i; ++i)
+		{
+			s8 pad = 0;
+			Write(&pad, 1);
+		}
+
 		mLogIsEnabled = log_enabled;
 
 		if (mLogFile && mLogIsEnabled)
