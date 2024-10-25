@@ -805,7 +805,6 @@ namespace UFG
 		return num_written_bytes;
 	}
 
-
 	bool qWriteString(qFile* file, const char* text, int length)
 	{
 		s64 num_bytes = static_cast<s64>(length == -1 ? qStringLength(text) : length);
