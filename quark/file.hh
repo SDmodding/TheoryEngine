@@ -323,6 +323,8 @@ namespace UFG
 
 	s64 qWriteAppend(const char* filename, const void* buffer, s64 num_bytes, s64 seek_offset = 0, qFileSeekType seek_type = QSEEK_CUR, bool* not_enough_space = nullptr);
 
+	bool qWriteString(qFile* file, const char* text, int length);
+
 	bool qFileExists(const char* filename);
 
 	void qDeleteFile(const char* filename);
@@ -801,6 +803,14 @@ namespace UFG
 		}
 
 		return num_written_bytes;
+	}
+
+
+	bool qWriteString(qFile* file, const char* text, int length)
+	{
+		s64 num_bytes = static_cast<s64>(length == -1 ? qStringLength(text) : length);
+
+		return qWrite(file, text, num_bytes) > 0;
 	}
 
 	bool qFileExists(const char* filename)
