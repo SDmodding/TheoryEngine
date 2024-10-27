@@ -66,6 +66,19 @@ namespace Illusion
 			Add(name, UFG::qAlignUp<u32>(sizeof(T), 16), reinterpret_cast<void**>(pointer), offset_ptr);
 		}
 
+
+		template <typename T>
+		THEORY_INLINE void AddArray(const char* name, u32 count, T** pointer = 0, void* offset_ptr = 0)
+		{
+			Add(name, sizeof(T) * count, reinterpret_cast<void**>(pointer), offset_ptr);
+		}
+
+		template <typename T>
+		THEORY_INLINE void AddAlignArray(const char* name, u32 count, T** pointer = 0, void* offset_ptr = 0)
+		{
+			Add(name, UFG::qAlignUp<u32>(sizeof(T) * count, 16), reinterpret_cast<void**>(pointer), offset_ptr);
+		}
+
 		void InitValidation(UFG::qChunkFileBuilder* chunk_builder);
 
 		void BeginValidation(UFG::qChunkFileBuilder* chunk_builder, const char* name);

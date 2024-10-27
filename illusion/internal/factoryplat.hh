@@ -14,6 +14,8 @@ namespace Illusion
 		static Material* NewMaterial(const char* name, u32 name_uid, u32 num_params, MemImageSchema* schema = 0, UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
 
 		static Model* NewModel(const char* name, u32 name_uid, u32 num_meshes, MemImageSchema* schema = 0, UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
+
+		static StateBlock* NewStateBlock(const char* name, u32 name_uid, u32 num_values, u32 byte_size, MemImageSchema* schema = 0, UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
 	};
 
 #ifdef THEORY_IMPL
@@ -158,6 +160,34 @@ namespace Illusion
 		}
 
 		return pModel;
+	}
+
+
+	StateBlock* Factory::NewStateBlock(const char* name, u32 name_uid, u32 num_values, u32 byte_size, MemImageSchema* schema, UFG::qMemoryPool* memory_pool, u64 allocation_params)
+	{
+		if (!schema) {
+			schema = GetSchema();
+		}
+
+		StateBlock* pStateBlock = nullptr;
+
+		schema->Init();
+		schema->AddAlign("Illusion.StateBlock", &pStateBlock);
+		schema->Add("StateBlockData", UFG::qAlignUp<u32>(byte_size, 16));
+		schema->AddAlignArray<StateBlock::StateBlockHeader>("StateBlockHeaders", num_values);
+
+		schema->Allocate(memory_pool, allocation_params);
+
+		if (pStateBlock)
+		{
+			new (pStateBlock) StateBlock(name_uid, name);
+
+			pStateBlock->mNameUID = UFG::qStringHashUpper32(name);
+			pStateBlock->mNumValues = num_values;
+			pStateBlock->mDataByteSize = byte_size;
+		}
+
+		return pStateBlock;
 	}
 
 #endif

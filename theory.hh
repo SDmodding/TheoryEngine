@@ -114,6 +114,7 @@
 #include "illusion/materialuser.hh"
 #include "illusion/materialmodifier.hh"
 #include "illusion/model.hh"
+#include "illusion/stateblock.hh"
 
 #include "illusion/internal/factoryplat.hh"
 #include "illusion/illusion.hh"
