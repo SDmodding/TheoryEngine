@@ -239,6 +239,9 @@
 #define RTypeUID_UniqueUIDTableResource				0xEF00811C	// ?
 #define ChunkUID_UniqueUIDTableResource				0x2C40FA26	// ?
 
+#define RTypeUID_VertexDecl							0x3E5FDA3E	// Illusion.VertexDecl
+#define ChunkUID_VertexDecl							0xF7FC6B2D	// Illusion.VertexDecl.ChunkV1
+
 #define RTypeUID_VolumetricEffectSettings			0xE4B8F46A	// ?
 #define ChunkUID_VolumetricEffectSettings			0xA8EB0D0C	// ?
 
