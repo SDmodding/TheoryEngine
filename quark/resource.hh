@@ -16,10 +16,7 @@ namespace UFG
 		qChunk() {}
 		qChunk(u32 uid, u32 chunk_size, u32 data_size, u32 data_offset) : mUID(uid), mChunkSize(chunk_size), mDataSize(data_size), mDataOffset(data_offset) {}
 
-		THEORY_INLINE qResourceData* GetData()
-		{
-			return reinterpret_cast<qResourceData*>(reinterpret_cast<uptr>(&this[1]) + mDataOffset);
-		}
+		THEORY_INLINE qResourceData* GetData() { return reinterpret_cast<qResourceData*>(reinterpret_cast<uptr>(&this[1]) + mDataOffset); }
 	};
 
 	//-------------------------------------------------------------------

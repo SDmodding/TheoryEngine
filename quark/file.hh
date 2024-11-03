@@ -662,14 +662,10 @@ namespace UFG
 			return 0;
 		}
 
-		s64 num_read_bytes;
 
-		{
-			qMutexScopeLocker sl(file->mFileHandleMutex);
-			num_read_bytes = file->mDevice->FileRead(file, buffer, num_bytes);
-		}
-
-		return num_read_bytes;
+		qMutexScopeLocker sl(file->mFileHandleMutex);
+		file->mDevice->FileSeek(file, seek_type, seek_offset);
+		return file->mDevice->FileRead(file, buffer, num_bytes);
 	}
 
 	s64 qRead(const char* filename, void* buffer, s64 num_bytes, s64 seek_position)
@@ -753,6 +749,7 @@ namespace UFG
 
 		{
 			qMutexScopeLocker sl(file->mFileHandleMutex);
+			file->mDevice->FileSeek(file, seek_type, seek_offset);
 			num_written_bytes = file->mDevice->FileWrite(file, buffer, num_bytes, &n_enough_space);
 		}
 
