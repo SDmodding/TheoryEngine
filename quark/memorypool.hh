@@ -38,6 +38,9 @@ namespace UFG
 #ifdef THEORY_WINDOWS
 		HANDLE mHeap;
 #endif
+
+		qMemoryPool() : mInitializedUID(0), mUsePageBasedStompFinder(false) {}
+
 		void Init(const char* name, usize memory_byte_size, int small_block_byte_size, int can_small_block_overflow_into_large_block = 1, u32 InStatList = 1, qMemoryPool* overflow_pool = 0, int printWarningOnOverflow = 1, bool bInitializeAllocator = true);
 
 		void Init(const char* name, char* memory, usize memory_byte_size, int small_block_byte_size, int can_small_block_overflow_into_large_block = 1, u32 InStatList = 1, qMemoryPool* overflow_pool = 0, int printWarningOnOverflow = 1, bool bInitializeAllocator = true);
@@ -76,7 +79,7 @@ namespace UFG
 
 #ifdef THEORY_IMPL
 
-	qMemoryPool gMainMemoryPoolBuffer;
+	u8 gMainMemoryPoolBuffer[sizeof(qMemoryPool)]; /* TODO: Find way to define this without using dynamic initializer/atexit... */
 
 	void qMemoryPool::Init(const char* name, usize memory_byte_size, int small_block_byte_size, int can_small_block_overflow_into_large_block, u32 InStatList, qMemoryPool* overflow_pool, int printWarningOnOverflow, bool bInitializeAllocator)
 	{
@@ -159,8 +162,8 @@ namespace UFG
 
 	void InternalSetupMainMemoryPool()
 	{
-		gMainMemoryPool = &gMainMemoryPoolBuffer;
-		gMainMemoryPool->Init("MainMemoryPool", 0, 1);
+		gMainMemoryPool = new (gMainMemoryPoolBuffer)(qMemoryPool);
+		gMainMemoryPool->Init("Main Pool", 0, 1);
 	}
 
 	void InitMemorySystem()
