@@ -107,9 +107,50 @@ namespace UFG
 			return 1;
 		}
 
-		// TODO
+		qList<qString> dirs;
 
-		return false;
+		qString dirPath = directory;
+		while (!dirPath.IsEmpty())
+		{
+			auto dir = new ("qFile") qString(dirPath);
+			dirs.Insert(dir);
+
+			dirPath = dirPath.GetFilePath();
+		}
+
+		bool dir_valid = false;
+
+		for (auto x = dirs.begin(); x != dirs.end(); x = x->next())
+		{
+			if (::CreateDirectoryA(x->mData, 0) || GetLastError() == ERROR_ALREADY_EXISTS) 
+			{
+				auto y = x->prev();
+				if (y == dirs.end())
+				{
+					dir_valid = true;
+					break;
+				}
+
+				while (::CreateDirectoryA(y->mData, 0) || GetLastError() == ERROR_ALREADY_EXISTS)
+				{
+					y = y->prev();
+					if (y == dirs.end())
+					{
+						x = y;
+						dir_valid = true;
+						break;
+					}
+				}
+			}
+		}
+
+		/* Cleanup list */
+
+		for (auto i = dirs.begin(); i != dirs.end(); i = dirs.begin()) {
+			qDelete(i);
+		}
+
+		return dir_valid;
 	}
 
 	bool PCFileDevice::DeleteDirectory(const char* directory)
