@@ -11,12 +11,16 @@ namespace UFG
 	void qInit()
 	{
 		InitMemorySystem();
+
 		gQuarkFileSystem.InitPlat();
+
+		qResourceWarehouse::Instance()->Init();
 	}
 
 	void qClose()
 	{
 		qValidateChunkFileBuilders();
+
 		gQuarkFileSystem.ClosePlat();
 	}
 

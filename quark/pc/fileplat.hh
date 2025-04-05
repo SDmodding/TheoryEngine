@@ -144,12 +144,6 @@ namespace UFG
 			}
 		}
 
-		/* Cleanup list */
-
-		for (auto i = dirs.begin(); i != dirs.end(); i = dirs.begin()) {
-			qDelete(i);
-		}
-
 		return dir_valid;
 	}
 

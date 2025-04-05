@@ -15,7 +15,7 @@
 * 
 *	BEFORE INCLUDING:
 *		#define THEORY_IMPL
-*		-This is necessary, otherwise no functions will be implemented.
+*		- This is necessary, otherwise no functions will be implemented.
 * 
 *	CREDITS:
 *		sneakyevil		-	Lead Developer
@@ -23,27 +23,53 @@
 */
 #pragma once
 
-/* Platform Defines */
+//==================================================================
+//	Optional Defines
+//==================================================================
+/*
+**	THEORY_DUCKTAPE
+**	- Use "duck tape" version implementation for missing stuff.
+*	- As example: 'qBaseTreeRB' uses 'std::map'.
+*/
+//==================================================================
+
+//--------------------------------------------------
+//	Platform Defines
+//--------------------------------------------------
 
 #define THEORY_WINDOWS
 #define THEORY_PLATFORM_PC
 
-/* Keyword Defines */
+//--------------------------------------------------
+//	Keyword Defines
+//--------------------------------------------------
 
-#define THEORY_INLINE __forceinline
+#define THEORY_SINLINE	static inline
+#define THEORY_INLINE	__forceinline
 
-/* Libraries */
-#include <cstdarg>
-#include <cstdio>
-#include <cstring>
-#include <cstdlib>
+//--------------------------------------------------
+//	Libraries
+//--------------------------------------------------
+
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include <new>
+
+#ifdef THEORY_DUCKTAPE
+
+#include <map>
+
+#endif
 
 #ifdef THEORY_PLATFORM_PC
 	#include <d3d11.h>
 #endif
 
-/* Quark Defines */
+//--------------------------------------------------
+//	Defines
+//--------------------------------------------------
 
 #ifdef THEORY_PLATFORM_PC
 	#define qDebugBreak()		__debugbreak()
@@ -54,9 +80,13 @@
 #define qMin(a, b)				(a < b ? a : b)
 #define qMax(a, b)				(a > b ? a : b)
 
-//-------------------------------------------------------------------
-// [Quark] Includes
-//-------------------------------------------------------------------
+//==================================================================
+//	Includes
+//==================================================================
+
+//--------------------------------------------------
+//	Quark
+//--------------------------------------------------
 
 #include "quark/types.hh"
 #include "quark/assert.hh"
@@ -83,7 +113,9 @@
 #include "quark/memorypool.hh"
 #include "quark/memorypoollinearallocator.hh"
 #include "quark/timer.hh"
+#include "quark/compresslz.hh"
 #include "quark/file.hh"
+#include "quark/printchannel.hh"
 #include "quark/resource.hh"
 #include "quark/resourcefile.hh"
 #include "quark/resource_uid.hh"
@@ -94,9 +126,9 @@
 	#include "quark/pc/timerplat.hh"
 #endif
 
-//-------------------------------------------------------------------
-// [Illusion] Includes
-//-------------------------------------------------------------------
+//--------------------------------------------------
+//	Illusion
+//--------------------------------------------------
 
 #include "illusion/memimageschema.hh"
 #include "illusion/state.hh"
@@ -119,20 +151,37 @@
 #include "illusion/internal/factoryplat.hh"
 #include "illusion/illusion.hh"
 
+//--------------------------------------------------
+//	PropertySet
+//--------------------------------------------------
+
+#include "propertyset/qpropertyset.hh"
+
+//--------------------------------------------------
+//	Streamer
+//--------------------------------------------------
+
+#include "streamer/bigfile.hh"
+#include "streamer/streamermetrics.hh"
+#include "streamer/streamfilewrapper.hh"
+#include "streamer/streamresourceloader.hh"
+
+//==================================================================
+//	Implementations
 //==================================================================
 
 #ifdef THEORY_IMPL
 
-//-------------------------------------------------------------------
-// [Quark] Implementations
-//-------------------------------------------------------------------
+//--------------------------------------------------
+//	Quark
+//--------------------------------------------------
 
 #include "quark/resourcefile_impl.hh"
 #include "quark/string_impl.hh"
 
-//-------------------------------------------------------------------
-// [Illusion] Implementations
-//-------------------------------------------------------------------
+//--------------------------------------------------
+//	Illusion
+//--------------------------------------------------
 
 #include "illusion/material_impl.hh"
 

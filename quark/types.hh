@@ -29,3 +29,17 @@ typedef unsigned int		usize;
 typedef unsigned long		uptr;
 
 #endif
+
+template <typename E, typename T>
+class qEnum
+{
+public:
+	T mValue;
+
+	qEnum() {}
+	qEnum(E value) : mValue(static_cast<T>(value)) {}
+	qEnum(T value) : mValue(value) {}
+
+	THEORY_INLINE operator E() const { return static_cast<E>(mValue); }
+	THEORY_INLINE operator T() const { return mValue; }
+};

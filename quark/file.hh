@@ -7,6 +7,8 @@ namespace UFG
 	class qFileDevice;
 	class qFileSystem;
 
+	typedef void(__fastcall* qFileCallback)(qFileOp*, void*);
+
 	//-------------------------------------------------------------------
 	// Enums
 	//-------------------------------------------------------------------
@@ -21,6 +23,14 @@ namespace UFG
 		QACCESS_SEQUENTIAL = 16,
 		QACCESS_READ_SEQUENTIAL = (QACCESS_READ | QACCESS_SEQUENTIAL),
 		QACCESS_WRITE_SEQUENTIAL = (QACCESS_WRITE | QACCESS_SEQUENTIAL)
+	};
+
+	enum qFilePriorityLevel
+	{
+		QPRIORITY_HIGH,
+		QPRIORITY_NORMAL,
+		QPRIORITY_LOW,
+		QPRIORITY_NUM
 	};
 
 	enum qFileSeekType : s32
@@ -101,7 +111,7 @@ namespace UFG
 		u8 mStatus[4];
 		qString mFilename;
 		qFile* mFile;
-		void(__fastcall* mCallback)(qFileOp*, void*);
+		qFileCallback mCallback;
 		void* mCallbackParam;
 		float mStartTime;
 		float mQueuedTime;
@@ -293,7 +303,9 @@ namespace UFG
 
 	void qFPrintf(qFile* file, const char* fmt, ...);
 
-	qFile* qOpen(const char* filename, qFileAccessType access_type, bool warn_if_fail);
+	qFile* qOpen(const char* filename, qFileAccessType access_type, bool warn_if_fail = 0);
+
+	qFile* qOpenAsync(const char* filename, qFileAccessType access_type, bool warn_if_fail = 0, qFileCallback callback = 0, void* callback_param = 0, qFilePriorityLevel priority = QPRIORITY_NORMAL);
 
 	bool qOpenInternal(qFile* file, bool warn_if_fail);
 
@@ -302,6 +314,8 @@ namespace UFG
 	bool qCloseInternal(qFile* file);
 
 	bool qWaitForOpenFileHandle(qFile* file);
+
+	s64 qGetDiskPosSortKey(qFile* file);
 
 	s64 qGetFileSize(qFile* file);
 
@@ -314,6 +328,8 @@ namespace UFG
 	s64 qRead(qFile* file, void* buffer, s64 num_bytes, s64 seek_offset = 0, qFileSeekType seek_type = QSEEK_CUR);
 
 	s64 qRead(const char* filename, void* buffer, s64 num_bytes, s64 seek_position = 0);
+
+	void qReadAsync(qFile* file, void* buffer, s64 size, s64 seek_offset, qFileSeekType seek_type, qFileCallback callback, void* callback_param, qFilePriorityLevel priority = QPRIORITY_NORMAL);
 
 	char* qReadEntireFile(const char* filename, s64* loaded_size = nullptr, qMemoryPool* memory_pool = nullptr, u64 allocation_params = 0, const char* name = nullptr);
 
@@ -469,6 +485,13 @@ namespace UFG
 		return file;
 	}
 
+
+	qFile* qOpenAsync(const char* filename, qFileAccessType access_type, bool warn_if_fail, qFileCallback callback, void* callback_param, qFilePriorityLevel priority)
+	{
+		// TODO: Implement this...
+		return nullptr;
+	}
+
 	bool qOpenInternal(qFile* file, bool warn_if_fail)
 	{
 		auto device = file->mDevice;
@@ -598,6 +621,21 @@ namespace UFG
 		return (file->mOpenState == qFile::STATE_OPENED);
 	}
 
+	s64 qGetDiskPosSortKey(qFile* file)
+	{
+		if (!qWaitForOpenFileHandle(file)) {
+			return -1;
+		}
+		
+		s64 sortKey = -1;
+		{
+			qMutexScopeLocker sl(file->mFileHandleMutex);
+			sortKey = file->mDevice->FileGetDiskPosSortKey(file);
+		}
+
+		return sortKey;
+	}
+
 	s64 qGetFileSize(qFile* file)
 	{
 		if (!qWaitForOpenFileHandle(file)) {
@@ -683,6 +721,11 @@ namespace UFG
 		}
 
 		return num_read_bytes;
+	}
+
+	void qReadAsync(qFile* file, void* buffer, s64 size, s64 seek_offset, qFileSeekType seek_type, qFileCallback callback, void* callback_param, qFilePriorityLevel priority)
+	{
+		// TODO: Implement this...
 	}
 
 	char* qReadEntireFile(const char* filename, s64* loaded_size, qMemoryPool* memory_pool, u64 allocation_params, const char* name)

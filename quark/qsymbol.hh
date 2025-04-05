@@ -46,17 +46,17 @@ namespace UFG
 
 	qSymbol qSymbol::create_from_string(const char* pszSymbolString)
 	{
-		return qSymbol(pszSymbolString ? qStringHash32(pszSymbolString) : -1);
+		return { pszSymbolString ? qStringHash32(pszSymbolString) : -1 };
 	}
 
 	qSymbol qSymbol::create_increment(int incrementValue)
 	{
-		return qSymbol(mUID + incrementValue);
+		return { mUID + incrementValue };
 	}
 
 	qSymbol qSymbol::create_suffix(const char* suffix)
 	{
-		return qSymbol(qStringHash32(suffix, mUID));
+		return qStringHash32(suffix, mUID);
 	}
 
 	//-------------------------------------------------------------------

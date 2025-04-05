@@ -20,7 +20,7 @@ namespace UFG
 	};
 
 	//-------------------------------------------------------------------
-	// Resource Handle
+	//	Resource Handle
 	//-------------------------------------------------------------------
 
 	class qResourceHandle : public qNode<qResourceHandle>
@@ -71,7 +71,7 @@ namespace UFG
 	};
 
 	//-------------------------------------------------------------------
-	// Resource Data
+	//	Resource Data
 	//-------------------------------------------------------------------
 
 	class qResourceData : public qNodeRB<qResourceData>
@@ -88,7 +88,7 @@ namespace UFG
 	};
 
 	//-------------------------------------------------------------------
-	// Inventory
+	//	Inventory
 	//-------------------------------------------------------------------
 
 	class qResourceInventory : public qNodeRB<qResourceInventory>, public qNode<qResourceInventory>
@@ -116,20 +116,60 @@ namespace UFG
 
 		// TODO: Need finish functions & virtual functions.
 
-		qResourceInventory(const char* name, u32 type_uid, u32 chunk_uid, u32 default_name_uid, u32 num_unsolved_hash_lists);
+		qResourceInventory(const char* name, u32 type_uid, u32 chunk_uid, u32 default_name_uid = 0, u32 num_unsolved_hash_lists = 0);
 
 		virtual void InitHandle(qResourceHandle* handle, u32 name_uid);
 		virtual void InitHandle(qResourceHandle* handle, u32 name_uid, qResourceData* data);
+
+		virtual void OnAttachHandle(qResourceHandle* handle, qResourceData* data) {};
+		virtual void OnDetachHandle(qResourceHandle* handle, qResourceData* data) {};
+		virtual void OnPreMove(qResourceData* resourceData) {};
+		virtual void OnPostMove(qResourceData* resourceData) {};
+
+		virtual void Init();
+		virtual void Close();
+
+		virtual bool IsEmpty() { return mNumResourceData == 0; }
+
+		virtual void Add(qResourceData* data);
+		virtual void Remove(qResourceData* data);
+
+		virtual qResourceData* Get(u32 name_uid);
+		virtual qResourceData* DebugGet(const char* name);
+
+		virtual bool Load(qChunk* chunk);
+		virtual bool Unload(qChunk* chunk);
+
+		virtual bool PreMove(qChunk* chunk);
+		virtual bool PostMove(qChunk* chunk);
+
+		virtual bool Validate() { return true; }
+
+		virtual void PrintContents();
+
+		qList<qResourceHandle>* GetResourceHandleList(u32 name_uid, qResourceData* data = 0)
+		{
+			if (!data || data == mDefaultResourceData)
+			{
+				if (name_uid == -1 || name_uid == 0) {
+					return &mNullHandles;
+				}
+
+				return &mUnresolvedHandleLists[name_uid % mNumUnresolvedHandleLists];
+			}
+			
+			return &data->mResourceHandles;
+		}
 	};
 
 	//-------------------------------------------------------------------
-	// Warehouse
+	//	Warehouse
 	//-------------------------------------------------------------------
 
 	class qResourceWarehouse
 	{
 	public:
-		qTreeRB<qResourceInventory> mInventoryTree;
+		qTreeRB<qResourceInventory, 0> mInventoryTree;
 		qList<qResourceInventory> mInventoryList;
 		qResourceInventory* mLastInventory;
 		u32 mLastTypeUID;
@@ -142,6 +182,8 @@ namespace UFG
 
 		static qResourceWarehouse* Instance();
 
+		void Init();
+		
 		qResourceInventory* GetInventory(u32 type_uid);
 
 		THEORY_INLINE void AddInventory(qResourceInventory* inv)
@@ -156,37 +198,46 @@ namespace UFG
 #ifdef THEORY_IMPL
 
 	//-------------------------------------------------------------------
-	// Resource Handle
+	//	Resource Handle
 	//-------------------------------------------------------------------
 
 	void qResourceHandle::Close()
 	{
-		RemoveNode();
+		RemoveFromList();
 
 		if (mData)
 		{
-			// TODO: GetInventory from Warehouse and call OnDetachHandle.
+			auto inventory = qResourceWarehouse::Instance()->GetInventory(mData->mTypeUID);
+			inventory->OnDetachHandle(this, mData);
 			mData = nullptr;
 		}
 	}
 
-
 	void qResourceHandle::Init(u32 type_uid, u32 name_uid)
 	{
 		Close();
-		// TODO: GetInventory from Warehouse and call InitHandle.
+
+		if (auto inventory = qResourceWarehouse::Instance()->GetInventory(type_uid)) {
+			inventory->InitHandle(this, name_uid);
+		}
 	}
 
 	void qResourceHandle::Init(u32 type_uid, u32 name_uid, qResourceData* resource_data, qResourceInventory* inventory)
 	{
 		Close();
-		// TODO: GetInventory from Warehouse and call InitHandle.
+
+		if (inventory) {
+			inventory->InitHandle(this, name_uid, resource_data);
+		}
 	}
 
 	void qResourceHandle::Init(u32 type_uid, u32 name_uid, qResourceInventory* inventory)
 	{
 		Close();
-		// TODO: GetInventory from Warehouse and call InitHandle.
+
+		if (inventory) {
+			inventory->InitHandle(this, name_uid);
+		}
 	}
 
 	bool qResourceHandle::IsDefault()
@@ -204,7 +255,7 @@ namespace UFG
 	}
 
 	//-------------------------------------------------------------------
-	// Resource Data
+	//	Resource Data
 	//-------------------------------------------------------------------
 
 	qResourceData::qResourceData(u32 type_uid, u32 name_uid, const char* name)
@@ -240,8 +291,10 @@ namespace UFG
 	}
 
 	//-------------------------------------------------------------------
-	// Inventory
+	//	Inventory
 	//-------------------------------------------------------------------
+
+	qPrintChannel gInventoryChannel = { "qResourceInventory", qPrintChannel::OUTPUT_LEVEL_DEBUG };
 
 	qResourceInventory::qResourceInventory(const char* name, u32 type_uid, u32 chunk_uid, u32 default_name_uid, u32 num_unsolved_hash_lists)
 	{
@@ -278,16 +331,212 @@ namespace UFG
 
 	void qResourceInventory::InitHandle(qResourceHandle* handle, u32 name_uid)
 	{
-		// TODO: Implement this.
+		if (name_uid == -1 || name_uid == 0) {
+			return;
+		}
+
+		InitHandle(handle, name_uid, Get(name_uid));
 	}
 
 	void qResourceInventory::InitHandle(qResourceHandle* handle, u32 name_uid, qResourceData* data)
 	{
-		// TODO: Implement this.
+		GetResourceHandleList(name_uid, data)->Insert(handle);
+
+		handle->mData = data;
+		handle->mNameUID = name_uid;
+
+		OnAttachHandle(handle, data);
+	}
+
+	void qResourceInventory::Init()
+	{
+		gInventoryChannel.Print(qPrintChannel::OUTPUT_LEVEL_DEBUG, "[%s] Init()\n", mName);
+	}
+
+	void qResourceInventory::Close()
+	{
+		gInventoryChannel.Print(qPrintChannel::OUTPUT_LEVEL_DEBUG, "[%s] Close()\n", mName);
+
+		if (mResourceDatas.IsEmpty()) {
+			return;
+		}
+
+		for (auto data : mResourceDatas)
+		{
+			gInventoryChannel.Print(qPrintChannel::OUTPUT_LEVEL_DEBUG, "[%s] WARNING: Remaining resource name = '%s'\n", mName, data->mDebugName);
+			Remove(data);
+		}
+	}
+
+
+	void qResourceInventory::Add(qResourceData* data)
+	{
+		// TODO: Implement "Hot Swap Mode"?
+		/*
+		if (smHotSwapMode)
+		{
+			// ....
+		}
+		*/
+
+		new (data) (qResourceData);
+
+		auto dataUID = data->mNode.mUID;
+		mResourceDatas.Add(data);
+
+		// TODO: Implement fix for unresolved handles...
+
+		const char* str = "";
+		if (mDefaultResourceData == data) {
+			str = " - *DEFAULT* ";
+		}
+		
+		++mNumResourceData;
+		++mTransactionNum;
+		gInventoryChannel.Print(qPrintChannel::OUTPUT_LEVEL_DEBUG, "[%s] ADD%s - 0x%08x - %s\n", mName, str, dataUID, data->mDebugName);
+	}
+
+	void qResourceInventory::Remove(qResourceData* data)
+	{
+		auto dataUID = data->mNode.mUID;
+		mResourceDatas.Remove(data);
+
+		bool isDefaultResource = (mDefaultResourceData == data);
+
+		if (isDefaultResource) {
+			mDefaultResourceData = 0;
+		}
+
+		auto defaultResourceData = mDefaultResourceData;
+		auto resourceHandleList = GetResourceHandleList(dataUID);
+
+		for (auto& handle : data->mResourceHandles)
+		{
+			handle.RemoveFromList();
+
+			OnDetachHandle(&handle, data);
+
+			handle.mData = defaultResourceData;
+
+			resourceHandleList->Insert(&handle);
+		}
+
+		// TODO: Implement this...
+		/*
+		if (v8)
+		{
+			v14 = this->mDefaultResourceData;
+			if (this->mNumUnresolvedHandleLists)
+			{
+				do
+				{
+					v15 = &this->mUnresolvedHandleLists[v6];
+					for (i = (UFG::qList<UFG::qResourceHandle, UFG::qResourceHandle, 1, 0> *)v15->mNode.mNext;
+						i != v15;
+						i = (UFG::qList<UFG::qResourceHandle, UFG::qResourceHandle, 1, 0> *)i->mNode.mNext)
+					{
+						i[1].mNode.mPrev = (UFG::qNode<UFG::qResourceHandle, UFG::qResourceHandle> *)v14;
+					}
+					++v6;
+				} while (v6 < this->mNumUnresolvedHandleLists);
+			}
+		}	
+		*/
+		
+		--mNumResourceData;
+		++mTransactionNum;
+
+		gInventoryChannel.Print(qPrintChannel::OUTPUT_LEVEL_DEBUG, "[%s] REMOVE - 0x%08x - %s\n", mName, dataUID, data->mDebugName);
+	}
+
+
+	qResourceData* qResourceInventory::Get(u32 name_uid)
+	{
+		return mResourceDatas.Get(name_uid);
+	}
+
+	qResourceData* qResourceInventory::DebugGet(const char* name)
+	{
+		for (auto data : mResourceDatas)
+		{
+			if (qStringCompareInsensitive(name, data->mDebugName)) {
+				continue;
+			}
+
+			return data;
+		}
+
+		return nullptr;
+	}
+
+
+	bool qResourceInventory::Load(qChunk* chunk)
+	{
+		if (!mChunkUID || chunk->mUID != mChunkUID) {
+			return false;
+		}
+
+		Add(chunk->GetData());
+		mNumResourceBytes += chunk->mDataSize;
+
+		return true;
+	}
+
+	bool qResourceInventory::Unload(qChunk* chunk)
+	{
+		if (!mChunkUID || chunk->mUID != mChunkUID) {
+			return false;
+		}
+
+		Remove(chunk->GetData());
+		mNumResourceBytes -= chunk->mDataSize;
+
+		return true;
+	}
+
+	bool qResourceInventory::PreMove(qChunk* chunk)
+	{
+		if (!Load(chunk)) {
+			return false;
+		}
+
+		OnPostMove(chunk->GetData());
+		return true;
+	}
+
+	bool qResourceInventory::PostMove(qChunk* chunk)
+	{
+		if (!mChunkUID || !chunk || chunk->mUID != mChunkUID) {
+			return false;
+		}
+
+		OnPreMove(chunk->GetData());
+		Unload(chunk);
+		return true;
+	}
+
+	void qResourceInventory::PrintContents()
+	{
+		qPrintf("-------------------------------------------------\n\n");
+		qPrintf("Contents of Inventory '%.64s' %d items\n", mName, mNumResourceData);
+
+		for (auto data : mResourceDatas)
+		{
+			qPrintf("  - Resource TypeUID:0x%08x DataUID:0x%08x Memory:0x%08x Name:'%.36s'\n",
+				data->mTypeUID,
+				data->mNode.mUID,
+				data,
+				data->mDebugName);
+
+			// TextureScriberPC64:
+			//qPrintf("  - Resource DataUID:0x%08x Memory:0x%08x-0x%08x Size:0x%08x (%9u) Name:'%.36s'\n");
+		}
+
+		qPrintf("-------------------------------------------------\n\n");
 	}
 
 	//-------------------------------------------------------------------
-	// Warehouse
+	//	Warehouse
 	//-------------------------------------------------------------------
 
 	qResourceWarehouse* qResourceWarehouse::Instance()
@@ -296,6 +545,13 @@ namespace UFG
 		return &sResourceWarehouse;
 	}
 
+	void qResourceWarehouse::Init()
+	{
+		for (auto inventory : mInventoryTree)
+		{
+			inventory->Init();
+		}
+	}
 
 	qResourceInventory* qResourceWarehouse::GetInventory(u32 type_uid)
 	{
@@ -303,16 +559,12 @@ namespace UFG
 			return mLastInventory;
 		}
 
-		qResourceInventory* pInv = nullptr;
-
-		if (auto pInvNode = mInventoryTree.Get<qResourceInventory>(type_uid)) {
-			pInv = pInvNode->GetBase();
-		}
+		auto inventory = mInventoryTree.Get(type_uid);
 
 		mLastTypeUID = type_uid;
-		mLastInventory = pInv;
+		mLastInventory = inventory;
 
-		return pInv;
+		return inventory;
 	}
 
 #endif

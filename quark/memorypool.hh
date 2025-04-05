@@ -55,7 +55,7 @@ namespace UFG
 	};
 
 	inline qMemoryPool* gMainMemoryPool;
-	inline qList<qMemoryPool> sMemoryPoolList;
+	inline qList<qMemoryPool, qMemoryPool, 0> sMemoryPoolList;
 	inline const char* gGlobalNewName = "Global New";
 
 	void InternalSetupMainMemoryPool();
