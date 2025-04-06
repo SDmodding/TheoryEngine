@@ -32,11 +32,18 @@ namespace UFG
 	{
 		mUID = qStringHash32(name);
 
+#ifdef THEORY_PRINTCHANNEL_DISABLE
+		mOutputLevel = OUTPUT_LEVEL_NONE;
+#endif
+
+#ifdef THEORY_PRINTCHANNEL_FILE
 		qString fileName = R"(Data\printchannel\)";
 		fileName += name;
 		fileName += "_PrintChannel_Log.txt";
 
 		mLogFilename = fileName;
+#endif
+
 	}
 
 	void qPrintChannel::VSPrintf(OutputLevel output_level, const char* format, char* arg_list)

@@ -73,6 +73,9 @@ namespace UFG
 	bool StreamResourceLoader::LoadResourceFile(const char* filename, qMemoryPool* pool, u32 alloc_flags, FNChunkFilter filter, FNFileLoadCallback callback, void* callbackParam)
 	{
 		auto loaded_file = new ("StreamResourceLoader::LoadedFile") LoadedFile(filename);
+		if (!loaded_file) {
+			return false;
+		}
 
 		loaded_file->mpPool = pool;
 		loaded_file->mAllocFlags = alloc_flags;
@@ -91,7 +94,7 @@ namespace UFG
 		}
 
 		qDelete(loaded_file);
-		return 0;
+		return false;
 	}
 
 	void StreamResourceLoader::UnloadInternal(LoadedFile* loaded_file)

@@ -14,7 +14,7 @@ namespace UFG
 
 #ifdef THEORY_DUCKTAPE
 
-		typedef std::map<u32, qBaseNodeRB*> tMap;
+		typedef std::unordered_map<u32, qBaseNodeRB*> tMap;
 
 		~qBaseNodeRB()
 		{
@@ -215,24 +215,43 @@ namespace UFG
 		class qIterator
 		{
 		public:
-			using iterator = qBaseNodeRB::tMap::iterator;
+			using map = qBaseNodeRB::tMap;
+			using iterator = map::iterator;
 
-			qIterator(iterator it) : mIt(it) {}
+			qIterator(map* map, iterator it) : mMap(map), mIt(it) {}
 
-			T* operator*() const { return reinterpret_cast<qNodeRB<T>*>(mIt->second)->type(); }
-			T* operator->() const { return reinterpret_cast<qNodeRB<T>*>(mIt->second)->type(); }
+			T* GetType() const
+			{
+				if (mMap->empty()) {
+					return 0;
+				}
+				return reinterpret_cast<qNodeRB<T>*>(mIt->second)->type();
+			}
 
-			qIterator& operator++() { ++mIt; return *this; }
+			T* operator*() const { return GetType(); }
+			T* operator->() const { return GetType(); }
 
-			bool operator==(const qIterator& other) const { return mIt == other.mIt; }
-			bool operator!=(const qIterator& other) const { return mIt != other.mIt; }
+			qIterator& operator++() { if (!mMap->empty()) ++mIt; return *this; }
+
+			bool operator!=(const qIterator& other) const { return !mMap->empty() && (mIt != other.mIt); }
+			bool operator==(const qIterator& other) const { return !this->operator!=(other); }
 
 		private:
+			map* mMap;
 			iterator mIt;
 		};
 
-		qIterator begin() { return mTree.GetMap().begin(); }
-		qIterator end() { return mTree.GetMap().end(); }
+		qIterator begin()
+		{
+			auto& map = mTree.GetMap();
+			return { &map, map.begin() };
+		}
+
+		qIterator end()
+		{
+			auto& map = mTree.GetMap();
+			return { &map, map.end() };
+		}
 #endif
 
 		void DeleteAll()

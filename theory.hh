@@ -29,7 +29,13 @@
 /*
 **	THEORY_DUCKTAPE
 **	- Use "duck tape" version implementation for missing stuff.
-*	- As example: 'qBaseTreeRB' uses 'std::map'.
+*	- As example: 'qBaseTreeRB' uses 'std::unordered_map'.
+* 
+*	THEORY_PRINTCHANNEL_DISABLE
+*	- Disable usage of print channels.
+* 
+*	THEORY_PRINTCHANNEL_FILE
+*	- Enables usage of file for print channel.
 */
 //==================================================================
 
@@ -59,6 +65,7 @@
 
 #ifdef THEORY_DUCKTAPE
 
+#include <unordered_map>
 #include <map>
 
 #endif
