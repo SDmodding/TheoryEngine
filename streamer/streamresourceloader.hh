@@ -37,6 +37,8 @@ namespace UFG
 		static u32 Load(void* buffer, u32 num_bytes, const char* debug_identifier = 0, StreamerMetrics::DATA_TYPE data_type = StreamerMetrics::DATA_UNKNOWN, FNChunkFilter fnFilter = 0);
 
 		static bool LoadResourceFile(const char* filename, qMemoryPool* pool = 0, u32 alloc_flags = 0, FNChunkFilter filter = 0, FNFileLoadCallback callback = 0, void* callbackParam = 0);
+		
+		static bool UnloadResourceFile(const char* filename);
 
 		static int LoadInternal(LoadedFile* loaded_file);
 
@@ -94,6 +96,22 @@ namespace UFG
 		}
 
 		qDelete(loaded_file);
+		return false;
+	}
+
+	bool StreamResourceLoader::UnloadResourceFile(const char* filename)
+	{
+		for (auto loaded_file : smLoadedFiles)
+		{
+			if (qStringCompareInsensitive(loaded_file->mFilename, filename)) {
+				continue;
+			}
+
+			UnloadInternal(loaded_file);
+			smLoadedFiles.Delete(loaded_file);
+			return true;
+		}
+
 		return false;
 	}
 

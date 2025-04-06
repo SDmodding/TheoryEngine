@@ -98,7 +98,7 @@ namespace UFG
 		u32 mChunkUID;
 		const char* mName;
 		qResourceData* mDefaultResourceData;
-		qTreeRB<qResourceData> mResourceDatas;
+		qTreeRB<qResourceData, 0> mResourceDatas;
 		qList<qResourceHandle> mNullHandles;
 		qList<qResourceHandle> mInternalUnresolvedHandles[4];
 		qList<qResourceHandle>* mUnresolvedHandleLists;

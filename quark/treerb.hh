@@ -254,6 +254,15 @@ namespace UFG
 		}
 #endif
 
+		void Delete(qNodeRB<T>* nodeRB) 
+		{ 
+			mTree.Remove(&nodeRB->mNode);
+
+			auto type = nodeRB->type();
+			type->~T();
+			qFree(type);
+		}
+
 		void DeleteAll()
 		{
 			while (!IsEmpty())
