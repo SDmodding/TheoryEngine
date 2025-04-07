@@ -108,6 +108,16 @@ namespace UFG
 	class qPropertySetHandle : public qTypedResourceHandle<RTypeUID_qPropertySetResource, qPropertySetResource>
 	{
 	public:
+		void Close();
+
+		void CopyFrom(qPropertySetHandle& other);
+
+		void Init(u32 resource_uid);
+
+		void Init();
+
+		void InitTempNonResourcePropSet(const qPropertySet* parent);
+
 		qPropertySet* Get();
 	};
 
@@ -125,14 +135,14 @@ namespace UFG
 
 		enum Flags
 		{
-			FLAG_RESOURCE_SET = (1 << 0),
-			FLAG_HAS_SCHEMA = (1 << 1),
-			FLAG_IS_SCHEMA = (1 << 2),
-			FLAG_INHERIT_SCHEMA = (1 << 3),
-			FLAG_COMPONENT_SCHEMA = (1 << 4),
-			FLAG_CS_SKIP_PARENT_CHECK = (1 << 5),
-			FLAG_REQUIRES_RECURSIVE_SETUP = (1 << 6),
-			FLAG_TYPE_START = (1 << 16),
+			FLAG_RESOURCE_SET = (1 << 0) << 16,
+			FLAG_HAS_SCHEMA = (1 << 1) << 16,
+			FLAG_IS_SCHEMA = (1 << 2) << 16,
+			FLAG_INHERIT_SCHEMA = (1 << 3) << 16,
+			FLAG_COMPONENT_SCHEMA = (1 << 4) << 16,
+			FLAG_CS_SKIP_PARENT_CHECK = (1 << 5) << 16,
+			FLAG_REQUIRES_RECURSIVE_SETUP = (1 << 6) << 16,
+			FLAG_TYPE_START = (1 << 16) << 16,
 		};
 
 		qOffset64<qPropertySetHandle*> mParents;
@@ -150,7 +160,7 @@ namespace UFG
 
 		/* Constructors, Destructor */
 
-		qPropertySet() {}
+		qPropertySet();
 
 		qPropertySet(const qSymbol& name) : mName(name),
 			mParents(0),
@@ -190,7 +200,7 @@ namespace UFG
 
 		const void* GetMemImagePtr() const { return mValues.Get(); }
 
-		bool IsResourceSet() const { return GetFlags() & FLAG_RESOURCE_SET; }
+		bool IsResourceSet() const { return mFlags & FLAG_RESOURCE_SET; }
 
 		const qPropertySetResource* GetResource() const
 		{
@@ -201,8 +211,6 @@ namespace UFG
 			//return reinterpret_cast<qPropertySetResource*>(reinterpret_cast<uptr>(this) - offsetof(qPropertySetResource, mData));
 			return reinterpret_cast<qPropertySetResource*>(reinterpret_cast<uptr>(this) - 0x68);
 		}
-
-		u16 GetFlags() const { return reinterpret_cast<const u16*>(&mFlags)[1]; }
 
 		Type GetType() const { return static_cast<Type>(mFlags >> 28); }
 		void SetType(Type type) { mFlags &= 0xFFFFFFFu; mFlags |= type << 28; }
@@ -289,7 +297,7 @@ namespace UFG
 			mSourceCRC(-1),
 			mNameString(0)
 		{
-			mData.SetFlags((qPropertySet::FLAG_RESOURCE_SET << 16));
+			mData.SetFlags(qPropertySet::FLAG_RESOURCE_SET);
 			mData.SetType(qPropertySet::Archetype);
 			SetName(set_name);
 		}

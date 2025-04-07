@@ -44,6 +44,51 @@ namespace UFG
 	//	Property Set Handle
 	//----------------------------
 
+	void qPropertySetHandle::Close()
+	{
+		if (!mNext)
+		{
+			mData = 0;
+			return;
+		}
+
+		qResourceHandle::Close(qGetResourceInventory<qPropertySetInventory>(ResourceTypeUID));
+	}
+
+	void qPropertySetHandle::CopyFrom(qPropertySetHandle& other)
+	{
+		if (mNext)
+		{
+			Init(other.mNameUID);
+			return;
+		}
+
+		mNext = 0;
+		mPrev = 0;
+		mData = other.mData;
+		mNameUID = other.mNameUID;
+	}
+
+	void qPropertySetHandle::Init(u32 resource_uid)
+	{
+		auto inventory = qGetResourceInventory<qPropertySetInventory>(ResourceTypeUID);
+		qResourceHandle::Init(ResourceTypeUID, resource_uid, inventory);
+	}
+
+	void qPropertySetHandle::Init() 
+	{
+		auto inventory = qGetResourceInventory<qPropertySetInventory>(ResourceTypeUID);
+		qResourceHandle::Init(ResourceTypeUID, mNameUID, inventory);
+	}
+
+	void qPropertySetHandle::InitTempNonResourcePropSet(const qPropertySet* parent) 
+	{
+		mNext = 0;
+		mPrev = 0;
+		mData = (qResourceData*)(parent);
+		mNameUID = parent->GetName();
+	}
+
 	qPropertySet* qPropertySetHandle::Get()
 	{
 		if (mData && mNext) {
@@ -56,6 +101,52 @@ namespace UFG
 	//----------------------------
 	//	Property Set
 	//----------------------------
+
+	qPropertySet::qPropertySet() : qPropertyCollection(MemImageLoadFlag())
+	{
+		auto parent = mParents.Get();
+		const u32 numParents = NumParents();
+		for (u32 i = 0; numParents > i; ++i)
+		{
+			new (parent) (qResourceHandle);
+			parent->Init();
+
+			++parent;
+		}
+
+		if (GetFlags(FLAG_INHERIT_SCHEMA))
+		{
+			// TODO: Call `RecursiveSchemaGet` and `SetSchemaName`.
+		}
+
+		if (mSchemaName != gNullQSymbol && mSchemaName != GetName())
+		{
+			// Initialize stuff from `UFG::SchemaDef`?
+		}
+
+		if (GetFlags(FLAG_REQUIRES_RECURSIVE_SETUP))
+		{
+			auto property = mProperties.Get();
+			auto values = mValues.Get();
+
+			const u32 numProperties = NumProperties();
+			for (u32 i = 0; numProperties > i; ++i)
+			{
+				if (property->GetTypeUID() == UID_propertyset)
+				{
+					auto offset = reinterpret_cast<qOffset64<qPropertySet*>*>(&values[property->GetDataOffset()]);
+					new (offset->Get()) qPropertySet;
+				}
+				else if (property->GetTypeUID() == UID_list)
+				{
+					auto offset = reinterpret_cast<qOffset64<qPropertyList*>*>(&values[property->GetDataOffset()]);
+					new (offset->Get()) qPropertyList;
+				}
+
+				++property;
+			}
+		}
+	}
 
 	qPropertySet* qPropertySet::CreateResourceSet(const qSymbol& name, const char* dbg_tag)
 	{

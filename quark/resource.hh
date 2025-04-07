@@ -35,7 +35,7 @@ namespace UFG
 		u32 mNameUID;
 		u32 mTailPad;
 
-		qResourceHandle() : mData(0), mNameUID(0), mTailPad(0) {}
+		qResourceHandle() : mData(0), mNameUID(0) {}
 
 		~qResourceHandle()
 		{
@@ -43,6 +43,7 @@ namespace UFG
 		}
 
 		void Close();
+		void Close(qResourceInventory* inventory);
 
 		void Init(u32 type_uid, u32 name_uid);
 		void Init(u32 type_uid, u32 name_uid, qResourceData* resource_data, qResourceInventory* inventory);
@@ -72,6 +73,8 @@ namespace UFG
 	class qTypedResourceHandle : public qResourceHandle
 	{
 	public:
+		enum { ResourceTypeUID = type_uid };
+
 		THEORY_INLINE T* GetData() { return reinterpret_cast<T*>(mData); }
 	};
 
@@ -203,6 +206,15 @@ namespace UFG
 		}
 	};
 
+	template <typename T>
+	THEORY_INLINE T* qGetResourceInventory(u32 typeUID)
+	{
+		static T* result;
+		if (!result) {
+			result = static_cast<T*>(qResourceWarehouse::Instance()->GetInventory(typeUID));
+		}
+		return result;
+	}
 
 #ifdef THEORY_IMPL
 
@@ -218,7 +230,21 @@ namespace UFG
 		{
 			auto inventory = qResourceWarehouse::Instance()->GetInventory(mData->mTypeUID);
 			inventory->OnDetachHandle(this, mData);
-			mData = nullptr;
+
+			mData = 0;
+		}
+	}
+
+
+	void qResourceHandle::Close(qResourceInventory* inventory)
+	{
+		RemoveFromList();
+
+		if (mData)
+		{
+			inventory->OnDetachHandle(this, mData);
+
+			mData = 0;
 		}
 	}
 
