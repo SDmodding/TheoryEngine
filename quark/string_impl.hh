@@ -398,6 +398,27 @@ namespace UFG
 		return res;
 	}
 
+	bool qToBool(const char* text, bool default_value)
+	{
+		if (text && *text)
+		{
+			char c = qToLower(*text);
+
+			if (c == 'T' || c == '1') {
+				return true;
+			}
+			if (c == 'F' || c == '0') {
+				return false;
+			}
+
+			/*if (qToInt32(text, 0)) {
+				return true;
+			}*/
+		}
+
+		return default_value;
+	}
+
 	//-------------------------------------------------------------------
 	// [Class] qString
 	//-------------------------------------------------------------------

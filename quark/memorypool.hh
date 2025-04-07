@@ -12,10 +12,10 @@ namespace UFG
 	class qMemoryPoolData
 	{
 	public:
-		//allocator mAllocator;
+		allocator mAllocator;
 	};
 
-	class qMemoryPool : public qNode<qMemoryPool, qMemoryPool>
+	class qMemoryPool : public qNode<qMemoryPool>
 	{
 	public:
 		u32 mInitializedUID;
@@ -24,8 +24,8 @@ namespace UFG
 		s8 mDataBuffer[sizeof(qMemoryPoolData)];
 		u32 mFlags;
 		bool mUsePageBasedStompFinder;
-		char* mStart;
-		char* mEnd;
+		u8* mStart;
+		u8* mEnd;
 		qMemoryPool* mOverflowPool;
 		int mOverflowOccurred;
 		int mPrintWarningOnOverflow;
@@ -41,9 +41,9 @@ namespace UFG
 
 		qMemoryPool() : mInitializedUID(0), mUsePageBasedStompFinder(false) {}
 
-		void Init(const char* name, usize memory_byte_size, int small_block_byte_size, int can_small_block_overflow_into_large_block = 1, u32 InStatList = 1, qMemoryPool* overflow_pool = 0, int printWarningOnOverflow = 1, bool bInitializeAllocator = true);
+		void Init(const char* name, u64 memory_byte_size, int small_block_byte_size, int can_small_block_overflow_into_large_block = 1, u32 InStatList = 1, qMemoryPool* overflow_pool = 0, int printWarningOnOverflow = 1, bool bInitializeAllocator = true);
 
-		void Init(const char* name, char* memory, usize memory_byte_size, int small_block_byte_size, int can_small_block_overflow_into_large_block = 1, u32 InStatList = 1, qMemoryPool* overflow_pool = 0, int printWarningOnOverflow = 1, bool bInitializeAllocator = true);
+		void Init(const char* name, void* memory, u64 memory_byte_size, int small_block_byte_size, int can_small_block_overflow_into_large_block = 1, u32 InStatList = 1, qMemoryPool* overflow_pool = 0, int printWarningOnOverflow = 1, bool bInitializeAllocator = true);
 
 		void* Allocate(usize size, const char* name, u64 allocationParams = 0, bool checkNull = 0);
 
@@ -52,6 +52,8 @@ namespace UFG
 		void Free(void* ptr);
 
 		usize Size(void* ptr);
+
+		const char* GetName() { return mData->mAllocator.mName; }
 	};
 
 	inline qMemoryPool* gMainMemoryPool;
@@ -79,9 +81,9 @@ namespace UFG
 
 #ifdef THEORY_IMPL
 
-	u8 gMainMemoryPoolBuffer[sizeof(qMemoryPool)]; /* TODO: Find way to define this without using dynamic initializer/atexit... */
+	qBuffer<qMemoryPool> gMainMemoryPoolBuffer;
 
-	void qMemoryPool::Init(const char* name, usize memory_byte_size, int small_block_byte_size, int can_small_block_overflow_into_large_block, u32 InStatList, qMemoryPool* overflow_pool, int printWarningOnOverflow, bool bInitializeAllocator)
+	void qMemoryPool::Init(const char* name, u64 memory_byte_size, int small_block_byte_size, int can_small_block_overflow_into_large_block, u32 InStatList, qMemoryPool* overflow_pool, int printWarningOnOverflow, bool bInitializeAllocator)
 	{
 #ifdef THEORY_WINDOWS
 		mHeap = HeapCreate(0, 0, memory_byte_size);
@@ -93,13 +95,15 @@ namespace UFG
 		Init(name, 0, memory_byte_size, small_block_byte_size, can_small_block_overflow_into_large_block, InStatList, overflow_pool, printWarningOnOverflow, bInitializeAllocator);
 	}
 
-	void qMemoryPool::Init(const char* name, char* memory, usize memory_byte_size, int small_block_byte_size, int can_small_block_overflow_into_large_block, u32 InStatList, qMemoryPool* overflow_pool, int printWarningOnOverflow, bool bInitializeAllocator)
+	void qMemoryPool::Init(const char* name, void* memory, u64 memory_byte_size, int small_block_byte_size, int can_small_block_overflow_into_large_block, u32 InStatList, qMemoryPool* overflow_pool, int printWarningOnOverflow, bool bInitializeAllocator)
 	{
+		auto dataBuffer = reinterpret_cast<qMemoryPoolData*>(mDataBuffer);
+
 		mInitializedUID = MemoryPool_UID;
 		mAutoAllocatedBuffer = nullptr;
-		mData = reinterpret_cast<qMemoryPoolData*>(mDataBuffer);
-		mStart = memory;
-		mEnd = &memory[memory_byte_size];
+		mData = dataBuffer;
+		mStart = reinterpret_cast<u8*>(memory);
+		mEnd = &mStart[memory_byte_size];
 		mOverflowPool = overflow_pool;
 		mOverflowOccurred = 0;
 		mPrintWarningOnOverflow = printWarningOnOverflow;
@@ -109,16 +113,35 @@ namespace UFG
 		mTotalSpilledAllocs = 0;
 		mFlags = 0;
 
+		if (!dataBuffer->mAllocator.mName) {
+			new(&dataBuffer->mAllocator)(allocator);
+		}
+
+		if (bInitializeAllocator) {
+			mData->mAllocator.init(name, mStart, static_cast<u64>(mEnd - mStart), small_block_byte_size, can_small_block_overflow_into_large_block);
+		}
+
 		sMemoryPoolList.Insert(this);
 	}
 
 	void* qMemoryPool::Allocate(usize size, const char* name, u64 allocationParams, bool checkNull)
 	{
+		void* mem = 0;
+
 #ifdef THEORY_WINDOWS
-		return HeapAlloc(mHeap, 0, size);
+		mem = HeapAlloc(mHeap, 0, size);
 #else
-		return ::malloc(size);
+		mem = ::malloc(size);
 #endif
+
+		if (!mem && checkNull && size)
+		{
+			const char* dbgName = (name ? name : "NULL name passed in");
+			qPrintf("\nERROR: *** Out of memory ***\nERROR: Pool name      = %s\nERROR: Requested size = %d [%s]\n", GetName(), size, dbgName);
+			qDebugBreak();
+		}
+
+		return mem;
 	}
 
 	void* qMemoryPool::Realloc(void* mem, usize size, const char* name, u64 allocationParams)
@@ -144,6 +167,10 @@ namespace UFG
 
 	usize qMemoryPool::Size(void* ptr)
 	{
+		if (!ptr) {
+			return 0;
+		}
+
 #ifdef THEORY_WINDOWS
 		return HeapSize(mHeap, 0, ptr);
 #else
@@ -153,6 +180,10 @@ namespace UFG
 
 	void qMemoryPool::Free(void* ptr)
 	{
+		if (!ptr) {
+			return;
+		}
+
 #ifdef THEORY_WINDOWS
 		HeapFree(mHeap, 0, ptr);
 #else

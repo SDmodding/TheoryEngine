@@ -96,6 +96,7 @@
 //--------------------------------------------------
 
 #include "quark/types.hh"
+#include "quark/array.hh"
 #include "quark/assert.hh"
 #include "quark/bitflags.hh"
 #include "quark/offset.hh"
@@ -114,6 +115,8 @@
 	#include "quark/pc/processplat.hh"
 	#include "quark/pc/stringplat.hh"
 #endif
+
+#include "quark/internal/allocator.hh"
 
 #include "quark/checksum.hh"
 #include "quark/qsymbol.hh"
@@ -162,7 +165,11 @@
 //	PropertySet
 //--------------------------------------------------
 
+#include "propertyset/propertysymbols.hh"
 #include "propertyset/qpropertyset.hh"
+#include "propertyset/qpropertylist.hh"
+#include "propertyset/propertysetcache.hh"
+#include "propertyset/qpropertysetxml.hh"
 
 //--------------------------------------------------
 //	Streamer
@@ -191,5 +198,11 @@
 //--------------------------------------------------
 
 #include "illusion/material_impl.hh"
+
+//--------------------------------------------------
+//	PropertySet
+//--------------------------------------------------
+
+#include "propertyset/qpropertyset_impl.hh"
 
 #endif

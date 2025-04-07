@@ -12,6 +12,8 @@ namespace UFG
 		qBaseNodeRB() : mParent(0), mChild{0, 0} {}
 		qBaseNodeRB(u32 uid) : mParent(0), mChild{ 0, 0 }, mUID(uid) {}
 
+		void SetUID(u32 uid) { mUID = uid; }
+
 #ifdef THEORY_DUCKTAPE
 
 		typedef std::unordered_map<u32, qBaseNodeRB*> tMap;
@@ -30,29 +32,7 @@ namespace UFG
 			}
 		}
 
-
-		void SetUID(u32 uid)
-		{
-			auto map = reinterpret_cast<tMap*>(mParent);
-			if (map)
-			{
-				const auto it = map->find(mUID);
-				if (it != map->end()) {
-					map->erase(it);
-				}
-			}
-
-			mUID = uid;
-
-			if (map) {
-				map->operator[](mUID) = this;
-			}
-		}
-
 #else
-
-		void SetUID(u32 uid) { mUID = uid; }
-
 		/* Helpers */
 
 		THEORY_INLINE void SetParent(qBaseNodeRB* p)
@@ -173,6 +153,17 @@ namespace UFG
 			return nullptr;
 		}
 
+		bool Contains(const qBaseNodeRB* node)
+		{
+			auto& map = GetMap();
+			const auto it = map.find(node->mUID);
+			if (it != map.end()) {
+				return (*it).second == node;
+			}
+
+			return false;
+		}
+
 #else
 		qBaseTreeRB();
 
@@ -209,6 +200,8 @@ namespace UFG
 			auto node = reinterpret_cast<qNodeRB<T>*>(mTree.Get(uid));
 			return (node ? node->type() : 0);
 		}
+
+		THEORY_INLINE bool Contains(const qNodeRB<T>* nodeRB) { return mTree.Contains(&nodeRB->mNode); }
 
 #ifdef THEORY_DUCKTAPE
 
@@ -256,7 +249,7 @@ namespace UFG
 
 		void Delete(qNodeRB<T>* nodeRB) 
 		{ 
-			mTree.Remove(&nodeRB->mNode);
+			Remove(nodeRB);
 
 			auto type = nodeRB->type();
 			type->~T();

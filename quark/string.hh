@@ -4,7 +4,7 @@
 
 namespace UFG
 {
-	class qString : public qNode<qString, qString>
+	class qString : public qNode<qString>
 	{
 	public:
 		u32 mMagic;
@@ -124,16 +124,20 @@ namespace UFG
 
 	char* qStringCopy(char* dest, int dest_size, const char* text, int text_count = -1);
 
+	char* qStringCopy(char* dest, const char* text) { return qStringCopy(dest, -1, text, -1); }
+
 	int qStringLength(const char* text);
 
 	void qStringToLower(char* text);
 
 	void qStringToUpper(char* text);
 
-	inline bool qIsWhitespace(int c)
+	THEORY_INLINE bool qIsWhitespace(int c)
 	{
 		return (c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r' || c == ' ' ? true : false);
 	}
 
 	qString qTrim(const char* text, int length = 0);
+
+	bool qToBool(const char* text, bool default_value = 0);
 }

@@ -2,6 +2,10 @@
 
 namespace UFG
 {
+	extern int qDefaultSeed;
+
+	int qRandom(int range, int* pseed = &qDefaultSeed);
+
 	class qVector2
 	{
 	public:
@@ -35,7 +39,6 @@ namespace UFG
 		qVector4 v0, v1, v2, v3;
 	};
 
-
 	class qQuaternion
 	{
 	public:
@@ -44,4 +47,22 @@ namespace UFG
 		qQuaternion() : x(0.f), y(0.f), z(0.f), w(0.f) {}
 		qQuaternion(f32 fX, f32 fY, f32 fZ, f32 fW) : x(fX), y(fY), z(fZ), w(fW) {}
 	};
+
+#ifdef THEORY_IMPL
+
+	int qDefaultSeed = 0x91212123;
+
+	int qRandom(int range, int* pseed)
+	{
+		if (!range) {
+			return 0;
+		}
+
+		int seed = *pseed ^ 0x1D872B41;
+		int val = *pseed % range;
+		*pseed = seed ^ seed ^ (seed >> 5) ^ ((seed ^ (seed >> 5)) << 27);
+		return (val + range) % range;
+	}
+
+#endif
 }

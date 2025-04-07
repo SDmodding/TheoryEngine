@@ -1,5 +1,10 @@
 #pragma once
 
+struct MemImageLoadFlag
+{
+	u32 flag;
+};
+
 namespace UFG
 {
 	class qResourceData;
@@ -82,7 +87,13 @@ namespace UFG
 		char mDebugName[36];
 
 		qResourceData() {}
-		qResourceData(u32 type_uid, u32 name_uid, const char* name);
+
+		qResourceData(u32 type_uid, u32 name_uid, const char* name)
+		{
+			mNode.mUID = name_uid;
+			mTypeUID = type_uid;
+			SetDebugName(name);
+		}
 
 		void SetDebugName(const char* name);
 	};
@@ -113,8 +124,6 @@ namespace UFG
 		f32 mLoadTime;
 		f32 mUnloadTime;
 		f32 mInitHandleTime;
-
-		// TODO: Need finish functions & virtual functions.
 
 		qResourceInventory(const char* name, u32 type_uid, u32 chunk_uid, u32 default_name_uid = 0, u32 num_unsolved_hash_lists = 0);
 
@@ -258,13 +267,6 @@ namespace UFG
 	//	Resource Data
 	//-------------------------------------------------------------------
 
-	qResourceData::qResourceData(u32 type_uid, u32 name_uid, const char* name)
-	{
-		mNode.mUID = name_uid;
-		mTypeUID = type_uid;
-		SetDebugName(name);
-	}
-
 	void qResourceData::SetDebugName(const char* name)
 	{
 		qMemSet(mDebugName, 0, sizeof(mDebugName));
@@ -378,8 +380,6 @@ namespace UFG
 			// ....
 		}
 		*/
-
-		new (data) (qResourceData);
 
 		auto dataUID = data->mNode.mUID;
 		mResourceDatas.Add(data);

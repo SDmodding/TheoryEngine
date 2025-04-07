@@ -43,3 +43,14 @@ public:
 	THEORY_INLINE operator E() const { return static_cast<E>(mValue); }
 	THEORY_INLINE operator T() const { return mValue; }
 };
+
+template <typename T>
+class qBuffer
+{
+public:
+	THEORY_INLINE operator void*() const { return reinterpret_cast<const void*>(this); }
+	THEORY_INLINE operator void*() { return reinterpret_cast<void*>(this); }
+
+private:
+	u8 mData[sizeof(T)];
+};

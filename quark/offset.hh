@@ -40,7 +40,10 @@ namespace UFG
 	public:
 		i64 mOffset;
 
-		THEORY_INLINE T Get(i64 offset = 0)
+		qOffset64() {}
+		qOffset64(i64 offset) : mOffset(offset) {}
+
+		THEORY_INLINE T Get(i64 offset = 0) const
 		{
 			if (mOffset) {
 				return reinterpret_cast<T>(reinterpret_cast<uptr>(this) + mOffset + offset);
@@ -60,7 +63,7 @@ namespace UFG
 
 		THEORY_INLINE void operator=(const T* target) { Set(target); }
 
-		THEORY_INLINE T operator[](u32 index) { return &Get()[index]; }
+		THEORY_INLINE T operator[](u32 index) const { return &Get()[index]; }
 
 		THEORY_INLINE T operator->() { return Get(); }
 	};

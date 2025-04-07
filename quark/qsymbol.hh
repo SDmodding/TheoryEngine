@@ -11,18 +11,24 @@ namespace UFG
 		qSymbol(u32 uid) : mUID(uid) {}
 		qSymbol(const qSymbol& source) : mUID(source.mUID) {}
 
-		THEORY_INLINE bool is_null() { return mUID == -1; }
+		THEORY_INLINE bool is_null() const { return mUID == -1; }
 		THEORY_INLINE void set_null() { mUID = -1; }
 
 		static qSymbol create_from_string(const char* pszSymbolString);
 
-		qSymbol create_increment(int incrementValue = 1);
+		qSymbol create_increment(int incrementValue = 1) const;
 
-		qSymbol create_suffix(const char* suffix);
+		qSymbol create_suffix(const char* suffix) const;
 
-		bool operator!=(const qSymbol& sym) { return mUID != sym.mUID; }
-		bool operator==(const qSymbol& sym) { return mUID == sym.mUID; }
+		const char* as_cstr_dbg() const;
+
+		bool operator!=(const qSymbol& sym) const { return mUID != sym.mUID; }
+		bool operator==(const qSymbol& sym) const { return mUID == sym.mUID; }
+
+		THEORY_INLINE operator u32() const { return mUID; }
 	};
+
+	const inline qSymbol gNullQSymbol;
 
 	class qSymbolUC
 	{
@@ -44,20 +50,13 @@ namespace UFG
 	// Symbol
 	//-------------------------------------------------------------------
 
-	qSymbol qSymbol::create_from_string(const char* pszSymbolString)
-	{
-		return { pszSymbolString ? qStringHash32(pszSymbolString) : -1 };
-	}
+	qSymbol qSymbol::create_from_string(const char* pszSymbolString) { return { pszSymbolString ? qStringHash32(pszSymbolString) : -1 }; }
 
-	qSymbol qSymbol::create_increment(int incrementValue)
-	{
-		return { mUID + incrementValue };
-	}
+	qSymbol qSymbol::create_increment(int incrementValue) const { return { mUID + incrementValue }; }
 
-	qSymbol qSymbol::create_suffix(const char* suffix)
-	{
-		return qStringHash32(suffix, mUID);
-	}
+	qSymbol qSymbol::create_suffix(const char* suffix) const { return qStringHash32(suffix, mUID); }
+
+	const char* qSymbol::as_cstr_dbg() const { return qSymbolRegistry::Get(mUID); }
 
 	//-------------------------------------------------------------------
 	// Symbol Registry
