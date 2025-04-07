@@ -52,6 +52,8 @@ namespace UFG
 
 		void MakeUpper();
 
+		int ReplaceString(const char* find_text, const char* replace_text, bool ignore_case);
+
 		void ReplaceCharInPlace(char search_char, char replace_char);
 
 		qString ReplaceExtension(const char* ext);
@@ -79,7 +81,7 @@ namespace UFG
 
 		/* Operators */
 
-		operator const char*() { return mData; }
+		operator const char*() const { return mData; }
 
 		bool operator!=(const qString& text);
 		bool operator!=(const char* text);
@@ -94,6 +96,36 @@ namespace UFG
 		const qString& operator+=(const char* text);
 
 		char operator[](int pos) { return mData[pos]; }
+	};
+
+	class qStringBuilder
+	{
+	public:
+		char* mBuffer;
+		int mBufferSize;
+		int mStringLength;
+
+		qStringBuilder();
+		~qStringBuilder();
+
+		void Add(const char* text, int length = -1);
+
+		void Format(const char* format, ...);
+
+		qStringBuilder& operator<<(const qString& v) { Add(v, v.mLength); return *this; }
+		qStringBuilder& operator<<(bool v) 
+		{
+			if (v) {
+				Add("true", 4);
+			}
+			else {
+				Add("false", 5);
+			}
+			return *this;
+		}
+
+		qStringBuilder& operator<<(const char* v) { Format("%s", v); return *this; }
+		qStringBuilder& operator<<(u64 v) { Format("%u64", v); return *this; }	
 	};
 
 	int qPrintf(const char* fmt, ...);

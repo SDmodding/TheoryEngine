@@ -561,6 +561,44 @@ namespace UFG
 		ResetHash();
 	}
 
+	int qString::ReplaceString(const char* find_text, const char* replace_text, bool ignore_case)
+	{
+		int find_len = qStringLength(find_text);
+		int replace_len = qStringLength(replace_text);
+
+		if (!find_len) {
+			return 0;
+		}
+
+		char* data = mData;
+		int len = mLength;
+		char* find = qStringFind(data, len, find_text, find_len, ignore_case);
+		if (!find) {
+			return 0;
+		}
+
+		int numFound = 0;
+
+		qStringBuilder stringBuilder;
+		do
+		{
+			int copy_len = static_cast<int>(find - data);
+			stringBuilder.Add(data, copy_len);
+			stringBuilder.Add(replace_text, replace_len);
+
+			data = &find[find_len];
+			len -= copy_len - find_len;
+
+			++numFound;
+			find = qStringFind(data, len, find_text, find_len, ignore_case);
+
+		} while (find);
+
+		Set(stringBuilder.mBuffer, stringBuilder.mStringLength);
+
+		return numFound;
+	}
+
 	void qString::ReplaceCharInPlace(char search_char, char replace_char)
 	{
 		for (int i = 0; mLength > i; ++i)
@@ -817,6 +855,71 @@ namespace UFG
 			Set(mData, mLength, text, qStringLength(text));
 		}
 		return *this;
+	}
+
+	//----------------------------
+	//	String Builder
+	//----------------------------
+
+	qStringBuilder::qStringBuilder()
+	{
+		mBuffer = static_cast<char*>(qMalloc(1, "qStringBuilder.ctor"));
+		mBufferSize = 1;
+		mStringLength = 0;
+	}
+
+	qStringBuilder::~qStringBuilder()
+	{
+		if (mBuffer) {
+			qFree(mBuffer);
+		}
+
+		mBuffer = 0;
+		mBufferSize = 0;
+		mStringLength = 0;
+	}
+
+	void qStringBuilder::Add(const char* text, int length)
+	{
+		if (qStringEmpty(text)) {
+			return;
+		}
+
+		if (length == -1) {
+			length = qStringLength(text);
+		}
+
+		int requiredSize = length + mStringLength + 1;
+		if (requiredSize > mBufferSize)
+		{
+			while (requiredSize > mBufferSize) {
+				mBufferSize *= 2;
+			}
+
+			auto buffer = static_cast<char*>(qMalloc(mBufferSize, "StringBuilder::Add"));
+			qMemCopy(buffer, mBuffer, mStringLength + 1);
+			qFree(mBuffer);
+			mBuffer = buffer;
+		}
+		
+		qMemCopy(&mBuffer[mStringLength], text, length);
+		mStringLength += length;
+		mBuffer[mStringLength] = 0;
+	}
+
+	void qStringBuilder::Format(const char* format, ...)
+	{
+		va_list va;
+		va_start(va, format);
+
+		char text[0x2008];
+		qPrintInfo info(text, 0x2000);
+
+		if (int length = qPrintEngine(&info, format, va)) {
+			Add(text, length);
+		}
+
+		va_end(format);
 	}
 }
 #endif
