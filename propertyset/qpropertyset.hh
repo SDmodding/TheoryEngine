@@ -202,15 +202,7 @@ namespace UFG
 
 		bool IsResourceSet() const { return mFlags & FLAG_RESOURCE_SET; }
 
-		const qPropertySetResource* GetResource() const
-		{
-			if (!IsResourceSet()) {
-				return 0;
-			}
-
-			//return reinterpret_cast<qPropertySetResource*>(reinterpret_cast<uptr>(this) - offsetof(qPropertySetResource, mData));
-			return reinterpret_cast<qPropertySetResource*>(reinterpret_cast<uptr>(this) - 0x68);
-		}
+		const qPropertySetResource* GetResource() const;
 
 		Type GetType() const { return static_cast<Type>(mFlags >> 28); }
 		void SetType(Type type) { mFlags &= 0xFFFFFFFu; mFlags |= type << 28; }

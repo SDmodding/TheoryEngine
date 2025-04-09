@@ -148,6 +148,15 @@ namespace UFG
 		}
 	}
 
+	const qPropertySetResource* qPropertySet::GetResource() const
+	{
+		if (!this || !IsResourceSet()) {
+			return 0;
+		}
+
+		return reinterpret_cast<qPropertySetResource*>(reinterpret_cast<uptr>(this) - offsetof(qPropertySetResource, mData));
+	}
+
 	qPropertySet* qPropertySet::CreateResourceSet(const qSymbol& name, const char* dbg_tag)
 	{
 		auto propResource = new (dbg_tag) qPropertySetResource(name.as_cstr_dbg());

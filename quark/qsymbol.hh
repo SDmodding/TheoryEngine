@@ -32,6 +32,15 @@ namespace UFG
 
 		void Add(qResourceData* data) override;
 		void Remove(qResourceData* data) override;
+
+		static SymbolTableResourceInventory* Get()
+		{
+			if (gSymbolTableResourceInventory) {
+				return gSymbolTableResourceInventory;
+			}
+
+			return new ("SymbolTblRscInv") SymbolTableResourceInventory;
+		}
 	};
 
 	class qSymbol
@@ -146,11 +155,8 @@ namespace UFG
 
 	const char* qSymbolLookupStringFromSymbolTableResources(u32 uid)
 	{
-		if (!gSymbolTableResourceInventory) {
-			new ("SymbolTblRscInv") SymbolTableResourceInventory;
-		}
-
-		for (auto resource_data : gSymbolTableResourceInventory->mResourceDatas)
+		auto inventory = SymbolTableResourceInventory::Get();
+		for (auto resource_data : inventory->mResourceDatas)
 		{
 			auto symbolResource = static_cast<SymbolTableResource*>(resource_data);
 

@@ -168,14 +168,15 @@ namespace SimpleXML
 
 		if (data->mWriteBufferPtr)
 		{
-			if (data->mWriteBufferPtr)
-			{
+			// This is in original code twice for some reason...
+			/*if (data->mWriteBufferPtr)
+			{*/
 				if (data->mWriteBufferPos) {
 					UFG::qWrite(data->mFile, data->mWriteBufferPtr, data->mWriteBufferPos);
 				}
 
 				data->mWriteBufferPos = 0;
-			}
+			//}
 
 			UFG::qFree(data->mWriteBufferPtr);
 		}

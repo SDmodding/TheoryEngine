@@ -328,8 +328,10 @@ namespace UFG
 	s64 qRead(qFile* file, void* buffer, s64 num_bytes, s64 seek_offset = 0, qFileSeekType seek_type = QSEEK_CUR);
 
 	s64 qRead(const char* filename, void* buffer, s64 num_bytes, s64 seek_position = 0);
-
 	void qReadAsync(qFile* file, void* buffer, s64 size, s64 seek_offset, qFileSeekType seek_type, qFileCallback callback, void* callback_param, qFilePriorityLevel priority = QPRIORITY_NORMAL);
+
+	s64 qReadAndDecompress(qFile* file, void* buffer, s64 num_bytes, s64 seek_offset, qFileSeekType seek_type, s64 read_offset, s64 read_bytes, s64 read_data_offset, void* scratch_buffer = 0, s64 scratch_size = 0, bool in_place = 1);
+	void qReadAndDecompressAsync(qFile* file, void* buffer, s64 num_bytes, s64 seek_offset, qFileSeekType seek_type, s64 read_offset, s64 read_bytes, s64 read_data_offset, void* scratch_buffer, s64 scratch_size, bool in_place, qFileCallback callback, void* callback_param, qFilePriorityLevel priority = QPRIORITY_NORMAL);
 
 	char* qReadEntireFile(const char* filename, s64* loaded_size = nullptr, qMemoryPool* memory_pool = nullptr, u64 allocation_params = 0, const char* name = nullptr);
 
@@ -724,6 +726,58 @@ namespace UFG
 	}
 
 	void qReadAsync(qFile* file, void* buffer, s64 size, s64 seek_offset, qFileSeekType seek_type, qFileCallback callback, void* callback_param, qFilePriorityLevel priority)
+	{
+		// TODO: Implement this...
+	}
+
+	s64 qReadAndDecompress(qFile* file, void* buffer, s64 num_bytes, s64 seek_offset, qFileSeekType seek_type, s64 read_offset, s64 read_bytes, s64 read_data_offset, void* scratch_buffer, s64 scratch_size, bool in_place)
+	{
+		if (!buffer) {
+			return -1;
+		}
+
+		char* read_buffer;
+		void* out_buffer = buffer;
+		s64 out_size = num_bytes;
+		s64 read_size = read_bytes + read_data_offset;
+		s64 total_size = read_bytes + read_offset;
+
+		if (scratch_buffer)
+		{
+			if (total_size > scratch_size) {
+				return -1;
+			}
+
+			read_buffer = &static_cast<char*>(scratch_buffer)[read_offset];
+
+			if (in_place)
+			{
+				out_buffer = scratch_buffer;
+				out_size = scratch_size;
+			}
+		}
+		else
+		{
+			if (total_size > num_bytes) {
+				return -1;
+			}
+
+			read_buffer = &static_cast<char*>(buffer)[read_offset];
+		}
+
+		if (qRead(file, read_buffer, read_size, seek_offset, seek_type) != read_size) {
+			return -1;
+		}
+
+		s64 size = qDecompressLZ(&read_buffer[read_offset], read_bytes, out_buffer, out_size);
+		if (scratch_buffer && in_place) {
+			qMemCopy(buffer, scratch_buffer, size);
+		}
+
+		return size;
+	}
+
+	void qReadAndDecompressAsync(qFile* file, void* buffer, s64 num_bytes, s64 seek_offset, qFileSeekType seek_type, s64 read_offset, s64 read_bytes, s64 read_data_offset, void* scratch_buffer, s64 scratch_size, bool in_place, qFileCallback callback, void* callback_param, qFilePriorityLevel priority)
 	{
 		// TODO: Implement this...
 	}

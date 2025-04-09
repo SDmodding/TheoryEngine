@@ -10,7 +10,7 @@ namespace UFG
 		u32 uncompressed_size;
 	};
 
-	class BIGFileIndex : qResourceData
+	class BIGFileIndex : public qResourceData
 	{
 	public:
 		struct Entry
