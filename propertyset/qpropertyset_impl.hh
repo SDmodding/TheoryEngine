@@ -220,7 +220,7 @@ namespace UFG
 
 					if (name_uid < property->mNameUID)
 					{
-						index = i - 1;
+						maxIndex = i - 1;
 						continue;
 					}
 
@@ -268,7 +268,7 @@ namespace UFG
 
 					if (name_uid < property->mNameUID)
 					{
-						index = i - 1;
+						maxIndex = i - 1;
 						continue;
 					}
 
