@@ -36,6 +36,9 @@
 * 
 *	THEORY_PRINTCHANNEL_FILE
 *	- Enables usage of file for print channel.
+* 
+*	THEORY_QSYMBOL_TABLE_INVENTORY
+*	- Enables qSymbolTableResourceInventory to be initialized.
 */
 //==================================================================
 
@@ -91,6 +94,8 @@
 //	Includes
 //==================================================================
 
+#include "extras/resource_uid.hh"
+
 //--------------------------------------------------
 //	Quark
 //--------------------------------------------------
@@ -119,7 +124,6 @@
 #include "quark/internal/allocator.hh"
 
 #include "quark/checksum.hh"
-#include "quark/qsymbol.hh"
 #include "quark/memorypool.hh"
 #include "quark/memorypoollinearallocator.hh"
 #include "quark/timer.hh"
@@ -128,7 +132,7 @@
 #include "quark/printchannel.hh"
 #include "quark/resource.hh"
 #include "quark/resourcefile.hh"
-#include "quark/resource_uid.hh"
+#include "quark/qsymbol.hh"
 #include "quark/quark.hh"
 
 #ifdef THEORY_PLATFORM_PC

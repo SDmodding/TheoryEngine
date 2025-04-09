@@ -2,6 +2,38 @@
 
 namespace UFG
 {
+	class SymbolTableEntry
+	{
+	public:
+		u32 mUID;
+		qOffset64<char*> mString;
+	};
+
+	class SymbolTableResource : public qResourceData
+	{
+	public:
+		u32 mNumEntries;
+		qOffset64<SymbolTableEntry*> mEntries;
+	};
+
+	inline class SymbolTableResourceInventory* gSymbolTableResourceInventory = 0;
+
+	class SymbolTableResourceInventory : public qResourceInventory
+	{
+	public:
+		bool mbAutoUnpackSymbols;
+		SymbolTableResource* mpLastLoadedResource;
+
+		SymbolTableResourceInventory() : qResourceInventory("SymbolTableResourceInventory", RTypeUID_SymbolTableResource, ChunkUID_SymbolTableResource)
+		{
+			mbAutoUnpackSymbols = 0;
+			gSymbolTableResourceInventory = this;
+		}
+
+		void Add(qResourceData* data) override;
+		void Remove(qResourceData* data) override;
+	};
+
 	class qSymbol
 	{
 	public:
@@ -46,9 +78,36 @@ namespace UFG
 
 #ifdef THEORY_IMPL
 
-	//-------------------------------------------------------------------
-	// Symbol
-	//-------------------------------------------------------------------
+	//----------------------------------------------
+	//	Symbol Table Resource Inventory
+	//----------------------------------------------
+
+#ifdef THEORY_QSYMBOL_TABLE_INVENTORY
+	SymbolTableResourceInventory gSymbolTableResourceInventoryInstance;
+#endif
+
+	void SymbolTableResourceInventory::Add(qResourceData* resource_data)
+	{
+		auto symbolResource = new (resource_data) SymbolTableResource;
+		qResourceInventory::Add(resource_data);
+		mpLastLoadedResource = symbolResource;
+	}
+
+	void SymbolTableResourceInventory::Remove(qResourceData* resource_data)
+	{
+		qResourceInventory::Remove(resource_data);
+
+		auto symbolResource = static_cast<SymbolTableResource*>(resource_data);
+		symbolResource->~SymbolTableResource();
+
+		if (mpLastLoadedResource == symbolResource) {
+			mpLastLoadedResource = 0;
+		}
+	}
+
+	//----------------------------------------------
+	//	Symbol
+	//----------------------------------------------
 
 	qSymbol qSymbol::create_from_string(const char* pszSymbolString) { return { pszSymbolString ? qStringHash32(pszSymbolString) : -1 }; }
 
@@ -58,9 +117,9 @@ namespace UFG
 
 	const char* qSymbol::as_cstr_dbg() const { return qSymbolRegistry::Get(mUID); }
 
-	//-------------------------------------------------------------------
-	// Symbol Registry
-	//-------------------------------------------------------------------
+	//----------------------------------------------
+	//	Symbol Registry
+	//----------------------------------------------
 
 	const char* qSymbolRegistry::Get(u32 uid)
 	{
@@ -87,7 +146,40 @@ namespace UFG
 
 	const char* qSymbolLookupStringFromSymbolTableResources(u32 uid)
 	{
-		// TODO: Implement this.
+		if (!gSymbolTableResourceInventory) {
+			new ("SymbolTblRscInv") SymbolTableResourceInventory;
+		}
+
+		for (auto resource_data : gSymbolTableResourceInventory->mResourceDatas)
+		{
+			auto symbolResource = static_cast<SymbolTableResource*>(resource_data);
+
+			auto entries = symbolResource->mEntries.Get();
+
+			int maxIndex = symbolResource->mNumEntries - 1;
+			for (int i = 0; maxIndex >= i;)
+			{
+				int lookupIndex = (maxIndex + i) / 2;
+				auto entry = &entries[lookupIndex];
+				if (entry->mUID >= uid)
+				{
+					if (entry->mUID > uid)
+					{
+						maxIndex = (lookupIndex - 1);
+						continue;
+					}
+					
+					if (auto str = entry->mString.Get()) {
+						return str;
+					}
+
+					break;
+				}
+
+				i = (lookupIndex + 1);
+			}
+		}
+
 		return 0;
 	}
 
