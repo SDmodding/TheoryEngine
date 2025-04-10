@@ -769,7 +769,7 @@ namespace UFG
 			return -1;
 		}
 
-		s64 size = qDecompressLZ(&read_buffer[read_offset], read_bytes, out_buffer, out_size);
+		s64 size = qDecompressLZ(&read_buffer[read_data_offset], read_bytes, out_buffer, out_size);
 		if (scratch_buffer && in_place) {
 			qMemCopy(buffer, scratch_buffer, size);
 		}

@@ -93,8 +93,19 @@ namespace UFG
 
 		if (insideBIGFile)
 		{
-			// TODO: Implement this...
-			return 0;
+			auto streamFile = new ("StreamFile") StreamFile;
+
+			streamFile->mFileType = StreamFile::FILE_TYPE_BIG;      
+			streamFile->mBigFile = bigFile;
+			streamFile->mpEntry = entry;
+			streamFile->mpFile = bigFile->mpFile;
+			streamFile->mSortKey = bigFile->mSortKey;
+
+			{
+				qMutexScopeLocker sl(smStreamFileMutex);
+				smStreamFiles.Insert(streamFile);
+			}
+			return streamFile;
 		}
 
 		qFile* file;
@@ -174,8 +185,8 @@ namespace UFG
 		readOp->mState = STATE_EXECUTING;
 
 		const bool noCallback = readOp->mCallback == 0;
-		const u32 compressed_size = readOp->mFileSize.compressed_size;
-		const u32 uncompressed_size = readOp->mFileSize.uncompressed_size;
+		const s64 compressed_size = readOp->mFileSize.compressed_size;
+		const s64 uncompressed_size = readOp->mFileSize.uncompressed_size;
 
 		if (!compressed_size || compressed_size == uncompressed_size)
 		{
@@ -187,9 +198,9 @@ namespace UFG
 			return 0;
 		}
 
-		const u32 read_data_offset = readOp->mFileSize.load_offset & 0xFFF;
-		const u32 read_offset = readOp->mFileSize.load_offset & 0xFFFFF000;
-		const u32 num_bytes = compressed_size + readOp->mFileSize.compressed_extra;
+		const s64 read_data_offset = readOp->mFileSize.load_offset & 0xFFF;
+		const s64 read_offset = readOp->mFileSize.load_offset & 0xFFFFF000;
+		const s64 num_bytes = uncompressed_size + readOp->mFileSize.compressed_extra;
 
 		if (noCallback) {
 			return qReadAndDecompress(file, buffer, num_bytes, seek_offset, seek_type, read_offset, compressed_size, read_data_offset);

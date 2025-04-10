@@ -13,69 +13,56 @@ namespace UFG
 		u32 mStringHash32;
 		u32 mStringHashUpper32;
 
-		static inline const char* sEmptyString = "";
+		THEORY_SINLINE const char* sEmptyString = "";
+
+		/* Constructors, Destructor */
 
 		qString() : mMagic(THEORY_STRING_MAGIC), mLength(0), mData(const_cast<char*>(sEmptyString)), mStringHash32(-1), mStringHashUpper32(-1) {}
-
 		qString(const qString& text);
-
 		qString(const char* format, ...);
 
-		~qString()
-		{
-			Free();
-		}
+		~qString() { Free(); }
 
 		THEORY_INLINE void SetMagic() { mMagic = THEORY_STRING_MAGIC; }
-
 		THEORY_INLINE void ResetHash() { mStringHash32 = mStringHashUpper32 = -1; }
+		THEORY_INLINE bool IsEmpty() { return mLength == 0; }
+		THEORY_INLINE int Length() { return mLength; }
+		THEORY_INLINE void SetEmpty() { Set(sEmptyString); }
+
+		/* Functions */
 
 		void Format(const char* format, ...);
 
-		qString GetFilePath();
+		qString GetFilePath() const;
+		qString GetFilePathWithoutExtension() const;
 
-		qString GetFilePathWithoutExtension();
-
-		qString GetFilename();
-
-		qString GetFilenameWithoutExtension();
+		qString GetFilename() const;
+		qString GetFilenameWithoutExtension() const;
 
 		u32 GetStringHash32();
-
 		u32 GetStringHashUpper32();
 
-		THEORY_INLINE bool IsEmpty() { return mLength == 0; }
-
-		THEORY_INLINE int Length() { return mLength; }
-
 		void MakeLower();
-
 		void MakeUpper();
 
 		int ReplaceString(const char* find_text, const char* replace_text, bool ignore_case);
-
 		void ReplaceCharInPlace(char search_char, char replace_char);
-
 		qString ReplaceExtension(const char* ext);
 
 		void Free();
 
 		void Set(const char* text);
-
-		THEORY_INLINE void SetEmpty() { Set(sEmptyString); }
-
 		void Set(const char* text, int length, const char* textb = 0, int lengthb = 0);
 
-		bool StartsWith(const char* text, int length = -1);
-		bool EndsWith(const char* text, int length = -1);
+		bool StartsWith(const char* text, int length = -1) const;
+		bool EndsWith(const char* text, int length = -1) const;
 
-		qString Substring(int start, int length);
+		qString Substring(int start, int length) const;
 
-		qString ToLower();
+		qString ToLower() const;
+		qString ToUpper() const;
 
-		qString ToUpper();
-
-		qString Trim();
+		qString Trim() const;
 
 		qString* append(const char* str, int len);
 
@@ -83,17 +70,19 @@ namespace UFG
 
 		operator const char*() const { return mData; }
 
-		bool operator!=(const qString& text);
-		bool operator!=(const char* text);
+		bool operator!=(const qString& text) const;
+		bool operator!=(const char* text) const;
 
-		bool operator==(const qString& text);
-		bool operator==(const char* text);
+		bool operator==(const qString& text) const;
+		bool operator==(const char* text) const;
 
-		const qString& operator=(const qString& text);
-		const qString& operator=(const char* text);
+		qString& operator=(const qString& text);
+		qString& operator=(const char* text);
 
-		const qString& operator+=(const qString& text);
-		const qString& operator+=(const char* text);
+		qString& operator+=(const qString& text);
+		qString& operator+=(const char* text);
+
+		qString& operator+(const char* text) { return operator+=(text); }
 
 		char operator[](int pos) { return mData[pos]; }
 	};
@@ -156,7 +145,7 @@ namespace UFG
 
 	char* qStringCopy(char* dest, int dest_size, const char* text, int text_count = -1);
 
-	char* qStringCopy(char* dest, const char* text) { return qStringCopy(dest, -1, text, -1); }
+	char* qStringCopy(char* dest, const char* text) { return qStringCopy(dest, INT_MAX, text, -1); }
 
 	int qStringLength(const char* text);
 
@@ -166,7 +155,7 @@ namespace UFG
 
 	THEORY_INLINE bool qIsWhitespace(int c)
 	{
-		return (c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r' || c == ' ' ? true : false);
+		return (c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r' || c == ' ');
 	}
 
 	qString qTrim(const char* text, int length = 0);

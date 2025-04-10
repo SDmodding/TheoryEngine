@@ -458,7 +458,7 @@ namespace UFG
 		va_end(va);
 	}
 
-	qString qString::GetFilePath()
+	qString qString::GetFilePath() const
 	{
 		int len = mLength - 1;
 		if (len >= 0 && mData[len] == ':') {
@@ -481,7 +481,7 @@ namespace UFG
 		return res;
 	}
 
-	qString qString::GetFilePathWithoutExtension()
+	qString qString::GetFilePathWithoutExtension() const
 	{
 		int len = mLength - 1;
 		if (len >= 0 && mData[len] == ':') {
@@ -501,7 +501,7 @@ namespace UFG
 		return res;
 	}
 
-	qString qString::GetFilename()
+	qString qString::GetFilename() const
 	{
 		int len = mLength;
 		while (len >= 0 && mData[len] != '\\' && mData[len] != '/') {
@@ -514,7 +514,7 @@ namespace UFG
 		return res;
 	}
 
-	qString qString::GetFilenameWithoutExtension()
+	qString qString::GetFilenameWithoutExtension() const
 	{
 		int len = mLength;
 		int total_len = mLength;
@@ -677,7 +677,7 @@ namespace UFG
 		ResetHash();
 	}
 
-	bool qString::StartsWith(const char* text, int length)
+	bool qString::StartsWith(const char* text, int length) const
 	{
 		if (!mData || !text) {
 			return false;
@@ -704,7 +704,7 @@ namespace UFG
 		return (*data == *text);
 	}
 
-	bool qString::EndsWith(const char* text, int length)
+	bool qString::EndsWith(const char* text, int length) const
 	{
 		if (!mData || !text) {
 			return false;
@@ -731,7 +731,7 @@ namespace UFG
 		return (*data == *text);
 	}
 
-	qString qString::Substring(int start, int length)
+	qString qString::Substring(int start, int length) const
 	{
 		qString res;
 
@@ -747,21 +747,21 @@ namespace UFG
 		return res;
 	}
 
-	qString qString::ToLower()
+	qString qString::ToLower() const
 	{
 		qString res(*this);
 		qStringToLower(res.mData);
 		return res;
 	}
 
-	qString qString::ToUpper()
+	qString qString::ToUpper() const
 	{
 		qString res(*this);
 		qStringToUpper(res.mData);
 		return res;
 	}
 
-	qString qString::Trim()
+	qString qString::Trim() const
 	{
 		return qTrim(mData, mLength);
 	}
@@ -777,7 +777,7 @@ namespace UFG
 
 	/* Operators */
 
-	bool qString::operator!=(const qString& text)
+	bool qString::operator!=(const qString& text) const
 	{
 		if (!mLength && !text.mLength) {
 			return false;
@@ -790,7 +790,7 @@ namespace UFG
 		return qStringCompare(mData, text.mData);
 	}
 
-	bool qString::operator!=(const char* text)
+	bool qString::operator!=(const char* text) const
 	{
 		if (!text) {
 			return mLength != 0;
@@ -803,7 +803,7 @@ namespace UFG
 		return qStringCompare(mData, text);
 	}
 
-	bool qString::operator==(const qString& text)
+	bool qString::operator==(const qString& text) const
 	{
 		if (!mLength && !text.mLength) {
 			return true;
@@ -816,7 +816,7 @@ namespace UFG
 		return !qStringCompare(mData, text.mData);
 	}
 
-	bool qString::operator==(const char* text)
+	bool qString::operator==(const char* text) const
 	{
 		if (!text) {
 			return mLength == 0;
@@ -829,19 +829,19 @@ namespace UFG
 		return !qStringCompare(mData, text);
 	}
 
-	const qString& qString::operator=(const qString& text)
+	qString& qString::operator=(const qString& text)
 	{
 		Set(text.mData, text.mLength);
 		return *this;
 	}
 
-	const qString& qString::operator=(const char* text)
+	qString& qString::operator=(const char* text)
 	{
 		Set(text);
 		return *this;
 	}
 
-	const qString& qString::operator+=(const qString& text)
+	qString& qString::operator+=(const qString& text)
 	{
 		if (text.mLength) {
 			Set(mData, mLength, text.mData, text.mLength);
@@ -849,9 +849,9 @@ namespace UFG
 		return *this;
 	}
 
-	const qString& qString::operator+=(const char* text)
+	qString& qString::operator+=(const char* text)
 	{
-		if (text) {
+		if (!qStringEmpty(text)) {
 			Set(mData, mLength, text, qStringLength(text));
 		}
 		return *this;
