@@ -86,10 +86,9 @@ namespace UFG
 		qBaseNodeRB mNULL;
 		int mCount;
 
+#ifdef THEORY_DUCKTAPE
 
 		qBaseTreeRB() { mRoot.mUID = -1; }
-
-#ifdef THEORY_DUCKTAPE
 
 		~qBaseTreeRB()
 		{
@@ -245,6 +244,28 @@ namespace UFG
 			auto& map = mTree.GetMap();
 			return { &map, map.end() };
 		}
+
+		void DeleteAll()
+		{
+			while (!IsEmpty())
+			{
+				auto node = *begin();
+				Remove(node);
+
+				node->~T();
+
+				if (FREE) {
+					qFree(node);
+				}
+			}
+		}
+#else
+
+		void DeleteAll()
+		{
+			// TODO: Implement this...
+		}
+
 #endif
 
 		void Delete(qNodeRB<T>* nodeRB) 
@@ -254,21 +275,6 @@ namespace UFG
 			auto type = nodeRB->type();
 			type->~T();
 			qFree(type);
-		}
-
-		void DeleteAll()
-		{
-			while (!IsEmpty())
-			{
-				auto node = *begin();
-				Remove(node);
-				
-				node->~T();
-
-				if (FREE) {
-					qFree(node);
-				}
-			}
 		}
 	};
 

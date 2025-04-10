@@ -145,7 +145,7 @@ namespace UFG
 
 	char* qStringCopy(char* dest, int dest_size, const char* text, int text_count = -1);
 
-	char* qStringCopy(char* dest, const char* text) { return qStringCopy(dest, INT_MAX, text, -1); }
+	THEORY_INLINE char* qStringCopy(char* dest, const char* text) { return qStringCopy(dest, INT_MAX, text, -1); }
 
 	int qStringLength(const char* text);
 
