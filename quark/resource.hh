@@ -35,7 +35,7 @@ namespace UFG
 		u32 mNameUID;
 		u32 mTailPad;
 
-		qResourceHandle() : mData(0), mNameUID(0) {}
+		qResourceHandle() : mData(0) {}
 
 		~qResourceHandle()
 		{
