@@ -372,7 +372,10 @@ namespace SimpleXML
 		UFG::qDelete(mData->mOpenNodes.back());
 
 		--mData->mIndent;
+
 		mData->CloseNode(name);
+		mData->Write("\n");
+
 		mData->mState = XMLWriterData::STATE_NONE;
 	}
 }
