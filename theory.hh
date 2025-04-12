@@ -133,6 +133,7 @@
 #include "quark/resource.hh"
 #include "quark/resourcefile.hh"
 #include "quark/qsymbol.hh"
+#include "quark/qwisesymbol.hh"
 #include "quark/quark.hh"
 
 #ifdef THEORY_PLATFORM_PC

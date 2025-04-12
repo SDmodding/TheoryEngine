@@ -43,6 +43,12 @@ namespace UFG
 		}
 	};
 
+	class qSymbolRegistry
+	{
+	public:
+		static const char* Get(u32 uid);
+	};
+
 	class qSymbol
 	{
 	public:
@@ -55,16 +61,13 @@ namespace UFG
 		THEORY_INLINE bool is_null() const { return mUID == -1; }
 		THEORY_INLINE void set_null() { mUID = -1; }
 
-		static qSymbol create_from_string(const char* pszSymbolString);
+		static qSymbol create_from_string(const char* pszSymbolString) { return qStringHash32(pszSymbolString); }
 
-		qSymbol create_increment(int incrementValue = 1) const;
+		qSymbol create_increment(int incrementValue = 1) const { return { mUID + incrementValue }; }
 
-		qSymbol create_suffix(const char* suffix) const;
+		qSymbol create_suffix(const char* suffix) const { return qStringHash32(suffix, mUID); }
 
-		const char* as_cstr_dbg() const;
-
-		bool operator!=(const qSymbol& sym) const { return mUID != sym.mUID; }
-		bool operator==(const qSymbol& sym) const { return mUID == sym.mUID; }
+		const char* as_cstr_dbg() const { return qSymbolRegistry::Get(mUID); }
 
 		THEORY_INLINE operator u32() const { return mUID; }
 	};
@@ -75,12 +78,14 @@ namespace UFG
 	{
 	public:
 		u32 mUID;
-	};
 
-	class qSymbolRegistry
-	{
-	public:
-		static const char* Get(u32 uid);
+		qSymbolUC() {}
+		qSymbolUC(u32 uid) : mUID(uid) {}
+		qSymbolUC(const qSymbolUC& source) : mUID(source.mUID) {}
+
+		static qSymbolUC create_from_string(const char* pszSymbolString) { return qStringHashUpper32(pszSymbolString); }
+
+		THEORY_INLINE operator u32() const { return mUID; }
 	};
 
 	const char* qSymbolLookupStringFromSymbolTableResources(u32 uid);
@@ -113,18 +118,6 @@ namespace UFG
 			mpLastLoadedResource = 0;
 		}
 	}
-
-	//----------------------------------------------
-	//	Symbol
-	//----------------------------------------------
-
-	qSymbol qSymbol::create_from_string(const char* pszSymbolString) { return { pszSymbolString ? qStringHash32(pszSymbolString) : -1 }; }
-
-	qSymbol qSymbol::create_increment(int incrementValue) const { return { mUID + incrementValue }; }
-
-	qSymbol qSymbol::create_suffix(const char* suffix) const { return qStringHash32(suffix, mUID); }
-
-	const char* qSymbol::as_cstr_dbg() const { return qSymbolRegistry::Get(mUID); }
 
 	//----------------------------------------------
 	//	Symbol Registry
