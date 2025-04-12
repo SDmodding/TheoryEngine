@@ -594,6 +594,7 @@ namespace UFG
 
 		} while (find);
 
+		stringBuilder.Add(data, len);
 		Set(stringBuilder.mBuffer, stringBuilder.mStringLength);
 
 		return numFound;
