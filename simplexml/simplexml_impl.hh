@@ -304,7 +304,7 @@ namespace SimpleXML
 		mData->Write("-->");
 		mData->Write("\n");
 
-		mData->mState = XMLWriterData::STATE_HEADER_OPEN;
+		mData->mState = XMLWriterData::STATE_NONE;
 	}
 
 
