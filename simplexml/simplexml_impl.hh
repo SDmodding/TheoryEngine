@@ -228,7 +228,7 @@ namespace SimpleXML
 			{
 				if (auto file = UFG::qOpen(filename, UFG::QACCESS_WRITE, 1))
 				{
-					UFG::qWrite(filename, buffer, buffer_size);
+					UFG::qWrite(file, buffer, buffer_size);
 					UFG::qClose(file);
 
 					written = true;
