@@ -48,6 +48,13 @@ namespace UFG
 		qQuaternion(f32 fX, f32 fY, f32 fZ, f32 fW) : x(fX), y(fY), z(fZ), w(fW) {}
 	};
 
+	class qTransQuat
+	{
+	public:
+		qQuaternion mRot;
+		qVector3 mTrans;
+	};
+
 #ifdef THEORY_IMPL
 
 	int qDefaultSeed = 0x91212123;

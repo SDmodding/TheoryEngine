@@ -31,6 +31,9 @@
 **	- Use "duck tape" version implementation for missing stuff.
 *	- As example: 'qBaseTreeRB' uses 'std::unordered_map'.
 * 
+*	THEORY_TRIADWARS
+*	- Implements more checks to support Triad Wars stuff.
+* 
 *	THEORY_PRINTCHANNEL_DISABLE
 *	- Disable usage of print channels.
 * 

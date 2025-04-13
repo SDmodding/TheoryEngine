@@ -76,6 +76,13 @@ namespace UFG
 		auto bigFileIndex = static_cast<BIGFileIndex*>(data);
 		new (bigFileIndex) BIGFileIndex;
 
+#ifdef THEORY_TRIADWARS
+		// This is kind of unsafe, but `mBigFileName` shouldn't ever be empty.
+		if (bigFileIndex->mBigFileName[0] == 0 && bigFileIndex->mBigFileName[4]) {
+			memcpy(bigFileIndex->mBigFileName, &bigFileIndex->mBigFileName[4], sizeof(bigFileIndex->mBigFileName));
+		}
+#endif
+
 		qString fileName = bigFileIndex->mBigFileName;
 		fileName = BigFileSystem::BigFilePrepend(fileName + ".big");
 
