@@ -107,6 +107,7 @@
 #include "quark/array.hh"
 #include "quark/assert.hh"
 #include "quark/bitflags.hh"
+#include "quark/colour.hh"
 #include "quark/offset.hh"
 #include "quark/list.hh"
 #include "quark/treerb.hh"
@@ -133,6 +134,7 @@
 #include "quark/compresslz.hh"
 #include "quark/file.hh"
 #include "quark/printchannel.hh"
+#include "quark/vramemorypool.hh"
 #include "quark/resource.hh"
 #include "quark/resourcefile.hh"
 #include "quark/qsymbol.hh"
@@ -193,6 +195,16 @@
 #include "streamer/streamermetrics.hh"
 #include "streamer/streamfilewrapper.hh"
 #include "streamer/streamresourceloader.hh"
+#include "streamer/streamingmemorymanager.hh"
+#include "streamer/datastreamer.hh"
+
+//--------------------------------------------------
+//	Object Resource Management
+//--------------------------------------------------
+
+#include "objectresourcemanagement/resourcerequest.hh"
+#include "objectresourcemanagement/truecrowddefinition.hh"
+#include "objectresourcemanagement/truecrowddatabase.hh"
 
 //==================================================================
 //	Implementations
