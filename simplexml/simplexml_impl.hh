@@ -4,6 +4,169 @@
 
 namespace SimpleXML
 {
+	//----------------------------
+	//	XML Node
+	//----------------------------
+
+	const char* XMLNode::GetAttribute(const char* name)
+	{
+		auto attribute = GetRoot().attribute(name);
+		return attribute.value();
+	}
+
+	const char* XMLNode::GetAttribute(const char* name, const char* default_value)
+	{
+		const char* attribute = GetAttribute(name);
+		if (*attribute) {
+			return attribute;
+		}
+
+		return default_value;
+	}
+
+	bool XMLNode::GetAttribute(const char* name, bool default_value)
+	{
+		return UFG::qToBool(GetAttribute(name), default_value);
+	}
+
+	f32 XMLNode::GetAttribute(const char* name, f32 default_value)
+	{
+		return ConvertToFloat(GetAttribute(name), default_value);
+	}
+
+	u32 XMLNode::GetAttribute(const char* name, u32 default_value)
+	{
+		return UFG::qToUInt32(GetAttribute(name), default_value);
+	}
+
+	int XMLNode::GetAttribute(const char* name, int default_value)
+	{
+		return UFG::qToInt32(GetAttribute(name), default_value);
+	}
+
+	const char* XMLNode::GetValue()
+	{
+		auto child = GetRoot().first_child();
+		return child.value();
+	}
+
+	f32 XMLNode::GetValue(f32 default_value)
+	{
+		return ConvertToFloat(GetValue(), default_value);
+	}
+
+	u32 XMLNode::GetValue(u32 default_value)
+	{
+		return UFG::qToUInt32(GetValue(), default_value);
+	}
+
+	int XMLNode::GetValue(int default_value)
+	{
+		return UFG::qToInt32(GetValue(), default_value);
+	}
+
+	bool XMLNode::GetBool(bool default_value)
+	{
+		return UFG::qToBool(GetValue(), default_value);
+	}
+
+	const char* XMLNode::GetName()
+	{
+		auto child = GetRoot().first_child();
+		if (child.empty()) {
+			return 0;
+		}
+
+		if (auto name = child.name()) {
+			return name;
+		}
+		return "";
+	}
+
+	int XMLNode::GetAttributeCount()
+	{
+		auto root = GetRoot();
+		int count = 0;
+		for (auto i = root.first_attribute(); !i.empty(); i = i.next_attribute()) {
+			++count;
+		}
+
+		return count;
+	}
+
+	int XMLNode::GetChildCount()
+	{
+		auto root = GetRoot();
+		int count = 0;
+		for (auto i = root.first_child(); !i.empty(); i = i.next_sibling()) {
+			++count;
+		}
+
+		return count;
+	}
+
+	//----------------------------
+	//	XML Document
+	//----------------------------
+
+	XMLDocument* XMLDocument::Open(const char* filename, u64 alloc_params, UFG::qMemoryPool* pool)
+	{
+		auto xmlDoc = new ("XMLDocument.xml_doc", alloc_params) XMLDocument(alloc_params, pool);
+		if (!xmlDoc)
+		{
+			auto dir = UFG::qGetDirectory();
+			UFG::qPrintf("ERROR: SimpleXML::Open() - Insufficient memory to open file!\n       file = '%s'\n       dir  = '%s'\n", filename, dir.mData);
+			return 0;
+		}
+
+		xmlDoc->SetFilename(filename);
+
+		auto res = xmlDoc->mData->mDoc.load_file(filename);
+		if (res == pugi::xml_document::LOAD_OK) {
+			return xmlDoc;
+		}
+
+		auto dir = UFG::qGetDirectory();
+
+		if (res == pugi::xml_document::LOAD_FILE_DOES_NOT_EXIST) {
+			UFG::qPrintf("ERROR: SimpleXML::Open() - File does not exist!\n       file = '%s'\n       dir  = '%s'\n", filename, dir.mData);
+		}
+		else if (res == pugi::xml_document::LOAD_FILE_ERROR) {
+			UFG::qPrintf("ERROR: SimpleXML::Open() - File could not be read!\n       file = '%s'\n       dir  = '%s'\n", filename, dir.mData);
+		}
+		else if (res == pugi::xml_document::LOAD_OUT_OF_MEMORY) {
+			UFG::qPrintf("ERROR: SimpleXML::Open() - No memory to load file!\n       file = '%s'\n       dir  = '%s'\n", filename, dir.mData);
+		}
+
+		UFG::qDelete(xmlDoc);
+		return 0;
+	}
+
+	XMLNode* XMLDocument::GetChildNode(const char* name, XMLNode* prev_node)
+	{
+		pugi::xml_node root = (prev_node ? prev_node->GetRoot() : mData->mDoc);
+		auto childNode = root.child(name);
+		if (childNode.empty()) {
+			return 0;
+		}
+
+		return reinterpret_cast<XMLNode*>(childNode._root);
+	}
+
+	XMLNode* XMLDocument::GetNode(const char* name, XMLNode* prev_node)
+	{
+		auto childNode = (prev_node ? prev_node->GetRoot().next_sibling(name) : mData->mDoc.child(name));
+		if (childNode.empty()) {
+			return 0;
+		}
+
+		return reinterpret_cast<XMLNode*>(childNode._root);
+	}
+
+	//----------------------------
+	//	XML Writer Data
+	//----------------------------
+
 	void XMLWriterData::CloseNode(const char* name)
 	{
 		if (mState == STATE_HEADER_OPEN)

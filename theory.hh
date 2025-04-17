@@ -150,6 +150,7 @@
 //	SimpleXML
 //--------------------------------------------------
 
+#include "simplexml/private/pugixml.hh"
 #include "simplexml/simplexml.hh"
 
 //--------------------------------------------------
@@ -223,6 +224,7 @@
 //	SimpleXML
 //--------------------------------------------------
 
+#include "simplexml/private/pugixml_impl.hh"
 #include "simplexml/simplexml_impl.hh"
 
 //--------------------------------------------------

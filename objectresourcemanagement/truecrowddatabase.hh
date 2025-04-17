@@ -5,6 +5,7 @@ namespace UFG
 	class PedSpawningInfo;
 	class TrueCrowdModelPart;
 	class TrueCrowdTextureSet;
+	class TextureOverrideParams;
 
 	enum eTrueCrowdMorphType
 	{
@@ -71,6 +72,16 @@ namespace UFG
 		qOffset64<qOffset64<TrueCrowdTextureSet*>*> mTextureSets;
 	};
 
+	class TrueCrowdTextureSet : public TrueCrowdResource
+	{
+	public:
+		qOffset64<qColour*> mColourTints;
+		qOffset64<TextureOverrideParams*> mTextureOverrideParams;
+		u32 mNumColorTints;
+		u16 mNumTextureOverrideParams;
+		u16 mTintIndex;
+	};
+
 	class TrueCrowdSet : public qNode<TrueCrowdSet>
 	{
 	public:
@@ -87,7 +98,7 @@ namespace UFG
 		{
 			TrueCrowdSet* mSet;
 			u32 mNumParts;
-			float mMorphWeights[2];
+			f32 mMorphWeights[2];
 			ModelTextureCombination mPart[16];
 		};
 

@@ -161,4 +161,7 @@ namespace UFG
 	qString qTrim(const char* text, int length = 0);
 
 	bool qToBool(const char* text, bool default_value = 0);
+	f32 qToFloat(const char* text, f32 default_value = 0.f);
+	int qToInt32(const char* text, int default_value = 0);
+	u32 qToUInt32(const char* text, u32 default_value = 0);
 }

@@ -400,7 +400,7 @@ namespace UFG
 
 	bool qToBool(const char* text, bool default_value)
 	{
-		if (text && *text)
+		if (!qStringEmpty(text))
 		{
 			char c = qToLower(*text);
 
@@ -411,12 +411,66 @@ namespace UFG
 				return false;
 			}
 
-			/*if (qToInt32(text, 0)) {
+			if (qToInt32(text, 0)) {
 				return true;
-			}*/
+			}
 		}
 
 		return default_value;
+	}
+
+	f32 qToFloat(const char* text, f32 default_value)
+	{
+		if (qStringEmpty(text)) {
+			return default_value;
+		}
+
+		// TODO: Remove `atof` and implement function based on original code.
+		return static_cast<f32>(atof(text));
+	}
+
+	int qToInt32(const char* text, int default_value)
+	{
+		if (qStringEmpty(text)) {
+			return default_value;
+		}
+
+		if (*text == '#') {
+			++text;
+		}
+
+		// TODO: Remove `strtoul` and implement function based on original code.
+
+		int base = 10;
+		if (*text == '0' && (text[1] == 'x' || text[1] == 'X'))
+		{
+			text += 2;
+			base = 16;
+		}
+
+		return strtol(text, 0, base);
+	}
+
+	u32 qToUInt32(const char* text, u32 default_value)
+	{
+		if (qStringEmpty(text)) {
+			return default_value;
+		}
+
+		if (*text == '#') {
+			++text;
+		}
+
+		// TODO: Remove `strtoul` and implement function based on original code.
+
+		int base = 10;
+		if (*text == '0' && (text[1] == 'x' || text[1] == 'X'))
+		{
+			text += 2;
+			base = 16;
+		}
+
+		return strtoul(text, 0, base);
 	}
 
 	//-------------------------------------------------------------------

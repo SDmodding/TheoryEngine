@@ -1,7 +1,121 @@
 #pragma once
+//--------------------------------------------------------------------
+// 
+//	There is some changes related to XMLNode to prevent memory
+//	allocation that is only deallocted on destructor.
+// 
+//--------------------------------------------------------------------
 
 namespace SimpleXML
 {
+	/*class XMLNodeData
+	{
+	public:
+		pugi::xml_node mNode;
+	};
+
+	class XMLNode : public UFG::qNode<XMLNode>
+	{
+	public:
+		XMLNodeData* mData;
+	};*/
+
+	class XMLNode
+	{
+	public:
+		pugi::xml_node GetRoot() { return reinterpret_cast<pugi::xml_node_struct*>(this); }
+
+		const char* GetAttribute(const char* name);
+		const char* GetAttribute(const char* name, const char* default_value);
+		bool GetAttribute(const char* name, bool default_value);
+		f32 GetAttribute(const char* name, f32 default_value);
+		u32 GetAttribute(const char* name, u32 default_value);
+		int GetAttribute(const char* name, int default_value);
+
+		const char* GetValue();
+		f32 GetValue(f32 default_value);
+		u32 GetValue(u32 default_value);
+		int GetValue(int default_value);
+		bool GetBool(bool default_value);
+
+		const char* GetName();
+
+		int GetAttributeCount();
+		int GetChildCount();
+
+	private:
+		f32 ConvertToFloat(const char* value_string, f32 default_value) 
+		{
+			if (!value_string) {
+				return default_value;
+			}
+
+			if (auto s = UFG::qStringFind(value_string, "#"))
+			{
+				u32 value = UFG::qToUInt32(s, *reinterpret_cast<u32*>(&default_value));
+				return *reinterpret_cast<f32*>(&value);
+			}
+
+			return UFG::qToFloat(value_string, default_value);
+		}
+	};
+
+	class XMLDocumentData
+	{
+	public:
+		UFG::qString mFilename;
+		pugi::xml_document mDoc;
+		//UFG::qList<XMLNode, XMLNode, 0> mNodes;
+		UFG::qMemoryPool* mPool;
+
+		XMLDocumentData(u64 alloc_params, UFG::qMemoryPool* pool) : mDoc(pool, alloc_params), mPool(pool) { }
+
+		~XMLDocumentData()
+		{
+			/*for (auto i = mNodes.begin(); i != mNodes.end(); i = mNodes.begin())
+			{
+				mNodes.Remove(i);
+				mPool->Free(i);
+			}*/
+		}
+	};
+
+	class XMLDocument
+	{
+	public:
+		XMLDocumentData* mData;
+		UFG::qMemoryPool* mPool;
+
+		/* Constructor, Destructor */
+
+		XMLDocument(u64 alloc_params = 0, UFG::qMemoryPool* pool = 0) : mPool(pool)
+		{
+			if (!mPool) {
+				mPool = UFG::gMainMemoryPool;
+			}
+
+			mData = new (mPool->Allocate(sizeof(XMLDocumentData), "XMLDocument.mData", alloc_params)) XMLDocumentData(alloc_params, mPool);
+		}
+
+		~XMLDocument()
+		{
+			mData->~XMLDocumentData();
+			mPool->Free(mData);
+		}
+
+		/* Static Functions */
+
+		static XMLDocument* Open(const char* filename, u64 alloc_params = 0, UFG::qMemoryPool* pool = 0);
+
+		/* Functions */
+
+		void SetFilename(const char* filename) { mData->mFilename.Set(filename); }
+		const char* GetFilename() const { return mData->mFilename; }
+
+		XMLNode* GetChildNode(const char* name, XMLNode* prev_node = 0);
+		XMLNode* GetNode(const char* name, XMLNode* prev_node = 0);
+	};
+
 	class XMLReplacementMap
 	{
 	public:

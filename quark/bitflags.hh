@@ -9,7 +9,9 @@ namespace UFG
 
 		THEORY_INLINE void Reset() { mFlags[0] = mFlags[1] = 0ull; }
 
-		THEORY_INLINE bool IsSet(u64 index)
+		bool HasAnyFlag() const { return mFlags[0] || mFlags[1]; }
+
+		THEORY_INLINE bool IsSet(u64 index) const
 		{
 			if (index >= 64) {
 				return mFlags[1] & (1ull << (index - 64ull));

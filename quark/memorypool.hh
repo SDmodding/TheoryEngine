@@ -45,7 +45,7 @@ namespace UFG
 
 		void Init(const char* name, void* memory, u64 memory_byte_size, int small_block_byte_size, int can_small_block_overflow_into_large_block = 1, u32 InStatList = 1, qMemoryPool* overflow_pool = 0, int printWarningOnOverflow = 1, bool bInitializeAllocator = true);
 
-		void* Allocate(usize size, const char* name, u64 allocationParams = 0, bool checkNull = 0);
+		void* Allocate(usize size, const char* name, u64 allocationParams = 0, bool checkNull = 1);
 
 		void* Realloc(void* mem, usize size, const char* name, u64 allocationParams = 0);
 
@@ -212,7 +212,17 @@ THEORY_INLINE void* operator new(usize size, const char* name) noexcept
 	return UFG::qMalloc(size, name);
 }
 
+THEORY_INLINE void* operator new(usize size, const char* name, u64 alloc_params) noexcept
+{
+	return UFG::qMalloc(size, name, alloc_params);
+}
+
 THEORY_INLINE void operator delete(void* ptr, const char* name) noexcept
+{
+	UFG::qFree(ptr);
+}
+
+THEORY_INLINE void operator delete(void* ptr, const char* name, u64) noexcept
 {
 	UFG::qFree(ptr);
 }
