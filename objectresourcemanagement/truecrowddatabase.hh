@@ -72,6 +72,24 @@ namespace UFG
 		qOffset64<qOffset64<TrueCrowdTextureSet*>*> mTextureSets;
 	};
 
+	class TextureOverrideParams
+	{
+	public:
+		enum eSampler
+		{
+			eDiffuse = 0xDCE06689,
+			eDiffuse2 = 0x19410F73,
+			eNormal = 0xADBE1A5A,
+			eSpecular = 0xCB460EC7,
+			eSelfIllumination = 0xBEFFB144
+		};
+
+		qEnum<eSampler, u32> mSampler;
+		u32 mTextureNameUID;
+		u32 mTextureOverrideUID[3];
+		u32 mPad0;
+	};
+
 	class TrueCrowdTextureSet : public TrueCrowdResource
 	{
 	public:

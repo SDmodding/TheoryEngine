@@ -51,7 +51,7 @@ namespace UFG
 			return 0;
 		}
 
-		THEORY_INLINE void Set(void* target)
+		THEORY_INLINE void Set(const void* target)
 		{
 			if (target) {
 				mOffset = static_cast<i64>(reinterpret_cast<uptr>(target) - reinterpret_cast<uptr>(this));

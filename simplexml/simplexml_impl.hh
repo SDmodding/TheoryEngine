@@ -378,7 +378,6 @@ namespace SimpleXML
 		return data->mTextBuffer;
 	}
 
-
 	bool XMLWriter::CloseBufferAndWriteToFile(const char* filename)
 	{
 		bool written = false;
