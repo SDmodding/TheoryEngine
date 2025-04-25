@@ -144,7 +144,7 @@
 #define ChunkUID_ParkourContainerBundle				0x12D3A53D	// ParkourContainerBundle.ChunkV1
 
 #define RTypeUID_ParkourInstanceResource			0x98CD09F8	// ?
-#define ChunkUID_ParkourInstanceResource			0xC31501A5	// ?
+#define ChunkUID_ParkourInstanceResource			0xC31501A5	// ParkourInstance.ChunkV2
 
 #define RTypeUID_qChunkFileFatIndex					0xE36C885C	// Quark.qChunkFileFatIndex   [^]
 #define ChunkUID_qChunkFileFatIndex					0xE445B80C	// Quark.qChunkFileFatIndexV1 [^]
@@ -185,8 +185,8 @@
 #define RTypeUID_SectionLayout						0xEC35A8A0	// ?
 #define ChunkUID_SectionLayout						0x3E50F7D5	// ?
 
-#define RTypeUID_SceneLayer							0xE0F4D9CC	// ?
-#define ChunkUID_SceneLayer							0xE7F23AEE	// ?
+#define RTypeUID_SceneLayer							0xE0F4D9CC	// qSceneLayerResource
+#define ChunkUID_SceneLayer							0xE7F23AEE	// qSceneLayerResource.ChunkV1
 
 #define RTypeUID_SceneryGroup						0xF0A07244	// ?
 #define ChunkUID_SceneryGroup						0x7480E00B	// ?
@@ -201,7 +201,7 @@
 #define ChunkUID_ShaderBinary						0x985BE50C	// ?
 
 #define RTypeUID_ShaderTemplate						0x1FD4E5C5	// Illusion.ShaderTemplate
-#define ChunkUID_ShaderTemplate						0x0C46AEEF	// ?
+#define ChunkUID_ShaderTemplate						0x0C46AEEF	// Illusion.ShaderTemplate.Chunk
 
 #define RTypeUID_StateBlock							0x4D04C7F2	// Illusion.StateBlock
 #define ChunkUID_StateBlock							0xAF015A94	// ?
@@ -231,13 +231,13 @@
 #define ChunkUID_UILocalizationChunk				0x90CE6B7A	// UILocalizationChunk [^]
 
 #define RTypeUID_UIMinimapTile						0xB9C2B9E0	// ?
-#define ChunkUID_UIMinimapTile						0x9F34FF46	// ?
+#define ChunkUID_UIMinimapTile						0x9F34FF46	// UIMinimapTile [^]
 
-#define RTypeUID_UIScreen							0x442A39D9	// ?
-#define ChunkUID_UIScreen							0x442A39D9	// ?
+#define RTypeUID_UIScreen							0x442A39D9	// UIScreenChunk [^]
+#define ChunkUID_UIScreen							0x442A39D9	// UIScreenChunk [^]
 
-#define RTypeUID_UniqueUIDTableResource				0xEF00811C	// ?
-#define ChunkUID_UniqueUIDTableResource				0x2C40FA26	// ?
+#define RTypeUID_UniqueUIDTableResource				0xEF00811C	// UFG.UniqueUIDTable
+#define ChunkUID_UniqueUIDTableResource				0x2C40FA26	// UFG.UniqueUIDTable.ChunkV1
 
 #define RTypeUID_VertexDecl							0x3E5FDA3E	// Illusion.VertexDecl
 #define ChunkUID_VertexDecl							0xF7FC6B2D	// Illusion.VertexDecl.ChunkV1
