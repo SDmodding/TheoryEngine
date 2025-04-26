@@ -69,7 +69,9 @@ namespace UFG
 	//	Big File Inventory
 	//----------------------------
 
+#ifdef THEORY_IMPL_BIGFILE
 	BIGFileInventory gBIGFileInventory;
+#endif
 
 	void BIGFileInventory::Add(qResourceData* data)
 	{
@@ -121,6 +123,7 @@ namespace UFG
 
 	bool BigFileSystem::GetFileInfoFromBigFile(const char* filename, BIGFileIndex*& _bigFile, BIGFileIndex::Entry*& _entry)
 	{
+#ifdef THEORY_IMPL_BIGFILE
 		while (static_cast<u8>(*filename) - '.' <= 1 || *filename == '\\') {
 			++filename;
 		}
@@ -173,6 +176,7 @@ namespace UFG
 				}
 			}
 		}
+#endif
 
 		return false;
 	}

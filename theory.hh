@@ -26,24 +26,39 @@
 //==================================================================
 //	Optional Defines
 //==================================================================
-/*
-**	THEORY_DUCKTAPE
-**	- Use "duck tape" version implementation for missing stuff.
-*	- As example: 'qBaseTreeRB' uses 'std::unordered_map'.
-* 
-*	THEORY_TRIADWARS
-*	- Implements more checks to support Triad Wars stuff.
-* 
-*	THEORY_PRINTCHANNEL_DISABLE
-*	- Disable usage of print channels.
-* 
-*	THEORY_PRINTCHANNEL_FILE
-*	- Enables usage of file for print channel.
-* 
-*	THEORY_QSYMBOL_TABLE_INVENTORY
-*	- Enables qSymbolTableResourceInventory to be initialized.
-*/
+//
+//	THEORY_DUCKTAPE
+//	- Use "duck tape" version implementation for missing stuff.
+//	- As example: 'qBaseTreeRB' uses 'std::unordered_map'.
+// 
+//	THEORY_TRIADWARS
+//	- Implements more checks to support Triad Wars stuff.
+// 
+//	THEORY_PRINTCHANNEL_DISABLE
+//	- Disable usage of print channels.
+// 
+//	THEORY_PRINTCHANNEL_FILE
+//	- Enables usage of file for print channel.
+// 
+//	THEORY_QSYMBOL_TABLE_INVENTORY
+//	- Enables qSymbolTableResourceInventory to be initialized.
+// 
+//	THEORY_SLIM_BUILD
+//	- Disabled majority of implementation.
+// 
+//	THEORY_IMPL_BIGFILE
+//	THEORY_IMPL_PROPERTYSET_INVENTORY
+//
 //==================================================================
+
+#ifndef THEORY_SLIM_BUILD
+#ifndef THEORY_IMPL_BIGFILE
+	#define THEORY_IMPL_BIGFILE
+#endif
+#ifndef THEORY_IMPL_PROPERTYSET_INVENTORY
+	#define THEORY_IMPL_PROPERTYSET_INVENTORY
+#endif
+#endif
 
 //--------------------------------------------------
 //	Platform Defines
@@ -179,6 +194,13 @@
 #include "illusion/illusion.hh"
 
 //--------------------------------------------------
+//	Render
+//--------------------------------------------------
+
+#include "render/render.hh"
+#include "render/renderworldstate.hh"
+
+//--------------------------------------------------
 //	PropertySet
 //--------------------------------------------------
 
@@ -207,6 +229,12 @@
 #include "objectresourcemanagement/truecrowddefinition.hh"
 #include "objectresourcemanagement/truecrowddatabase.hh"
 
+//--------------------------------------------------
+//	Main
+//--------------------------------------------------
+
+#include "main/mainloop.hh"
+
 //==================================================================
 //	Implementations
 //==================================================================
@@ -217,6 +245,7 @@
 //	Quark
 //--------------------------------------------------
 
+#include "quark/quark_impl.hh"
 #include "quark/resourcefile_impl.hh"
 #include "quark/string_impl.hh"
 

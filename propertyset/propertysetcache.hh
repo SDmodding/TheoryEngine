@@ -18,12 +18,18 @@ namespace UFG::PropertySetCache
 
 	void Add(qPropertySetResource* pPropResource)
 	{
+#ifdef THEORY_IMPL_PROPERTYSET_INVENTORY
 		gPropertySetInventory.Add(pPropResource);
+#endif
 	}
 
 	bool Contains(const qPropertySetResource* pPropResource)
 	{
+#ifdef THEORY_IMPL_PROPERTYSET_INVENTORY
 		return gPropertySetInventory.mResourceDatas.Contains(pPropResource);
+#else
+		return false;
+#endif
 	}
 
 	bool ContainsSet(const qPropertySet* propSet)
@@ -42,12 +48,18 @@ namespace UFG::PropertySetCache
 
 	qPropertySetResource* GetResource(const qSymbol& propSetName)
 	{
+#ifdef THEORY_IMPL_PROPERTYSET_INVENTORY
 		return static_cast<qPropertySetResource*>(gPropertySetInventory.Get(propSetName));
+#else
+		return 0;
+#endif
 	}
 
 	void Remove(qPropertySetResource* pPropResource)
 	{
+#ifdef THEORY_IMPL_PROPERTYSET_INVENTORY
 		gPropertySetInventory.Remove(pPropResource);
+#endif
 	}
 #endif
 }

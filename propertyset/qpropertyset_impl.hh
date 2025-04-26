@@ -2,6 +2,10 @@
 
 namespace UFG
 {
+#ifdef THEORY_IMPL_PROPERTYSET_INVENTORY
+	qPropertySetInventory gPropertySetInventory;
+#endif
+
 	qPropertyType* qPropertyType::Get(u32 type_name_uid)
 	{
 		static qPropertyType types[PROPERTY_SET_DATA_TYPE_COUNT] = {

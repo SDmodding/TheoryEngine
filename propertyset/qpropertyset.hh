@@ -344,5 +344,6 @@ namespace UFG
 
 		void Add(qResourceData* data) override;
 		void Remove(qResourceData* data) override;
-	} inline gPropertySetInventory;
+	} extern gPropertySetInventory;
+
 }
