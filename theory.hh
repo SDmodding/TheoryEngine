@@ -31,6 +31,8 @@
 //	- Use "duck tape" version implementation for missing stuff.
 //	- As example: 'qBaseTreeRB' uses 'std::unordered_map'.
 // 
+//	THEORY_DISABLE_ASSERT
+// 
 //	THEORY_TRIADWARS
 //	- Implements more checks to support Triad Wars stuff.
 // 
@@ -46,12 +48,16 @@
 //	THEORY_SLIM_BUILD
 //	- Disabled majority of implementation.
 // 
+//	THEORY_IMPL_ACTIONTREE
 //	THEORY_IMPL_BIGFILE
 //	THEORY_IMPL_PROPERTYSET_INVENTORY
 //
 //==================================================================
 
 #ifndef THEORY_SLIM_BUILD
+#ifndef THEORY_IMPL_ACTIONTREE
+	#define THEORY_IMPL_ACTIONTREE
+#endif
 #ifndef THEORY_IMPL_BIGFILE
 	#define THEORY_IMPL_BIGFILE
 #endif
@@ -112,6 +118,7 @@
 //	Includes
 //==================================================================
 
+#include "extras/forwards.hh"
 #include "extras/resource_uid.hh"
 
 //--------------------------------------------------
@@ -131,6 +138,7 @@
 #include "quark/halfmath.hh"
 #include "quark/process.hh"
 #include "quark/memory.hh"
+#include "quark/safepointer.hh"
 #include "quark/string.hh"
 
 #include "quark/internal/assertplat.hh"
@@ -194,6 +202,52 @@
 #include "illusion/illusion.hh"
 
 //--------------------------------------------------
+//	Action Tree (Dependencies)
+//--------------------------------------------------
+
+#include "actiontree/binarray.hh"
+#include "actiontree/binptrarray.hh"
+#include "actiontree/binstring.hh"
+
+#include "actiontree/actionid.hh"
+#include "actiontree/enums.hh"
+
+//--------------------------------------------------
+//	UEL
+//--------------------------------------------------
+
+#include "uel/uel.hh"
+
+//--------------------------------------------------
+//	Expression
+//--------------------------------------------------
+
+#include "expression/membermap.hh"
+
+//--------------------------------------------------
+//	Action Tree
+//--------------------------------------------------
+
+#ifdef THEORY_IMPL_ACTIONTREE
+
+#include "actiontree/condition.hh"
+#include "actiontree/track.hh"
+#include "actiontree/task.hh"
+
+#include "actiontree/actionnode.hh"
+#include "actiontree/tracklibrary.hh"
+
+#include "actiontree/trackscamera.hh"
+#include "actiontree/taskscamera.hh"
+
+#include "ai/stimulusbank.hh"
+#include "nis/nisnodes.hh"
+
+#include "actiontree/actiontreeresource.hh"
+
+#endif
+
+//--------------------------------------------------
 //	Render
 //--------------------------------------------------
 
@@ -240,6 +294,10 @@
 //==================================================================
 
 #ifdef THEORY_IMPL
+
+#ifdef THEORY_IMPL_ACTIONTREE
+#include "actiontree/actiontree_impl.hh"
+#endif
 
 //--------------------------------------------------
 //	Quark

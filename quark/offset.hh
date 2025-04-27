@@ -42,6 +42,7 @@ namespace UFG
 
 		qOffset64() {}
 		qOffset64(i64 offset) : mOffset(offset) {}
+		qOffset64(const qOffset64& other) { Set(other.Get()); }
 
 		THEORY_INLINE T Get(i64 offset = 0) const
 		{

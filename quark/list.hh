@@ -71,11 +71,10 @@ namespace UFG
 			}
 		}
 
-		template <typename T, typename U>
 		THEORY_INLINE void Insert(qNode<T, U>* node) { mNode.LinkBeforeNode(node); }
 
-		template <typename T, typename U>
-		THEORY_INLINE void Remove(qNode<T, U>* node) { node->RemoveFromList();	}
+		THEORY_INLINE void Remove(qNode<T, U>* node) { node->RemoveFromList(); }
+
 
 		THEORY_INLINE bool IsEmpty() { return mNode.mNext == &mNode; }
 		THEORY_INLINE T* back() { return mNode.prev(); }

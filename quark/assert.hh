@@ -5,10 +5,9 @@ namespace UFG
     typedef bool(*Fn_AssertFail)(const char*, const char*, int, bool*, const char*, ...);
     extern Fn_AssertFail qAssertFail;
 
-    inline void qSetAssertHandler(Fn_AssertFail fn_assert) { qAssertFail = fn_assert; }
+    THEORY_INLINE void qSetAssertHandler(Fn_AssertFail fn_assert) { qAssertFail = fn_assert; }
 }
-
-#ifdef THEORY_PLATFORM_PC
+#if defined(THEORY_PLATFORM_PC) || !defined(THEORY_DISABLE_ASSERT)
     #define qAssertF(expression, format, ...) (void)((!!(expression)) || !UFG::qAssertFail(#expression, __FILE__, (int)(__LINE__), 0, format, ##__VA_ARGS__) || (__debugbreak(), 0))
 #else
     #define qAssertF(expression, format, ...) (void)(0)
