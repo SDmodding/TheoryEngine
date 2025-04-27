@@ -237,6 +237,13 @@
 #include "actiontree/actionnode.hh"
 #include "actiontree/tracklibrary.hh"
 
+#include "actiontree/conditionsgame.hh"
+
+#include "actiontree/trackscore.hh"
+#include "actiontree/trackscoregame.hh"
+
+#include "actiontree/tracksanimation.hh"
+
 #include "actiontree/trackscamera.hh"
 #include "actiontree/taskscamera.hh"
 

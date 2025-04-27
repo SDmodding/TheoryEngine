@@ -16,6 +16,23 @@ ClassTypeDescriptor* GetTypeDescriptors(u32& count)
 
 		DEFINE_ClassTypeDescriptor(NISNode),
 		DEFINE_ClassTypeDescriptor(NISActorNode),
+
+		// Conditions
+
+		DEFINE_ClassTypeDescriptor(PropertyBooleanCondition),
+		DEFINE_ClassTypeDescriptor(PropertyFloatCondition),
+		DEFINE_ClassTypeDescriptor(PropertyIntegerCondition),
+		DEFINE_ClassTypeDescriptor(PropertySymbolCondition),
+
+		// Tracks
+
+		DEFINE_ClassTypeDescriptor(ReadControllerInputTrack),
+
+		DEFINE_ClassTypeDescriptor(SequenceTrack),
+		DEFINE_ClassTypeDescriptor(SpawnTrack),
+
+		DEFINE_ClassTypeDescriptor(AnimationTrack),
+		DEFINE_ClassTypeDescriptor(AnimationBankReferenceTrack),
 	};
 
 	count = (sizeof(gTypeDescriptors) / sizeof(gTypeDescriptors[0]));
@@ -36,6 +53,7 @@ void Fixup(TypeTable* typeTable, void* resource)
 			DbgTypeMissing() 
 			{
 				//UFG::qPrintf("[ DBG ] Fixup missing class nameuid: %X\n", mClassNameUID);
+				*reinterpret_cast<void**>(this) = 0;
 			}
 		};
 

@@ -112,6 +112,13 @@ public:
 	qEnum<UFG::eActionTreeType, s8> mActionTreeType;
 };
 
+template <typename T>
+class NodeRefTrack : public Track<T>
+{
+public:
+	UFG::qOffset64<ActionNodeReference*> mActionNodeReference;
+};
+
 #ifdef THEORY_IMPL
 
 void ActionNode::GetNameFullPath(ActionPath& pathToPopulate)
