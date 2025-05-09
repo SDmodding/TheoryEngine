@@ -177,6 +177,12 @@
 #include "simplexml/simplexml.hh"
 
 //--------------------------------------------------
+//	Shaders
+//--------------------------------------------------
+
+#include "shaders/stateblocks.hh"
+
+//--------------------------------------------------
 //	Illusion
 //--------------------------------------------------
 
@@ -289,6 +295,29 @@
 #include "objectresourcemanagement/resourcerequest.hh"
 #include "objectresourcemanagement/truecrowddefinition.hh"
 #include "objectresourcemanagement/truecrowddatabase.hh"
+
+//--------------------------------------------------
+//	FX
+//--------------------------------------------------
+
+#include "fx/fxsimcomponent.hh"
+
+#include "fx/audiofx.hh"
+#include "fx/beam.hh"
+#include "fx/coronaflare.hh"
+#include "fx/decal.hh"
+#include "fx/dynamiclight.hh"
+#include "fx/effectemitter.hh"
+#include "fx/flare.hh"
+#include "fx/fxforce.hh"
+#include "fx/geo.hh"
+#include "fx/lightning.hh"
+#include "fx/particleemittersettings.hh"
+#include "fx/trackstrip.hh"
+#include "fx/volumetriceffect.hh"
+
+#include "fx/fxfactory.hh"
+#include "fx/fxmanager.hh"
 
 //--------------------------------------------------
 //	Main

@@ -174,4 +174,9 @@ namespace Illusion
 
 		THEORY_INLINE Mesh* GetMesh(u32 index) { return mMeshOffsetTable[index]->Get(); }
 	};
+
+	class ModelHandle : public UFG::qTypedResourceHandle<RTypeUID_Model, Model>
+	{
+	public:
+	};
 }

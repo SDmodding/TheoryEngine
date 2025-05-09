@@ -191,7 +191,7 @@ namespace UFG
 		if (!compressed_size || compressed_size == uncompressed_size)
 		{
 			if (noCallback) {
-				return qRead(file, buffer, uncompressed_size, seek_type);
+				return qRead(file, buffer, uncompressed_size, seek_offset, seek_type);
 			}
 
 			qReadAsync(file, buffer, uncompressed_size, seek_offset, seek_type, StreamFileWrapperFileCallback, readOp);
