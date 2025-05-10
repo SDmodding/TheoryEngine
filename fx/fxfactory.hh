@@ -20,7 +20,7 @@ namespace Render
 		u32 mSlowMoFxId;
 		f32 mAttachToCameraZDist;
 		bool mLoop;
-		bool mComponentCount;
+		s8 mComponentCount;
 		bool mAttachToCamera;
 		s8 mPad[13];
 	};
