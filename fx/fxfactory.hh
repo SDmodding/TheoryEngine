@@ -9,22 +9,6 @@ namespace Render
 		FXMEMBER_ROTATE_SINE
 	};
 
-	class FXSettings : public UFG::qResourceData
-	{
-	public:
-		UFG::qVector3 mAABBMin;
-		UFG::qVector3 mAABBMax;
-		f32 mLength;
-		f32 mTransformNodeExtraTime;
-		u64 mAudioId;
-		u32 mSlowMoFxId;
-		f32 mAttachToCameraZDist;
-		bool mLoop;
-		s8 mComponentCount;
-		bool mAttachToCamera;
-		s8 mPad[13];
-	};
-
 	class FXSettingsMember
 	{
 	public:
@@ -45,5 +29,23 @@ namespace Render
 		UFG::qMatrix44 rotateOffset;
 		f32 startTime;
 		f32 endTime;
+	};
+
+	class FXSettings : public UFG::qResourceData
+	{
+	public:
+		UFG::qVector3 mAABBMin;
+		UFG::qVector3 mAABBMax;
+		f32 mLength;
+		f32 mTransformNodeExtraTime;
+		u64 mAudioId;
+		u32 mSlowMoFxId;
+		f32 mAttachToCameraZDist;
+		bool mLoop;
+		s8 mComponentCount;
+		bool mAttachToCamera;
+		s8 mPad[13];
+
+		THEORY_INLINE FXSettingsMember* GetComponents() { return reinterpret_cast<FXSettingsMember*>(&this[1]); }
 	};
 }

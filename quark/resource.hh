@@ -410,6 +410,9 @@ namespace UFG
 		auto dataUID = data->mNode.mUID;
 		mResourceDatas.Add(data);
 
+		data->mResourceHandles.mNode.mPrev = &data->mResourceHandles.mNode;
+		data->mResourceHandles.mNode.mNext = &data->mResourceHandles.mNode;
+
 		// TODO: Implement fix for unresolved handles...
 
 		const char* str = "";
