@@ -51,6 +51,7 @@
 //	THEORY_IMPL_ACTIONTREE
 //	THEORY_IMPL_BIGFILE
 //	THEORY_IMPL_PROPERTYSET_INVENTORY
+//	THEORY_IMPL_VERTEX_FORMAT
 //
 //==================================================================
 
@@ -63,6 +64,9 @@
 #endif
 #ifndef THEORY_IMPL_PROPERTYSET_INVENTORY
 	#define THEORY_IMPL_PROPERTYSET_INVENTORY
+#endif
+#ifndef THEORY_IMPL_VERTEX_FORMAT
+	#define THEORY_IMPL_VERTEX_FORMAT
 #endif
 #endif
 
@@ -266,6 +270,9 @@
 
 #include "render/render.hh"
 #include "render/renderworldstate.hh"
+#ifdef THEORY_IMPL_VERTEX_FORMAT
+#include "render/vertexformat.hh"
+#endif
 
 //--------------------------------------------------
 //	PropertySet
