@@ -198,6 +198,8 @@ namespace UFG
 		
 		qResourceInventory* GetInventory(u32 type_uid);
 
+		qResourceData* DebugGet(u32 type_uid, u32 name_uid);
+
 		THEORY_INLINE void AddInventory(qResourceInventory* inv)
 		{
 			mInventoryTree.mTree.Add(&inv->mNode);
@@ -594,6 +596,16 @@ namespace UFG
 		mLastInventory = inventory;
 
 		return inventory;
+	}
+
+	qResourceData* qResourceWarehouse::DebugGet(u32 type_uid, u32 name_uid)
+	{
+		auto inv = GetInventory(type_uid);
+		if (inv) {
+			return inv->Get(name_uid);
+		}
+
+		return 0;
 	}
 
 #endif
