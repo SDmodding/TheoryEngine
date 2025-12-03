@@ -56,18 +56,22 @@
 //==================================================================
 
 #ifndef THEORY_SLIM_BUILD
-#ifndef THEORY_IMPL_ACTIONTREE
-	#define THEORY_IMPL_ACTIONTREE
+	#ifndef THEORY_IMPL_ACTIONTREE
+		#define THEORY_IMPL_ACTIONTREE
+	#endif
+	#ifndef THEORY_IMPL_BIGFILE
+		#define THEORY_IMPL_BIGFILE
+	#endif
+	#ifndef THEORY_IMPL_PROPERTYSET_INVENTORY
+		#define THEORY_IMPL_PROPERTYSET_INVENTORY
+	#endif
+	#ifndef THEORY_IMPL_VERTEX_FORMAT
+		#define THEORY_IMPL_VERTEX_FORMAT
+	#endif
 #endif
-#ifndef THEORY_IMPL_BIGFILE
-	#define THEORY_IMPL_BIGFILE
-#endif
-#ifndef THEORY_IMPL_PROPERTYSET_INVENTORY
-	#define THEORY_IMPL_PROPERTYSET_INVENTORY
-#endif
-#ifndef THEORY_IMPL_VERTEX_FORMAT
-	#define THEORY_IMPL_VERTEX_FORMAT
-#endif
+
+#ifdef THEORY_IMPL
+	#define HAVOK_IMPL
 #endif
 
 //--------------------------------------------------
@@ -172,6 +176,12 @@
 	#include "quark/pc/fileplat.hh"
 	#include "quark/pc/timerplat.hh"
 #endif
+
+//--------------------------------------------------
+//	Contrib
+//--------------------------------------------------
+
+#include "contrib/havok/havok.hh"
 
 //--------------------------------------------------
 //	SimpleXML
@@ -338,6 +348,12 @@
 
 #include "ui/dev/uiscreenchunk.hh"
 
+//--------------------------------------------------
+//	Physics
+//--------------------------------------------------
+
+#include "physics/streaming.hh"
+
 //==================================================================
 //	Implementations
 //==================================================================
@@ -345,7 +361,7 @@
 #ifdef THEORY_IMPL
 
 #ifdef THEORY_IMPL_ACTIONTREE
-#include "actiontree/actiontree_impl.hh"
+	#include "actiontree/actiontree_impl.hh"
 #endif
 
 //--------------------------------------------------
