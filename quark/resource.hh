@@ -55,6 +55,13 @@ namespace UFG
 		THEORY_INLINE T GetData() { return reinterpret_cast<T>(mData); }
 	};
 
+	class qResourceFileHandle : public qResourceHandle
+	{
+	public:
+		void(__fastcall* mCallback)(qResourceFileHandle*, bool, void*);
+		void* mCallbackData;
+	};
+
 	class qGenericResourceHandle : public qResourceHandle
 	{
 	public:

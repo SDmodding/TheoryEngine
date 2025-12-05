@@ -218,6 +218,11 @@
 #include "illusion/model.hh"
 #include "illusion/stateblock.hh"
 
+#include "illusion/renderstate.hh"
+
+#include "illusion/illusionuser/textureuser.hh"
+#include "illusion/texture.hh"
+
 #include "illusion/internal/factoryplat.hh"
 #include "illusion/illusion.hh"
 
