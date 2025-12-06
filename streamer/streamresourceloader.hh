@@ -57,7 +57,7 @@ namespace UFG
 		while (num_bytes > offset)
 		{
 			auto chunk = reinterpret_cast<qChunk*>(reinterpret_cast<uptr>(buffer) + offset);
-			if (!fnFilter || fnFilter(chunk))
+			if (chunk->mUID && (!fnFilter || fnFilter(chunk)))
 			{
 				auto resource = chunk->GetData();
 
@@ -66,7 +66,7 @@ namespace UFG
 				}
 			}
 
-			offset += qAlignUp<u32>(chunk->mDataSize, 4) + sizeof(qChunk);
+			offset += qAlignUp<u32>(chunk->mChunkSize, 4) + sizeof(qChunk);
 		}
 
 		return offset;
