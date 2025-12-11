@@ -25,8 +25,8 @@ namespace UFG
 
 		THEORY_INLINE void SetMagic() { mMagic = THEORY_STRING_MAGIC; }
 		THEORY_INLINE void ResetHash() { mStringHash32 = mStringHashUpper32 = -1; }
-		THEORY_INLINE bool IsEmpty() { return mLength == 0; }
-		THEORY_INLINE int Length() { return mLength; }
+		THEORY_INLINE bool IsEmpty() const { return mLength == 0; }
+		THEORY_INLINE int Length() const { return mLength; }
 		THEORY_INLINE void SetEmpty() { Set(sEmptyString); }
 
 		/* Functions */
