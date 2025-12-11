@@ -53,6 +53,8 @@ namespace UFG
 
 		auto resourceWarehouse = qResourceWarehouse::Instance();
 
+		void* buffer_end = reinterpret_cast<void*>(reinterpret_cast<uptr>(buffer) + num_bytes);
+
 		u32 offset = 0;
 		while (num_bytes > offset)
 		{
@@ -61,8 +63,12 @@ namespace UFG
 			{
 				auto resource = chunk->GetData();
 
-				if (auto inventory = resourceWarehouse->GetInventory(resource->mTypeUID)) {
-					inventory->Add(resource);
+				// Additional sanity check since "GetData()" can be out of bounds...
+				if (buffer_end > resource)
+				{
+					if (auto inventory = resourceWarehouse->GetInventory(resource->mTypeUID)) {
+						inventory->Add(resource);
+					}
 				}
 			}
 
