@@ -2,8 +2,6 @@
 
 namespace Illusion
 {
-	class ITexturePlat {};
-
 	class Texture : public ITexturePlat, public UFG::qResourceData
 	{
 	public:
@@ -80,7 +78,7 @@ namespace Illusion
 			TYPE_3D,
 			TYPE_CUBE,
 			TYPE_2D_ARRAY,
-			NUM_TEX_TYPES
+			NUM_TEX_TYPESgin
 		};
 
 		u32 mFlags;
@@ -102,6 +100,12 @@ namespace Illusion
 		UFG::qVRAMemoryPool* mVRAMPool;
 		UFG::qMemoryPool* mMemoryPool;
 		UFG::qResourceFileHandle mTextureDataHandle;
+
+		Texture(u32 name_uid, const char* name) : UFG::qResourceData(RTypeUID_Texture, name_uid, name) {}
+
+		THEORY_INLINE TexturePlat* GetPlat() {
+			return reinterpret_cast<TexturePlat*>(reinterpret_cast<uptr>(this) + UFG::qAlignUp<uptr>(sizeof(Texture), 16));
+		}
 	};
 
 	class TextureHandle : public UFG::qTypedResourceHandle<RTypeUID_Texture, Texture> {};

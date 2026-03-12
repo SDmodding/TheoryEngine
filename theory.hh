@@ -208,8 +208,11 @@
 #include "illusion/vertexdescriptor.hh"
 #include "illusion/vertexdecl.hh"
 
+#include "illusion/illusionuser/textureuserplat.hh"
+
 #ifdef THEORY_PLATFORM_PC
 	#include "illusion/pc/modelplat.hh"
+	#include "illusion/pc/textureplat.hh"
 #endif
 
 #include "illusion/material.hh"

@@ -16,6 +16,8 @@ namespace Illusion
 		static Model* NewModel(const char* name, u32 name_uid, u32 num_meshes, MemImageSchema* schema = 0, UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
 
 		static StateBlock* NewStateBlock(const char* name, u32 name_uid, u32 num_values, u32 byte_size, MemImageSchema* schema = 0, UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
+
+		static Texture* NewTexture(const char* name, u32 name_uid, MemImageSchema* schema = 0, UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
 	};
 
 #ifdef THEORY_IMPL
@@ -188,6 +190,41 @@ namespace Illusion
 		}
 
 		return pStateBlock;
+	}
+
+
+	Texture* Factory::NewTexture(const char* name, u32 name_uid, MemImageSchema* schema, UFG::qMemoryPool* memory_pool, u64 allocation_params)
+	{
+		if (!schema) {
+			schema = GetSchema();
+		}
+
+		Texture* pTexture = 0;
+		TexturePlat* pTexturePlat = 0;
+		TextureUser* pTextureUser = 0;
+		TextureUserPlat* pTextureUserPlat = 0;
+
+		schema->Init();
+		schema->AddAlign("Illusion.Texture", &pTexture);
+		schema->AddAlign("Illusion.TexturePlat", &pTexturePlat);
+		schema->AddAlign("Illusion.TextureUser", &pTextureUser, &pTexture->mTextureUser);
+		schema->AddAlign("Illusion.TextureUserPlat", &pTextureUserPlat, &pTexturePlat->mTextureUserPlat);
+
+		schema->Allocate(memory_pool, allocation_params);
+
+		if (pTexture) {
+			new (pTexture) Texture(name_uid, name);
+		}
+
+		if (pTexturePlat) {
+			new (pTexturePlat) TexturePlat();
+		}
+
+		if (pTextureUser) {
+			new (pTextureUser) TextureUser();
+		}
+
+		return pTexture;
 	}
 
 #endif

@@ -71,5 +71,5 @@ namespace Illusion
 		s8 mPad0;
 	};
 
-	class RasterStateHandle : UFG::qTypedResourceHandle<RTypeUID_RasterState, RasterState> {};
+	class RasterStateHandle : public UFG::qTypedResourceHandle<RTypeUID_RasterState, RasterState> {};
 }
