@@ -9,7 +9,7 @@ namespace Illusion
 
 		static void ProcessWaitDeleteQueueAll();
 
-		static Buffer* NewBuffer(const char* name, u32 name_uid, u32 byte_size, MemImageSchema* schema, const char* alloc_name, UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
+		static Buffer* NewBuffer(const char* name, u32 name_uid, u32 byte_size, MemImageSchema* schema = 0, const char* alloc_name = 0, UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
 
 		static Material* NewMaterial(const char* name, u32 name_uid, u32 num_params, MemImageSchema* schema = 0, UFG::qMemoryPool* memory_pool = 0, u64 allocation_params = 0);
 
