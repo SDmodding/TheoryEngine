@@ -575,7 +575,7 @@ namespace UFG
 
 		while (len >= 0 && mData[len] != '\\' && mData[len] != '/') 
 		{
-			if (mData[len] == '.') {
+			if (mData[len] == '.' && total_len == mLength) {
 				total_len = len;
 			}
 			--len;
