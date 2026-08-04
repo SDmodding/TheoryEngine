@@ -220,6 +220,7 @@
 #include "illusion/materialmodifier.hh"
 #include "illusion/model.hh"
 #include "illusion/stateblock.hh"
+#include "illusion/shader.hh"
 
 #include "illusion/renderstate.hh"
 
