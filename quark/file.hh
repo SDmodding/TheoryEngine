@@ -355,6 +355,10 @@ namespace UFG
 
 	void qTouch(const char* filename);
 
+	qString qFixUpDirectoryPath(const char* directory);
+
+	bool qCreateDirectory(const char* directory);
+
 #ifdef THEORY_IMPL
 
 	void qFileOpList::Queue(qFileOp* file_op, int priority)
@@ -1006,6 +1010,32 @@ namespace UFG
 	void qTouch(const char* filename)
 	{
 		qSetFileTime(filename, qGetSystemTime());
+	}
+
+
+	qString qFixUpDirectoryPath(const char* directory)
+	{
+		if (!directory || !*directory) {
+			return {};
+		}
+
+		int len = qStringLength(directory);
+
+		while (len > 0 && (directory[len - 1] == '/' || directory[len - 1] == '\\')) {
+			--len;
+		}
+
+		qString res;
+		res.Set(directory, len);
+		return res;
+	}
+
+	bool qCreateDirectory(const char* directory)
+	{
+		auto dir = gQuarkFileSystem.MapFilename(FILE_MAP_TYPE_DEFAULT, qFixUpDirectoryPath(directory));
+		auto device = gQuarkFileSystem.MapFilenameToDevice(dir);
+
+		return !gQuarkFileSystem.mFatalIOError && device && device->CreateDirectoryA(dir);
 	}
 
 #endif
