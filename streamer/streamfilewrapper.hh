@@ -198,8 +198,8 @@ namespace UFG
 			return 0;
 		}
 
-		const s64 read_data_offset = readOp->mFileSize.load_offset & 0xFFF;
-		const s64 read_offset = readOp->mFileSize.load_offset & 0xFFFFF000;
+		const s64 read_data_offset = readOp->mFileSize.GetDataOffset();
+		const s64 read_offset = readOp->mFileSize.GetOffset();
 		const s64 num_bytes = uncompressed_size + readOp->mFileSize.compressed_extra;
 
 		if (noCallback) {

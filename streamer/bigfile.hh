@@ -10,6 +10,12 @@ namespace UFG
 		u32 compressed_size;
 		u32 compressed_extra;
 		u32 uncompressed_size;
+
+		u32 GetDataOffset() const { return load_offset & 0xFFF; }
+		u32 GetOffset() const { return load_offset & 0xFFFFF000; }
+
+		void SetDataOffset(u32 data_offset) { load_offset = (load_offset & 0xFFFFF000) | (data_offset & 0xFFF); }
+		void SetOffset(u32 offset) { load_offset = (offset & 0xFFFFF000) | (load_offset & 0xFFF); }
 	};
 
 	class BIGFileIndex : public qResourceData
