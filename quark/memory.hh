@@ -5,6 +5,10 @@ namespace UFG
 	template <typename T>
 	THEORY_INLINE T qAlignUp(T n, T align) { return (n + (align - 1)) & ~(align - 1); }
 
+    void qEndianSwapBytes(u8* v, u32 num_bytes);
+
+#ifdef THEORY_IMPL
+
     void qEndianSwapBytes(u8* v, u32 num_bytes)
     {
         if (2 > num_bytes) {
@@ -24,4 +28,6 @@ namespace UFG
             --end;
         }
     }
+
+#endif
 }
