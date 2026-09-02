@@ -215,6 +215,8 @@
 #define RTypeUID_Texture							0x8B43FABF	// Illusion.Texture
 #define ChunkUID_Texture							0xCDBFA090	// Illusion.Texture.ChunkV1
 
+#define ChunkUID_TextureData						0x5E73CDD7	// Illusion.TextureData.ChunkV1
+
 #define RTypeUID_TextureD3DResource					0xEF77C5F7	// ?
 #define ChunkUID_TextureD3DResource					0x501B8E62	// ?
 
