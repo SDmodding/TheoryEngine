@@ -48,6 +48,20 @@ namespace UFG
 		char mBigFileName[32];
 	};
 
+	class BIGFileNameLookup : public qResourceData
+	{
+	public:
+		struct Entry
+		{
+			u32 uid;
+			qOffset64<char*> filename;
+		};
+
+		u32 mEntryCount;
+		qOffset64<Entry*> mEntries;
+		char mBigFileName[32];
+	};
+
 	class BIGFileInventory : public qResourceInventory
 	{
 	public:
@@ -56,6 +70,12 @@ namespace UFG
 		void Add(qResourceData* data) override;
 		void Remove(qResourceData* data) override;
 	} extern gBIGFileInventory;
+
+	class BIGFileNameLookupInventory : public qResourceInventory
+	{
+	public:
+		BIGFileNameLookupInventory() : qResourceInventory("BIGFileNameLookupInventory", RTypeUID_BIGFileNameLookup, ChunkUID_BIGFileNameLookup) {}
+	} extern gBIGFileNameLookupInventory;
 
 	class BigFileSystem
 	{
@@ -77,6 +97,7 @@ namespace UFG
 
 #ifdef THEORY_IMPL_BIGFILE
 	BIGFileInventory gBIGFileInventory;
+	BIGFileNameLookupInventory gBIGFileNameLookupInventory;
 #endif
 
 	void BIGFileInventory::Add(qResourceData* data)

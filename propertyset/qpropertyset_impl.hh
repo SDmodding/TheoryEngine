@@ -358,7 +358,7 @@ namespace UFG
 			{
 				if (auto parentSet = parent->Get())
 				{
-					if (auto valuePtr = GetValuePtr(type_uid, name_uid, DEPTH_RECURSE, owningSet)) {
+					if (auto valuePtr = parentSet->GetValuePtr(type_uid, name_uid, DEPTH_RECURSE, owningSet)) {
 						return parentSet;
 					}
 				}
@@ -393,7 +393,7 @@ namespace UFG
 			{
 				if (auto parentSet = parent->Get())
 				{
-					if (auto valuePtr = GetValuePtr2(name_uid, DEPTH_RECURSE, owningSet, type_uid)) {
+					if (auto valuePtr = parentSet->GetValuePtr2(name_uid, DEPTH_RECURSE, owningSet, type_uid)) {
 						return parentSet;
 					}
 				}
