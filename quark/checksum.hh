@@ -52,7 +52,7 @@ namespace UFG
 		if (data)
 		{
 			for (u64 i = 0; numBytes > i; ++i) {
-				prevHash = (prevHash >> 8) ^ sCrcTable64[(u8)(prevHash ^ data[i])];
+				prevHash = (prevHash >> 8) ^ sCrcTable64[static_cast<u8>(prevHash ^ data[i])];
 			}
 		}
 		return prevHash;
@@ -74,7 +74,7 @@ namespace UFG
 		if (str)
 		{
 			for (const char* p = str; *p; ++p) {
-				prevHash = (prevHash << 8) ^ sCrcTable64[((prevHash >> 24) ^ *p) & 0xFF];
+				prevHash = (prevHash >> 8) ^ sCrcTable64[static_cast<u8>(prevHash ^ *p)];
 			}
 		}
 		return prevHash;
@@ -96,7 +96,7 @@ namespace UFG
 		if (str)
 		{
 			for (const char* p = str; *p; ++p) {
-				prevHash = (prevHash << 8) ^ sCrcTable64[((prevHash >> 24) ^ qToUpper(*p)) & 0xFF];
+				prevHash = (prevHash >> 8) ^ sCrcTable64[static_cast<u8>(prevHash ^ qToUpper(*p))];
 			}
 		}
 		return prevHash;

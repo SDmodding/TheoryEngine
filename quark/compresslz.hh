@@ -53,8 +53,13 @@ namespace UFG
 		u32 pad4;
 		u32 pad5;
 
-        u32 GetInPlaceOffset() const { return static_cast<u32>((mUncompressedNumBytes + mInPlaceExtraNumBytes) - mCompressedNumBytes); }
 		void EndianSwap();
+
+        // Total number of bytes that must be allocated for safe in-place decompression
+        u64 GetInPlaceNumBytes() const { return mUncompressedNumBytes + mInPlaceExtraNumBytes; }
+
+        // Returns the offset at which the compressed data must be placed inside a buffer for safe in-place decompression.
+        u32 GetInPlaceOffset() const { return static_cast<u32>((mUncompressedNumBytes + mInPlaceExtraNumBytes) - mCompressedNumBytes); }
 	};
 
 	class qContextLZ
