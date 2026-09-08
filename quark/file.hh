@@ -347,6 +347,8 @@ namespace UFG
 
 	void qDeleteFile(const char* filename);
 
+	bool qRenameFile(const char* src_filename, const char* dest_filename);
+
 	bool qCopyFile(const char* src_filename, const char* dest_filename);
 
 	bool qFlush(qFile* file);
@@ -930,6 +932,22 @@ namespace UFG
 		if (!gQuarkFileSystem.mFatalIOError && device) {
 			device->DeleteFilename(mapped_filename);
 		}
+	}
+
+	bool qRenameFile(const char* src_filename, const char* dest_filename)
+	{
+		auto src_device = gQuarkFileSystem.MapFilenameToDevice(src_filename);
+		auto dest_device = gQuarkFileSystem.MapFilenameToDevice(dest_filename);
+
+		// extra null-check not present in original
+		if (!src_device || !dest_device) {
+			return false;
+		}
+
+		auto src_map_filename = gQuarkFileSystem.MapFilename(FILE_MAP_TYPE_DEFAULT, src_filename);
+		auto dest_map_filename = gQuarkFileSystem.MapFilename(FILE_MAP_TYPE_DEFAULT, dest_filename);
+
+		return src_device == dest_device && src_device->RenameFilename(src_map_filename, dest_map_filename);
 	}
 
 	bool qCopyFile(const char* src_filename, const char* dest_filename)
