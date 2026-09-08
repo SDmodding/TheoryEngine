@@ -53,6 +53,7 @@ namespace UFG
 		u32 pad4;
 		u32 pad5;
 
+        u32 GetInPlaceOffset() const { return static_cast<u32>((mUncompressedNumBytes + mInPlaceExtraNumBytes) - mCompressedNumBytes); }
 		void EndianSwap();
 	};
 
@@ -157,16 +158,7 @@ namespace UFG
         mHeader.mVersion = VERSION1;
         mHeader.mDataOffset = sizeof(qCompressHeader);
         mHeader.mUncompressedNumBytes = mInputLength;
-
-        u64 crc = -1;
-        if (mInput)
-        {
-            const u8* p = reinterpret_cast<const u8*>(mInput);
-            for (s64 i = 0; mInputLength > i; ++i) {
-                crc = (crc >> 8) ^ sCrcTable64[static_cast<u8>(crc ^ p[i])];
-            }
-        }
-        mHeader.mUncompressedChecksum = crc;
+        mHeader.mUncompressedChecksum = qDataHash64(mInput, mInputLength);
 
         // reserve space for the header
         mOutputPosition = sizeof(qCompressHeader);

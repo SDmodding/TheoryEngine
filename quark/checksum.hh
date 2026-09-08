@@ -52,7 +52,7 @@ namespace UFG
 		if (data)
 		{
 			for (u64 i = 0; numBytes > i; ++i) {
-				prevHash = (prevHash << 8) ^ sCrcTable64[((prevHash >> 24) ^ data[i]) & 0xFF];
+				prevHash = (prevHash >> 8) ^ sCrcTable64[(u8)(prevHash ^ data[i])];
 			}
 		}
 		return prevHash;
