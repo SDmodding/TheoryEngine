@@ -82,7 +82,7 @@ namespace UFG
 		qString& operator+=(const qString& text);
 		qString& operator+=(const char* text);
 
-		qString operator+(const char* text)
+		qString operator+(const char* text) const
 		{
 			auto str = *this;
 			str += text;
