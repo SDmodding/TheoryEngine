@@ -16,6 +16,13 @@
     <a href="https://mega.nz/file/fK5SWARD#1fAWkxAHaKCIMDaJ5XAQKvjs6gK4RCQo5ZlvvtHWtVw">Game Executable</a> • <a href="https://mega.nz/file/aThlWBSB#7hG3yh6G5hUjX2Dy-1Kqjqwq9gSAREJJeWqyeS1K_m8">Debug Symbols (PDB)</a>
 <p>
 
+## <p align="center">Project status</p>
+<p align="center">
+This project is no longer under active public development.
+
+The existing source remains available for reference, but new development and future changes are currently being maintained privately.
+</p>
+
 ## <p align="center">Contributing</p>
 <p align="center">
 If you feel fit to contribute, feel free to create a pull request.
